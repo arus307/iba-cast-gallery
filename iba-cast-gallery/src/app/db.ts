@@ -1,28 +1,26 @@
-import { Tweet } from "@/types/tweet";
-import { Dayjs } from "dayjs";
-
+import dayjs, { Dayjs } from "dayjs";
 
 export const db: {
-    tweets: Tweet[];
+    tweets: CastMediaTweet[];
     casts: Cast[];
 } =
 {
     "tweets":[
         {
             id:"1873194540800348304",
-            postedAt: new Dayjs("2024-12-29T11:29:00+9:00"),
+            postedAt: dayjs("2024-12-29T11:29:00+9:00"),
         },
         {
             id:"1873202290749739453",
-            postedAt: new Dayjs("2024-12-29T12:00:00+9:00"),
+            postedAt: dayjs("2024-12-29T12:00:00+9:00"),
         },
         {
             id:"1873544835459952970",
-            postedAt: new Dayjs("2024-12-30T10:41:00+9:00"),
+            postedAt: dayjs("2024-12-30T10:41:00+9:00"),
         },
         {
             id:"1873587315693551743",
-            postedAt: new Dayjs("2024-12-30T13:30:00+9:00"),
+            postedAt: dayjs("2024-12-30T13:30:00+9:00"),
         }
     ],
     "casts":[
