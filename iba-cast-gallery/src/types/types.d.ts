@@ -10,7 +10,8 @@ declare global {
 
     type CastMediaTweet = {
         id: string;
-        postedAt: Dayjs;    
+        postedAt: Dayjs;
+        taggedCastIds: number[];
     };
 }
 

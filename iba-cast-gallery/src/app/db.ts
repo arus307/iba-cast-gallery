@@ -9,19 +9,23 @@ export const db: {
         {
             id:"1873194540800348304",
             postedAt: dayjs("2024-12-29T11:29:00+9:00"),
+            taggedCastIds:[3]
         },
         {
             id:"1873202290749739453",
             postedAt: dayjs("2024-12-29T12:00:00+9:00"),
+            taggedCastIds:[7]
         },
         {
             id:"1873544835459952970",
             postedAt: dayjs("2024-12-30T10:41:00+9:00"),
+            taggedCastIds:[4]
         },
         {
             id:"1873587315693551743",
             postedAt: dayjs("2024-12-30T13:30:00+9:00"),
-        }
+            taggedCastIds:[3]
+        },
     ],
     "casts":[
         {
@@ -83,6 +87,6 @@ export const db: {
             name:"ザクロ",
             introduceTweetId:"1881990198072062114",
             color:"#ff00ff",
-        }
+        },
     ]
 }
