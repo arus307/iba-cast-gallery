@@ -15,9 +15,9 @@ export default function Home() {
 
           <Grid2 container spacing={2}>
             {db.tweets.map((tweet) => (
-                          <Grid2>
-<TweetCard key={tweet.id} tweet={tweet} />
-                          </Grid2>
+              <Grid2 key={tweet.id}>
+                <TweetCard tweet={tweet} />
+              </Grid2>
             ))
           }
           </Grid2>
