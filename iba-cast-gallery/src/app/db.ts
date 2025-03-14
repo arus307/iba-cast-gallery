@@ -1,4 +1,4 @@
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 
 export const db: {
     tweets: CastMediaTweet[];

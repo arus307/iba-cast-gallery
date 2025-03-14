@@ -2,7 +2,6 @@ import React from 'react';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import {Tweet} from 'react-tweet';
 import { db } from 'app/db';
 import CastChip from 'app/components/CastChip';

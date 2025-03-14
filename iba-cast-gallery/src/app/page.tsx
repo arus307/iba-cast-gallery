@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { db } from "app/db";
 import TweetCard from "app/components/TweetCard";
 import { Grid2 } from "@mui/material";
