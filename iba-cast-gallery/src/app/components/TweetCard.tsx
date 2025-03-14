@@ -3,15 +3,20 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import {Tweet} from 'react-tweet';
-
+import { db } from 'app/db';
+import CastChip from 'app/components/CastChip';
 
 interface TweetCardProps {
     tweet: CastMediaTweet;
 }
 
 const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
+    const casts = db.casts.filter((cast) => tweet.taggedCastIds.includes(cast.id));
     return (
         <Card variant='outlined'>
+            {casts.map((cast) => (
+                <CastChip key={cast.id} cast={cast} />
+            ))}
             <CardContent  sx={{p:0}}>
                 <Tweet id={tweet.id} />
             </CardContent>
