@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import CardContent from '@mui/material/CardContent';
 import {Tweet} from 'react-tweet';
 import { db } from 'app/db';
-import CastChip from 'app/components/CastChip';
+import CastChip from 'components/CastChip';
 
 interface TweetCardProps {
     tweet: CastMediaTweet;
