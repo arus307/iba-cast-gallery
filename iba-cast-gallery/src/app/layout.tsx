@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import theme from 'theme';
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,6 +48,7 @@ export default function RootLayout({
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
+      <GoogleAnalytics gaId="G-5LSG13J5E2" />
     </html>
   );
 }
