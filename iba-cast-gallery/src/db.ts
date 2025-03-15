@@ -54,7 +54,7 @@ export const db: {
         {
             id:"1881182364220494216",
             postedAt: dayjs("2025-01-20T12:30:00+9:00"),
-            taggedCastIds:[7,6]
+            taggedCastIds:[4,6]
         },
         {
             id:"1881537451149476037",
