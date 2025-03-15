@@ -5,6 +5,7 @@ import { db } from "db";
 import TweetCard from "components/TweetCard";
 import Grid2 from "@mui/material/Grid2";
 import CastSelect from "components/CastSelect";
+import { Typography, Stack, Link } from "@mui/material";
 
 export default function Home() {
   const [selectedCast, setSelectedCast] = useState<Cast | null>(null);
@@ -33,9 +34,14 @@ export default function Home() {
       </Grid2>
     </main>
     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <h6>
+      <Stack direction="column" spacing={0.5} alignItems="center">
+        <Typography variant="h6">
           このサイトは、IBA公式とは一切関係のないファンサイトです。
-        </h6>
+        </Typography>
+        <Typography variant="subtitle2">
+          タグ付けの誤りや反映されていないツイート、その他の問題がある場合はarus(X:<Link href="https://x.com/arus307" target='_blank' rel='noopener noreferrer'>@arus307</Link>)までご連絡ください。
+        </Typography>
+      </Stack>
     </footer>
   </div>
   );
