@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {Autocomplete, TextField, CircularProgress} from '@mui/material';
-
+import React from 'react';
+import {Autocomplete, TextField} from '@mui/material';
 
 type props = {
     casts: Cast[];
