@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react";
-import { db } from "app/db";
+import { db } from "db";
 import TweetCard from "components/TweetCard";
 import Grid2 from "@mui/material/Grid2";
 import CastSelect from "components/CastSelect";
