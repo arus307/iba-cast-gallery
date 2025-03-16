@@ -14,6 +14,7 @@ export type TweetProps = Omit<TweetCoreProps, 'id'> & {
   fallback?: ReactNode
   components?: TwitterComponents
   fetchOptions?: RequestInit
+  taggedCasts: Cast[];
 } & (
     | {
         id: string
@@ -32,6 +33,7 @@ export const Tweet = ({
   components,
   fetchOptions,
   onError,
+  taggedCasts,
 }: TweetProps) => {
   const { data, error, isLoading } = useTweet(id, apiUrl, fetchOptions)
 
@@ -41,5 +43,5 @@ export const Tweet = ({
     return <NotFound error={onError ? onError(error) : error} />
   }
 
-  return <EmbeddedTweet tweet={data} components={components} />
+  return <EmbeddedTweet tweet={data} components={components} taggedCasts={taggedCasts}/>
 }

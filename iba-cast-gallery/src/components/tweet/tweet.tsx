@@ -12,13 +12,16 @@ import type { TweetProps } from './swr'
 // that supports both versions of the component.
 export type { TweetProps }
 
-type TweetContentProps = Omit<TweetProps, 'fallback'>
+type TweetContentProps = Omit<TweetProps, 'fallback'> &{
+  taggedCasts: Cast[];
+}
 
 const TweetContent = async ({
   id,
   components,
   fetchOptions,
   onError,
+  taggedCasts
 }: TweetContentProps) => {
   let error
   const tweet = id
