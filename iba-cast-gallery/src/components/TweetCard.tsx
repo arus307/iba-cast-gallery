@@ -15,11 +15,7 @@ const TweetCard: React.FC<TweetCardProps> = ({ tweet }) => {
     const casts = db.casts.filter((cast) => tweet.taggedCastIds.includes(cast.id));
 
     return (
-        <Card variant='outlined'>
-            <CardContent  sx={{p:0 ,'&:last-child':{pb:0}}}>
-                <Tweet id={tweet.id} taggedCasts={casts}/>
-            </CardContent>
-        </Card>
+        <Tweet id={tweet.id} taggedCasts={casts}/>
     );
 };
 
