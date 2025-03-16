@@ -1,55 +1,100 @@
+"use client";
 import Image from "next/image";
+import {Autocomplete, Button, TextField, Grid2, Stack, Card, CardContent} from "@mui/material";
+import {useState} from "react";
+import { Tweet } from "react-tweet";
+import {db} from "src/db";
+import {Cast} from "@shared-types/types";
+import { DateTimeField } from "@mui/x-date-pickers";
+import dayjs, {Dayjs} from "dayjs";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 export default function Home() {
+
+  const [tweetId, setTweetId] = useState<string>("");
+
+  const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
+
+  const [tweetDateTime, setTweetDateTime] = useState<Dayjs|null>(dayjs());
+
+  const [tweets, setTweets] = useState<CastMediaTweet[]>(db.tweets);
+
+  const registerTweet = () => {
+    if(!tweetId || !selectedCasts || !tweetDateTime) return;
+    const newTweet = {
+      id: tweetId,
+      postedAt: tweetDateTime,
+      taggedCastIds: selectedCasts.map(cast=>cast.id)
+    }
+
+    if(tweets.find(tweet=>tweet.id===newTweet.id) ===undefined){
+      // 重複がない場合のみ追加
+      setTweets([...tweets, newTweet]);
+    }
+
+    setTweetId("");
+    setSelectedCasts([]);
+    setTweetDateTime(dayjs());
+
+    console.log(JSON.stringify(tweets));
+
+  }
+
+  console.log(tweets[0].postedAt);
+
+  const objectString = "\"tweets\": [ \n" +
+                        tweets.map((tweet) => 
+                          "    {\n" +
+                          "        id: \"" + tweet.id + "\",\n" +
+                          "        postedAt: dayjs(\"" + tweet.postedAt.format() + "\"),\n" +
+                          "        taggedCastIds: [" + tweet.taggedCastIds.join(",") + "]\n" +
+                          "    },\n"
+                        ).join("") +
+                      "]";
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+        <Grid2 container className="w-full" spacing={2}>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+          <Grid2 size={8}>
+            <Stack direction="column" spacing={2} alignItems="left">
+
+            <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" />
+            <Tweet id={tweetId} />
+            <Autocomplete
+                multiple
+                fullWidth
+                options={db.casts}
+                getOptionLabel={(option) => option.name}
+                value={selectedCasts}
+                onChange={(event, newValue) => setSelectedCasts(newValue)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label="写ってるキャストを選択"
+                        variant="outlined"
+                    />
+                )}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue)=>setTweetDateTime(newValue)} />
+            </LocalizationProvider>
+            <Button sx={{marginTop:1}} variant="contained" color="primary" onClick={registerTweet}>登録</Button>
+            </Stack>
+          </Grid2>
+          
+          <Grid2 size={4}>
+            <Card>
+              <CardContent>
+                <pre>{objectString}</pre>
+              </CardContent>
+            </Card>
+          </Grid2>
+
+        </Grid2>
+
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
