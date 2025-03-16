@@ -36,11 +36,11 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
        <TweetInfo tweet={tweet} />
       {displayTweet && <TweetActions tweet={tweet} />}
       {displayTweet && <TweetReplies tweet={tweet} /> }
-      <Stack direction='row' spacing={1} sx={{m:0.5}} alignItems={'center'}>
+      <Stack direction='row' spacing={1} alignItems={'center'}>
         {taggedCasts.map((cast) => (
           <CastChip key={cast.id} cast={cast} />
         ))}
-        <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>ツイート全体を表示</Button>
+        <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : 'ツイート全体を表示'}</Button>
       </Stack>
     </TweetContainer>
   )
