@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import { useState } from "react";
 import { db } from "db";
@@ -20,14 +20,13 @@ export default function Home() {
 
   return (
   <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-      
-      <Grid2 container spacing={2}>
+    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+      <Grid2 container spacing={2} className="w-full">
         <Grid2 size={12}>
           <CastSelect casts={db.casts} selectedCast={selectedCast} setSelectedCast={setSelectedCast} />
         </Grid2>
         {displayTweets.map((tweet) => (
-          <Grid2 key={tweet.id}>
+          <Grid2 key={tweet.id} size={{xs:12, md:6, lg:4, xl:3}}>
             <TweetCard tweet={tweet} />
           </Grid2>
         ))}

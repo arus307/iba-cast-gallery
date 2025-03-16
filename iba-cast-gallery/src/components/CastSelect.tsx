@@ -10,7 +10,7 @@ type props = {
 const CastSelect: React.FC<props> = ({casts, selectedCast, setSelectedCast}) => {
     return (
         <Autocomplete
-            sx={{width:300}}
+            fullWidth
             options={casts}
             getOptionLabel={(option) => option.name}
             value={selectedCast}
