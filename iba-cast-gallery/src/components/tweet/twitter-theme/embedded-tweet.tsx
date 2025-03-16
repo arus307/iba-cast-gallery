@@ -40,8 +40,8 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
         {taggedCasts.map((cast) => (
           <CastChip key={cast.id} cast={cast} />
         ))}
+        <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>ツイート全体を表示</Button>
       </Stack>
-      <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>ツイート全体を表示</Button>
     </TweetContainer>
   )
 }

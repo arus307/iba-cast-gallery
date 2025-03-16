@@ -40,7 +40,7 @@ const TweetContent = async ({
     return <NotFound error={error} />
   }
 
-  return <EmbeddedTweet tweet={tweet} components={components} />
+  return <EmbeddedTweet tweet={tweet} components={components} taggedCasts={taggedCasts}/>
 }
 
 export const Tweet = ({
