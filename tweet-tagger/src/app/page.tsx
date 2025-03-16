@@ -1,23 +1,23 @@
 "use client";
+
 import Image from "next/image";
 import {Autocomplete, Button, TextField, Grid2, Stack, Card, CardContent} from "@mui/material";
 import {useState} from "react";
 import { Tweet } from "react-tweet";
-import {db} from "src/db";
 import {Cast} from "@shared-types/types";
 import { DateTimeField } from "@mui/x-date-pickers";
 import dayjs, {Dayjs} from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import {useData} from "../context/DataContext";
 
 export default function Home() {
 
+  const db = useData();
+
   const [tweetId, setTweetId] = useState<string>("");
-
   const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
-
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs|null>(dayjs());
-
   const [tweets, setTweets] = useState<CastMediaTweet[]>(db.tweets);
 
   const registerTweet = () => {
@@ -36,22 +36,34 @@ export default function Home() {
     setTweetId("");
     setSelectedCasts([]);
     setTweetDateTime(dayjs());
-
-    console.log(JSON.stringify(tweets));
-
   }
 
-  console.log(tweets[0].postedAt);
+  const objectString ="{\n" +
+                       "    \"tweets\": [ \n" +
+                        tweets.sort((a, b) => a.postedAt.isAfter(b.postedAt) ? 1 : -1)
+                              .map((tweet) => 
+                                "        {\n" +
+                                "            \"id\": \"" + tweet.id + "\",\n" +
+                                "            \"postedAt\": \"" + tweet.postedAt.format() + "\",\n" +
+                                "            \"taggedCastIds\": [" + tweet.taggedCastIds.join(",") + "]\n" +
+                                "        }"
+                              ).join(",\n") + "\n" + 
+                        "    ],\n" + 
+                        "    \"casts\": [ \n" +
+                        db.casts.map((cast) =>
+                                "        {\n" +
+                                "            \"id\": " + cast.id + ",\n" +
+                                "            \"name\": \"" + cast.name + "\",\n" +
+                                "            \"introduceTweetId\": \"" + cast.introduceTweetId + "\",\n" +
+                                "            \"color\": \"" + cast.color + "\"\n" +
+                                "        }"
+                        ).join(",\n") + "\n" + 
+                        "    ]\n" +
+                        "}";
 
-  const objectString = "\"tweets\": [ \n" +
-                        tweets.map((tweet) => 
-                          "    {\n" +
-                          "        id: \"" + tweet.id + "\",\n" +
-                          "        postedAt: dayjs(\"" + tweet.postedAt.format() + "\"),\n" +
-                          "        taggedCastIds: [" + tweet.taggedCastIds.join(",") + "]\n" +
-                          "    },\n"
-                        ).join("") +
-                      "]";
+  const copyJson = () => {
+    navigator.clipboard.writeText(objectString);
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -86,6 +98,7 @@ export default function Home() {
           </Grid2>
           
           <Grid2 size={4}>
+            <Button onClick={copyJson}>JSONをコピー</Button>
             <Card>
               <CardContent>
                 <pre>{objectString}</pre>
