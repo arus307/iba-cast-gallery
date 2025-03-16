@@ -15,4 +15,4 @@ declare global {
     };
 }
 
-export {};
+export {Cast, CastMediaTweet};
