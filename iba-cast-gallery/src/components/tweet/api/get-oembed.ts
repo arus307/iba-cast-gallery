@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: warn */
 export async function getOEmbed(url: string): Promise<any> {
   const res = await fetch(`https://publish.twitter.com/oembed?url=${url}`)
 

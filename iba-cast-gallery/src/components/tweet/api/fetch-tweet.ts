@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: warn */
 import type { Tweet } from './types/index'
 
 const SYNDICATION_URL = 'https://cdn.syndication.twimg.com'

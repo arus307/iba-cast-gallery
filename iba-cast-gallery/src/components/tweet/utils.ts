@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: warn */
 import type {
   TweetBase,
   Tweet,

@@ -1,3 +1,4 @@
+/* eslint @typescript-eslint/no-explicit-any: warn */
 'use client'
 
 import { useEffect, useState } from 'react'

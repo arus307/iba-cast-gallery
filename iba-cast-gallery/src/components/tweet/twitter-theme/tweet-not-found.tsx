@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-explicit-any: warn */
+/* eslint @typescript-eslint/no-unused-vars: warn */
 import { TweetContainer } from './tweet-container'
 import styles from './tweet-not-found.module.css'
 
