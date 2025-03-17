@@ -13,6 +13,11 @@ declare global {
         postedAt: Dayjs;
         taggedCastIds: number[];
     };
+
+    type Db = {
+        tweets: CastMediaTweet[];
+        casts: Cast[];
+    };    
 }
 
-export {};
+export {Cast, CastMediaTweet, Db};
