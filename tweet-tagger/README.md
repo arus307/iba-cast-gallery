@@ -1,3 +1,9 @@
+## 使い方
+
+1. iba-cast-galleryのpublicフォルダのdb.jsonフォルダをこのプロジェクトのpublicフォルダにコピーしてくる
+1. `yarn run dev`で立ち上げる
+1. ツイートをタグ付けして追加して右側に表示されるjsonをiba-cast-galleryのdb.jsonに貼り付けて反映
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
