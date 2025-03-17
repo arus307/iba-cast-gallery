@@ -2,7 +2,7 @@
 
 import dayjs from "dayjs";
 import {Db} from "../db";
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, ReactNode } from 'react';
 
 const DataContext = createContext<Db | undefined>(undefined);
   
