@@ -7,6 +7,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { DataProvider } from "context/DataContext";
+import getDbJsonString from "getDbJsonString";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,7 +22,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "IBA Cast Gallery",
-  description: "Imaginary Base Akaihabaraの写真付きツイートをまとめて見ることができるファンサイトです。",
+  description: "Imaginary Base Akihabaraの写真付きツイートをまとめて見ることができるファンサイトです。",
 };
 
 const roboto = Roboto({
@@ -29,6 +31,8 @@ const roboto = Roboto({
   display: 'swap',
   variable: '--font-roboto',
 });
+
+const jsonString = await getDbJsonString();
 
 export default function RootLayout({
   children,
@@ -40,13 +44,15 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-       <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline>
-              {children}
-            </CssBaseline>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <DataProvider jsonString={jsonString}>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline>
+                {children}
+              </CssBaseline>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </DataProvider>
       </body>
       <GoogleAnalytics gaId="G-5LSG13J5E2" />
     </html>

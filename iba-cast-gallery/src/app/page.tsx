@@ -1,13 +1,16 @@
 'use client';
 
 import { useState } from "react";
-import { db } from "db";
 import TweetCard from "components/TweetCard";
 import Grid2 from "@mui/material/Grid2";
 import CastSelect from "components/CastSelect";
 import { Typography, Stack, Link } from "@mui/material";
+import { useData } from "context/DataContext";
 
 export default function Home() {
+
+  const db = useData();
+
   const [selectedCast, setSelectedCast] = useState<Cast | null>(null);
   const displayTweets = db.tweets.filter((tweet) => {
     if (selectedCast) {
@@ -27,7 +30,7 @@ export default function Home() {
         </Grid2>
         {displayTweets.map((tweet) => (
           <Grid2 key={tweet.id} size={{xs:12, md:6, lg:4, xl:3}}>
-            <TweetCard tweet={tweet} />
+            <TweetCard tweet={tweet} taggedCasts={db.casts.filter((cast)=>tweet.taggedCastIds.includes(cast.id))}/>
           </Grid2>
         ))}
       </Grid2>

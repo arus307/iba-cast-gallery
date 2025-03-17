@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {Autocomplete, Button, TextField, Grid2, Stack, Card, CardContent} from "@mui/material";
 import {useState} from "react";
 import { Tweet } from "react-tweet";
