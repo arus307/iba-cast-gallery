@@ -10,6 +10,8 @@ import type { TwitterComponents } from './types'
 import { TweetMediaVideo } from './tweet-media-video'
 import { MediaImg } from './media-img'
 import s from './tweet-media.module.css'
+import { PhotoProvider,PhotoView } from 'react-photo-view'
+import 'react-photo-view/dist/react-photo-view.css';
 
 const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
   let paddingBottom = 56.25 // default of 16x9
@@ -48,38 +50,36 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
           length > 4 && s.grid2x2
         )}
       >
-        {tweet.mediaDetails?.map((media) => (
-          <Fragment key={media.media_url_https}>
-            {media.type === 'photo' ? (
-              <a
-                key={media.media_url_https}
-                href={tweet.url}
-                className={clsx(s.mediaContainer, s.mediaLink)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div
-                  className={s.skeleton}
-                  style={getSkeletonStyle(media, length)}
-                />
-                <Img
-                  src={getMediaUrl(media, 'small')}
-                  alt={media.ext_alt_text || 'Image'}
-                  className={s.image}
-                  draggable
-                />
-              </a>
-            ) : (
-              <div key={media.media_url_https} className={s.mediaContainer}>
-                <div
-                  className={s.skeleton}
-                  style={getSkeletonStyle(media, length)}
-                />
-                <TweetMediaVideo tweet={tweet} media={media} />
-              </div>
-            )}
-          </Fragment>
-        ))}
+        <PhotoProvider>
+          {tweet.mediaDetails?.map((media) => (
+            <Fragment key={media.media_url_https}>
+              {media.type === 'photo' ? (
+                <div className={clsx(s.mediaContainer, s.mediaLink)}>
+                  <div
+                    className={s.skeleton}
+                    style={getSkeletonStyle(media, length)}
+                  />
+                  <PhotoView src={getMediaUrl(media,'large')}>
+                    <Img
+                      src={getMediaUrl(media, 'small')}
+                      alt={media.ext_alt_text || 'Image'}
+                      className={s.image}
+                      draggable
+                    />
+                  </PhotoView>
+                </div>
+              ) : (
+                <div key={media.media_url_https} className={s.mediaContainer}>
+                  <div
+                    className={s.skeleton}
+                    style={getSkeletonStyle(media, length)}
+                  />
+                  <TweetMediaVideo tweet={tweet} media={media} />
+                </div>
+              )}
+            </Fragment>
+          ))}
+        </PhotoProvider>
       </div>
     </div>
   )
