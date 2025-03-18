@@ -1,0 +1,24 @@
+{
+  "name": "ibacastgallery",
+  "version": "1.0.0",
+  "description": "[![Netlify Status](https://api.netlify.com/api/v1/badges/a1c7a42c-99b8-46e1-bff1-b1b262fe93a5/deploy-status)](https://app.netlify.com/sites/iba-cast-gallery/deploys)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arus307/IbaCastGallery.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arus307/IbaCastGallery/issues"
+  },
+  "homepage": "https://github.com/arus307/IbaCastGallery#readme",
+  "dependencies": {
+    "typescript": "^5.8.2"
+  }
+}
