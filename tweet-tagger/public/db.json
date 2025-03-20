@@ -1,6 +1,86 @@
 {
     "tweets": [ 
         {
+            "id": "1863523515242049540",
+            "postedAt": "2024-12-02T19:00:13+09:00",
+            "taggedCastIds": [11]
+        },
+        {
+            "id": "1863885898036949230",
+            "postedAt": "2024-12-03T19:00:33+09:00",
+            "taggedCastIds": [12]
+        },
+        {
+            "id": "1864248285940134212",
+            "postedAt": "2024-12-04T19:00:05+09:00",
+            "taggedCastIds": [13]
+        },
+        {
+            "id": "1864610677970678102",
+            "postedAt": "2024-12-05T19:00:23+09:00",
+            "taggedCastIds": [14]
+        },
+        {
+            "id": "1864957970074812418",
+            "postedAt": "2024-12-06T18:00:37+09:00",
+            "taggedCastIds": [15]
+        },
+        {
+            "id": "1865320343021510917",
+            "postedAt": "2024-12-07T18:00:51+09:00",
+            "taggedCastIds": [16]
+        },
+        {
+            "id": "1865682737044324518",
+            "postedAt": "2024-12-08T18:00:09+09:00",
+            "taggedCastIds": [17]
+        },
+        {
+            "id": "1866045128546066870",
+            "postedAt": "2024-12-09T18:00:26+09:00",
+            "taggedCastIds": [18]
+        },
+        {
+            "id": "1866407506458628516",
+            "postedAt": "2024-12-10T18:00:40+09:00",
+            "taggedCastIds": [19]
+        },
+        {
+            "id": "1866769902364729735",
+            "postedAt": "2024-12-11T18:00:57+09:00",
+            "taggedCastIds": [20]
+        },
+        {
+            "id": "1867132291245391919",
+            "postedAt": "2024-12-12T18:00:12+09:00",
+            "taggedCastIds": [21]
+        },
+        {
+            "id": "1867494673235030407",
+            "postedAt": "2024-12-13T18:00:28+09:00",
+            "taggedCastIds": [22]
+        },
+        {
+            "id": "1867857065991180791",
+            "postedAt": "2024-12-14T18:00:46+09:00",
+            "taggedCastIds": [23]
+        },
+        {
+            "id": "1868219445488873908",
+            "postedAt": "2024-12-15T18:00:01+09:00",
+            "taggedCastIds": [24]
+        },
+        {
+            "id": "1868581846201540798",
+            "postedAt": "2024-12-16T18:00:17+09:00",
+            "taggedCastIds": [25]
+        },
+        {
+            "id": "1868944227335626921",
+            "postedAt": "2024-12-17T18:00:41+09:00",
+            "taggedCastIds": [26]
+        },
+        {
             "id": "1873194540800348304",
             "postedAt": "2024-12-29T11:29:00+09:00",
             "taggedCastIds": [3]
@@ -31,9 +111,29 @@
             "taggedCastIds": [1,8]
         },
         {
+            "id": "1878744119239209193",
+            "postedAt": "2025-01-13T19:01:37+09:00",
+            "taggedCastIds": [1]
+        },
+        {
+            "id": "1879091090134864220",
+            "postedAt": "2025-01-14T18:00:53+09:00",
+            "taggedCastIds": [2]
+        },
+        {
+            "id": "1879453474661777549",
+            "postedAt": "2025-01-15T18:00:08+09:00",
+            "taggedCastIds": [3]
+        },
+        {
+            "id": "1879815861902647388",
+            "postedAt": "2025-01-16T18:00:22+09:00",
+            "taggedCastIds": [4]
+        },
+        {
             "id": "1879831215928446988",
             "postedAt": "2025-01-16T19:01:00+09:00",
-            "taggedCastIds": [3,6,7]
+            "taggedCastIds": [3,6,7,11,21]
         },
         {
             "id": "1880095224854376552",
@@ -41,9 +141,24 @@
             "taggedCastIds": [1,7]
         },
         {
+            "id": "1880193349136838830",
+            "postedAt": "2025-01-17T19:00:38+09:00",
+            "taggedCastIds": [5]
+        },
+        {
+            "id": "1880540647691587684",
+            "postedAt": "2025-01-18T18:00:53+09:00",
+            "taggedCastIds": [6]
+        },
+        {
             "id": "1880815174992667049",
             "postedAt": "2025-01-19T12:10:00+09:00",
             "taggedCastIds": [4,8]
+        },
+        {
+            "id": "1880903030205517885",
+            "postedAt": "2025-01-19T18:00:09+09:00",
+            "taggedCastIds": [7]
         },
         {
             "id": "1881182364220494216",
@@ -51,24 +166,39 @@
             "taggedCastIds": [4,6]
         },
         {
+            "id": "1881265418603786573",
+            "postedAt": "2025-01-20T18:00:26+09:00",
+            "taggedCastIds": [8]
+        },
+        {
             "id": "1881537451149476037",
             "postedAt": "2025-01-21T12:01:00+09:00",
             "taggedCastIds": [4,9]
         },
         {
+            "id": "1881627800299565408",
+            "postedAt": "2025-01-21T18:00:44+09:00",
+            "taggedCastIds": [9]
+        },
+        {
+            "id": "1881990198072062114",
+            "postedAt": "2025-01-22T18:00:59+09:00",
+            "taggedCastIds": [10]
+        },
+        {
             "id": "1882262384200634748",
             "postedAt": "2025-01-23T12:01:00+09:00",
-            "taggedCastIds": [4,9]
+            "taggedCastIds": [4,9,13,16,15]
         },
         {
             "id": "1882624801074012358",
             "postedAt": "2025-01-24T12:01:00+09:00",
-            "taggedCastIds": [4,9]
+            "taggedCastIds": [4,9,14,16,24]
         },
         {
             "id": "1882702860233953636",
             "postedAt": "2025-01-24T17:11:00+09:00",
-            "taggedCastIds": [1,9]
+            "taggedCastIds": [1,9,15]
         },
         {
             "id": "1882986731198382263",
@@ -78,12 +208,12 @@
         {
             "id": "1883746093793706305",
             "postedAt": "2025-01-27T14:17:00+09:00",
-            "taggedCastIds": [2,3]
+            "taggedCastIds": [2,3,12,16,24]
         },
         {
             "id": "1883814188273004679",
             "postedAt": "2025-01-27T18:47:00+09:00",
-            "taggedCastIds": [2,4,7]
+            "taggedCastIds": [2,4,7,21]
         },
         {
             "id": "1884093389395918902",
@@ -103,7 +233,7 @@
         {
             "id": "1885213014464618763",
             "postedAt": "2025-01-31T15:26:00+09:00",
-            "taggedCastIds": [4,7,9]
+            "taggedCastIds": [4,7,9,13,14,16,24]
         },
         {
             "id": "1885523474044903811",
@@ -128,12 +258,12 @@
         {
             "id": "1886697451790459160",
             "postedAt": "2025-02-04T17:45:00+09:00",
-            "taggedCastIds": [4,7]
+            "taggedCastIds": [4,7,11,20,21]
         },
         {
             "id": "1887353106989756603",
             "postedAt": "2025-02-06T13:10:00+09:00",
-            "taggedCastIds": [1]
+            "taggedCastIds": [1,25,15,17]
         },
         {
             "id": "1887730331002020056",
@@ -141,14 +271,49 @@
             "taggedCastIds": [4,7]
         },
         {
+            "id": "1889257637247869435",
+            "postedAt": "2025-02-11T19:18:53+09:00",
+            "taggedCastIds": [27]
+        },
+        {
+            "id": "1889600335628419178",
+            "postedAt": "2025-02-12T18:00:07+09:00",
+            "taggedCastIds": [28]
+        },
+        {
+            "id": "1889962726941929531",
+            "postedAt": "2025-02-13T18:00:20+09:00",
+            "taggedCastIds": [29]
+        },
+        {
+            "id": "1890325126941380782",
+            "postedAt": "2025-02-14T18:00:38+09:00",
+            "taggedCastIds": [30]
+        },
+        {
             "id": "1890705595193254286",
             "postedAt": "2025-02-15T12:00:00+09:00",
             "taggedCastIds": [1,4,7]
         },
         {
+            "id": "1890687498034053386",
+            "postedAt": "2025-02-15T18:00:56+09:00",
+            "taggedCastIds": [31]
+        },
+        {
+            "id": "1891049886948216908",
+            "postedAt": "2025-02-16T18:00:07+09:00",
+            "taggedCastIds": [32]
+        },
+        {
             "id": "1891335257989042368",
             "postedAt": "2025-02-17T12:53:00+09:00",
             "taggedCastIds": [8]
+        },
+        {
+            "id": "1891412282145673705",
+            "postedAt": "2025-02-17T18:00:18+09:00",
+            "taggedCastIds": [33]
         },
         {
             "id": "1891688310898295004",
@@ -163,7 +328,7 @@
         {
             "id": "1893923476190233001",
             "postedAt": "2025-02-24T16:18:00+09:00",
-            "taggedCastIds": [3,4,7]
+            "taggedCastIds": [3,4,7,23,25,11]
         },
         {
             "id": "1894339084098965761",
@@ -178,7 +343,7 @@
         {
             "id": "1895322138992836843",
             "postedAt": "2025-02-28T12:56:00+09:00",
-            "taggedCastIds": [4,6]
+            "taggedCastIds": [4,6,22,30,24]
         },
         {
             "id": "1895406378891821101",
@@ -208,12 +373,12 @@
         {
             "id": "1896809325823410206",
             "postedAt": "2025-03-04T15:25:00+09:00",
-            "taggedCastIds": [8]
+            "taggedCastIds": [8,29,15,20]
         },
         {
             "id": "1897487373036110272",
             "postedAt": "2025-03-06T12:20:00+09:00",
-            "taggedCastIds": [1]
+            "taggedCastIds": [1,15,21,13]
         },
         {
             "id": "1897581532405178554",
@@ -223,7 +388,7 @@
         {
             "id": "1897847884068028730",
             "postedAt": "2025-03-07T12:12:00+09:00",
-            "taggedCastIds": [3,8]
+            "taggedCastIds": [3,8,15,29,24]
         },
         {
             "id": "1897936356845982064",
@@ -233,7 +398,7 @@
         {
             "id": "1898207056508645842",
             "postedAt": "2025-03-08T12:00:00+09:00",
-            "taggedCastIds": [1,4,9]
+            "taggedCastIds": [1,4,9,27,18,22]
         },
         {
             "id": "1898252344715772314",
@@ -243,62 +408,62 @@
         {
             "id": "1898939424337232142",
             "postedAt": "2025-03-10T12:30:00+09:00",
-            "taggedCastIds": [2]
+            "taggedCastIds": [2,15,25,29]
         },
         {
             "id": "1898989910608200103",
             "postedAt": "2025-03-10T15:30:00+09:00",
-            "taggedCastIds": [1,6]
+            "taggedCastIds": [1,6,32,12,22]
         },
         {
             "id": "1899303488083185773",
             "postedAt": "2025-03-11T12:36:00+09:00",
-            "taggedCastIds": [2,4]
+            "taggedCastIds": [2,4,20,15,31]
         },
         {
             "id": "1900019031463387549",
             "postedAt": "2025-03-13T12:00:00+09:00",
-            "taggedCastIds": [1,3]
+            "taggedCastIds": [1,3,29,15,17]
         },
         {
             "id": "1900085416411488684",
             "postedAt": "2025-03-13T16:23:00+09:00",
-            "taggedCastIds": [6,7,8]
+            "taggedCastIds": [1,3,6,7,8,11,14,24]
         },
         {
             "id": "1900394693659418728",
             "postedAt": "2025-03-14T12:52:00+09:00",
-            "taggedCastIds": [3,9]
+            "taggedCastIds": [3,9,23,31,20]
         },
         {
             "id": "1900745122834464846",
             "postedAt": "2025-03-15T12:05:00+09:00",
-            "taggedCastIds": [4,7,8]
+            "taggedCastIds": [4,7,8,18,27,17]
         },
         {
             "id": "1901109798122516496",
             "postedAt": "2025-03-16T12:14:03+09:00",
-            "taggedCastIds": [4,7,9]
+            "taggedCastIds": [4,7,9,16,26,21]
         },
         {
             "id": "1901520219312664948",
             "postedAt": "2025-03-17T15:25:35+09:00",
-            "taggedCastIds": [1,4,7]
+            "taggedCastIds": [1,4,7,8,12,13,32]
         },
         {
             "id": "1901833643255087367",
             "postedAt": "2025-03-18T12:10:25+09:00",
-            "taggedCastIds": [3,4]
+            "taggedCastIds": [3,4,17,22,29]
         },
         {
             "id": "1901943093060042812",
             "postedAt": "2025-03-18T19:25:00+09:00",
-            "taggedCastIds": [7,5]
+            "taggedCastIds": [5,7,28,27,33]
         },
         {
             "id": "1902570679737970981",
             "postedAt": "2025-03-20T12:59:14+09:00",
-            "taggedCastIds": [2,3]
+            "taggedCastIds": [2,3,18,20,24]
         }
     ],
     "casts": [ 
@@ -306,61 +471,232 @@
             "id": 1,
             "name": "メノウ",
             "introduceTweetId": "1878744119239209193",
-            "color": "#00ff00"
+            "color": "#00ff00",
+            "type": "REAL"
         },
         {
             "id": 2,
             "name": "クジャク",
             "introduceTweetId": "1879091090134864220",
-            "color": "#00ffff"
+            "color": "#00ffff",
+            "type": "REAL"
         },
         {
             "id": 3,
             "name": "ルリ",
             "introduceTweetId": "1879453474661777549",
-            "color": "#0000ff"
+            "color": "#0000ff",
+            "type": "REAL"
         },
         {
             "id": 4,
             "name": "スズ",
             "introduceTweetId": "1879815861902647388",
-            "color": "#ff0000"
+            "color": "#ff0000",
+            "type": "REAL"
         },
         {
             "id": 5,
             "name": "シンジュ",
             "introduceTweetId": "1880193349136838830",
-            "color": "#ffff00"
+            "color": "#ffff00",
+            "type": "REAL"
         },
         {
             "id": 6,
             "name": "コハク",
             "introduceTweetId": "1880540647691587684",
-            "color": "#ff00ff"
+            "color": "#ff00ff",
+            "type": "REAL"
         },
         {
             "id": 7,
             "name": "ユウレン",
             "introduceTweetId": "1880903030205517885",
-            "color": "#ffff00"
+            "color": "#ffff00",
+            "type": "REAL"
         },
         {
             "id": 8,
             "name": "ヒスイ",
             "introduceTweetId": "1881265418603786573",
-            "color": "#ff00ff"
+            "color": "#ff00ff",
+            "type": "REAL"
         },
         {
             "id": 9,
             "name": "ホタル",
             "introduceTweetId": "1881627800299565408",
-            "color": "#ff00ff"
+            "color": "#ff00ff",
+            "type": "REAL"
         },
         {
             "id": 10,
             "name": "ザクロ",
             "introduceTweetId": "1881990198072062114",
-            "color": "#ff00ff"
+            "color": "#ff00ff",
+            "type": "REAL"
+        },
+        {
+            "id": 11,
+            "name": "リシア",
+            "introduceTweetId": "1863523515242049540",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 12,
+            "name": "マイカ",
+            "introduceTweetId": "1863885898036949230",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 13,
+            "name": "サファイア",
+            "introduceTweetId": "1864248285940134212",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 14,
+            "name": "テルル",
+            "introduceTweetId": "1864610677970678102",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 15,
+            "name": "ミニアム",
+            "introduceTweetId": "1864957970074812418",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 16,
+            "name": "ビスマス",
+            "introduceTweetId": "1865320343021510917",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 17,
+            "name": "ラリマー",
+            "introduceTweetId": "1865682737044324518",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 18,
+            "name": "シトリン",
+            "introduceTweetId": "1866045128546066870",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 19,
+            "name": "スピネル",
+            "introduceTweetId": "1866407506458628516",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 20,
+            "name": "モリオン",
+            "introduceTweetId": "1866769902364729735",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 21,
+            "name": "ルチル",
+            "introduceTweetId": "1867132291245391919",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 22,
+            "name": "マーキュリー",
+            "introduceTweetId": "1867494673235030407",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 23,
+            "name": "スフェーン",
+            "introduceTweetId": "1867857065991180791",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 24,
+            "name": "レビン",
+            "introduceTweetId": "1868219445488873908",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 25,
+            "name": "ユナカイト",
+            "introduceTweetId": "1868581846201540798",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 26,
+            "name": "ネコアイト",
+            "introduceTweetId": "1868944227335626921",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 27,
+            "name": "フローライト",
+            "introduceTweetId": "1889257637247869435",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 28,
+            "name": "クォーツ",
+            "introduceTweetId": "1889600335628419178",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 29,
+            "name": "ベリル",
+            "introduceTweetId": "1889962726941929531",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 30,
+            "name": "タルク",
+            "introduceTweetId": "1890325126941380782",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 31,
+            "name": "オパール",
+            "introduceTweetId": "1890687498034053386",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 32,
+            "name": "ガーネット",
+            "introduceTweetId": "1891049886948216908",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 33,
+            "name": "ネフェリン",
+            "introduceTweetId": "1891412282145673705",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
         }
     ]
 }

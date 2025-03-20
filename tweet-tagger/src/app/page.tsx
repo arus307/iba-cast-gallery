@@ -1,7 +1,7 @@
 "use client";
 
 import {Autocomplete, Button, TextField, Grid2, Stack, Card, CardContent} from "@mui/material";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { Tweet } from "react-tweet";
 import {Cast} from "@shared-types/types";
 import { DateTimeField } from "@mui/x-date-pickers";
@@ -9,6 +9,37 @@ import dayjs, {Dayjs} from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import {useData} from "../context/DataContext";
+
+/**
+ * jsonの形に整形する
+ */
+const generateObjectSTring = (db:Db)=>{
+  const objectString ="{\n" +
+  "    \"tweets\": [ \n" +
+   db.tweets.sort((a, b) => a.postedAt.isAfter(b.postedAt) ? 1 : -1)
+         .map((tweet) => 
+           "        {\n" +
+           "            \"id\": \"" + tweet.id + "\",\n" +
+           "            \"postedAt\": \"" + tweet.postedAt.format() + "\",\n" +
+           "            \"taggedCastIds\": [" + tweet.taggedCastIds.join(",") + "]\n" +
+           "        }"
+         ).join(",\n") + "\n" + 
+   "    ],\n" + 
+   "    \"casts\": [ \n" +
+   db.casts.map((cast) =>
+           "        {\n" +
+           "            \"id\": " + cast.id + ",\n" +
+           "            \"name\": \"" + cast.name + "\",\n" +
+           "            \"introduceTweetId\": \"" + cast.introduceTweetId + "\",\n" +
+           "            \"color\": \"" + cast.color + "\",\n" +
+           "            \"type\": \"" + cast.type + "\"\n" +
+           "        }"
+   ).join(",\n") + "\n" + 
+   "    ]\n" +
+   "}";
+
+   return objectString;
+}
 
 export default function Home() {
 
@@ -27,42 +58,33 @@ export default function Home() {
       taggedCastIds: selectedCasts.map(cast=>cast.id)
     }
 
-    if(tweets.find(tweet=>tweet.id===newTweet.id) ===undefined){
-      // 重複がない場合のみ追加
-      setTweets([...tweets, newTweet]);
-    }
+    setTweets([
+      ...tweets.filter((tweet)=>tweet.id !== newTweet.id), // すでに存在している場合は一度取り除く
+      newTweet
+    ].sort((a,b)=>a.postedAt.isAfter(b.postedAt) ? 1 : -1));
 
     setTweetId("");
     setSelectedCasts([]);
     setTweetDateTime(dayjs());
   }
 
-  const objectString ="{\n" +
-                       "    \"tweets\": [ \n" +
-                        tweets.sort((a, b) => a.postedAt.isAfter(b.postedAt) ? 1 : -1)
-                              .map((tweet) => 
-                                "        {\n" +
-                                "            \"id\": \"" + tweet.id + "\",\n" +
-                                "            \"postedAt\": \"" + tweet.postedAt.format() + "\",\n" +
-                                "            \"taggedCastIds\": [" + tweet.taggedCastIds.join(",") + "]\n" +
-                                "        }"
-                              ).join(",\n") + "\n" + 
-                        "    ],\n" + 
-                        "    \"casts\": [ \n" +
-                        db.casts.map((cast) =>
-                                "        {\n" +
-                                "            \"id\": " + cast.id + ",\n" +
-                                "            \"name\": \"" + cast.name + "\",\n" +
-                                "            \"introduceTweetId\": \"" + cast.introduceTweetId + "\",\n" +
-                                "            \"color\": \"" + cast.color + "\"\n" +
-                                "        }"
-                        ).join(",\n") + "\n" + 
-                        "    ]\n" +
-                        "}";
+  const objectString = generateObjectSTring({
+    tweets:tweets,
+    casts:db.casts,
+  });
 
   const copyJson = () => {
     navigator.clipboard.writeText(objectString);
   }
+
+  useEffect(()=>{
+    // ツイートが既存だったらタグ付けされているキャストを読み込む
+    const existTweet = tweets.find((tweet)=>tweet.id === tweetId);
+    if(existTweet){
+      setSelectedCasts(db.casts.filter((cast)=>existTweet.taggedCastIds.includes(cast.id)));
+      setTweetDateTime(existTweet.postedAt);
+    }
+  },[tweetId]);
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
