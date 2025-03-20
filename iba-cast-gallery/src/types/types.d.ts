@@ -6,6 +6,7 @@ declare global {
         name:string;
         introduceTweetId:string;
         color:string;
+        type:CastType;
     };
 
     type CastMediaTweet = {
@@ -17,7 +18,9 @@ declare global {
     type Db = {
         tweets: CastMediaTweet[];
         casts: Cast[];
-    };    
+    };
+
+    type CastType = "REAL" | "IMAGINARY";    
 }
 
 export {Cast, CastMediaTweet, Db};
