@@ -11,7 +11,7 @@ import { TweetReplies } from './tweet-replies'
 import { QuotedTweet } from './quoted-tweet/index'
 import { enrichTweet } from '../utils'
 import { useMemo, useState } from 'react'
-import {Button, Stack} from '@mui/material'
+import {Button, Stack, Grid2} from '@mui/material'
 import CastChip from 'components/CastChip'
 
 type Props = {
@@ -36,12 +36,18 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
        <TweetInfo tweet={tweet} />
       {displayTweet && <TweetActions tweet={tweet} />}
       {displayTweet && <TweetReplies tweet={tweet} /> }
-      <Stack direction='row' spacing={1} alignItems={'center'}>
-        {taggedCasts.map((cast) => (
-          <CastChip key={cast.id} cast={cast} />
-        ))}
-        <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : 'ツイート全体を表示'}</Button>
-      </Stack>
+      <Grid2 container alignItems="center">
+        <Grid2 size='grow'>
+          <Stack direction='row' spacing={0.5} alignItems={'center'} useFlexGap sx={{width: '100%', flexWrap: 'wrap'}}>
+            {taggedCasts.map((cast) => (
+              <CastChip key={cast.id} cast={cast} />
+            ))}
+          </Stack>
+        </Grid2>
+        <Grid2>
+          <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : '詳細表示'}</Button>
+        </Grid2>
+      </Grid2>
     </TweetContainer>
   )
 }
