@@ -371,6 +371,167 @@
             "introduceTweetId": "1881990198072062114",
             "color": "#ff00ff",
             "type": "REAL"
+        },
+        {
+            "id": 11,
+            "name": "リシア",
+            "introduceTweetId": "1863523515242049540",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 12,
+            "name": "マイカ",
+            "introduceTweetId": "1863885898036949230",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 13,
+            "name": "サファイア",
+            "introduceTweetId": "1864248285940134212",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 14,
+            "name": "テルル",
+            "introduceTweetId": "1864610677970678102",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 15,
+            "name": "ミニアム",
+            "introduceTweetId": "1864957970074812418",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 16,
+            "name": "ビスマス",
+            "introduceTweetId":"1865320343021510917",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id":17,
+            "name": "ラリマー",
+            "introduceTweetId": "1865682737044324518",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 18,
+            "name": "シトリン",
+            "introduceTweetId": "1866045128546066870",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 19,
+            "name": "スピネル",
+            "introduceTweetId": "1866407506458628516",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 20,
+            "name": "モリオン",
+            "introduceTweetId": "1866769902364729735",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 21,
+            "name": "ルチル",
+            "introduceTweetId": "1867132291245391919",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 22,
+            "name": "マーキュリー",
+            "introduceTweetId": "1867494673235030407",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 23,
+            "name": "スフェーン",
+            "introduceTweetId": "1867857065991180791",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 23,
+            "name": "レビン",
+            "introduceTweetId": "1868219445488873908",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 25,
+            "name": "ユナカイト",
+            "introduceTweetId": "1868581846201540798",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 26,
+            "name": "ネコアイト",
+            "introduceTweetId": "1868944227335626921",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 27,
+            "name": "フローライト",
+            "introduceTweetId": "1889257637247869435",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 28,
+            "name": "クォーツ",
+            "introduceTweetId": "1889600335628419178",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 29,
+            "name": "ベリル",
+            "introduceTweetId": "1889962726941929531",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id":30,
+            "name":"タルク",
+            "introduceTweetId": "1890325126941380782",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 31,
+            "name": "オパール",
+            "introduceTweetId": "1890687498034053386",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 32,
+            "name": "ガーネット",
+            "introduceTweetId": "1891049886948216908",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
+        },
+        {
+            "id": 33,
+            "name": "ネフェリン",
+            "introduceTweetId": "1891412282145673705",
+            "color": "#ffffff",
+            "type": "IMAGINARY"
         }
     ]
 }
