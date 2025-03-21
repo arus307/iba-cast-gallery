@@ -30,6 +30,7 @@ const generateObjectSTring = (db:Db)=>{
            "        {\n" +
            "            \"id\": " + cast.id + ",\n" +
            "            \"name\": \"" + cast.name + "\",\n" +
+           "            \"enName\": \"" + cast.enName + "\",\n" +
            "            \"introduceTweetId\": \"" + cast.introduceTweetId + "\",\n" +
            "            \"color\": \"" + cast.color + "\",\n" +
            "            \"type\": \"" + cast.type + "\"\n" +
