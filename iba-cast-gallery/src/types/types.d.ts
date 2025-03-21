@@ -8,7 +8,7 @@ declare global {
         type:CastType;
     };
 
-    type CastType = "REAL" | "IMAGINARY";    
+    type CastType = "real" | "imaginary";    
 
     type CastMediaTweet = {
         id: string;
