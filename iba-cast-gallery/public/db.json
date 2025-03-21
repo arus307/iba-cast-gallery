@@ -475,6 +475,7 @@
         {
             "id": 1,
             "name": "メノウ",
+            "enName": "agate",
             "introduceTweetId": "1878744119239209193",
             "color": "#00ff00",
             "type": "REAL"
@@ -482,6 +483,7 @@
         {
             "id": 2,
             "name": "クジャク",
+            "enName": "malachite",
             "introduceTweetId": "1879091090134864220",
             "color": "#00ffff",
             "type": "REAL"
@@ -489,6 +491,7 @@
         {
             "id": 3,
             "name": "ルリ",
+            "enName": "lapis-lazuli",
             "introduceTweetId": "1879453474661777549",
             "color": "#0000ff",
             "type": "REAL"
@@ -496,6 +499,7 @@
         {
             "id": 4,
             "name": "スズ",
+            "enName": "tin",
             "introduceTweetId": "1879815861902647388",
             "color": "#ff0000",
             "type": "REAL"
@@ -503,6 +507,7 @@
         {
             "id": 5,
             "name": "シンジュ",
+            "enName": "pearl",
             "introduceTweetId": "1880193349136838830",
             "color": "#ffff00",
             "type": "REAL"
@@ -510,6 +515,7 @@
         {
             "id": 6,
             "name": "コハク",
+            "enName": "amber",
             "introduceTweetId": "1880540647691587684",
             "color": "#ff00ff",
             "type": "REAL"
@@ -517,6 +523,7 @@
         {
             "id": 7,
             "name": "ユウレン",
+            "enName": "zoisite",
             "introduceTweetId": "1880903030205517885",
             "color": "#ffff00",
             "type": "REAL"
@@ -524,6 +531,7 @@
         {
             "id": 8,
             "name": "ヒスイ",
+            "enName": "jade",
             "introduceTweetId": "1881265418603786573",
             "color": "#ff00ff",
             "type": "REAL"
@@ -531,6 +539,7 @@
         {
             "id": 9,
             "name": "ホタル",
+            "enName": "fluorite",
             "introduceTweetId": "1881627800299565408",
             "color": "#ff00ff",
             "type": "REAL"
@@ -538,6 +547,7 @@
         {
             "id": 10,
             "name": "ザクロ",
+            "enName": "garnet",
             "introduceTweetId": "1881990198072062114",
             "color": "#ff00ff",
             "type": "REAL"
@@ -545,6 +555,7 @@
         {
             "id": 11,
             "name": "リシア",
+            "enName": "spodumene",
             "introduceTweetId": "1863523515242049540",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -552,6 +563,7 @@
         {
             "id": 12,
             "name": "マイカ",
+            "enName": "mica",
             "introduceTweetId": "1863885898036949230",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -559,6 +571,7 @@
         {
             "id": 13,
             "name": "サファイア",
+            "enName": "sapphire",
             "introduceTweetId": "1864248285940134212",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -566,6 +579,7 @@
         {
             "id": 14,
             "name": "テルル",
+            "enName": "tellurite",
             "introduceTweetId": "1864610677970678102",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -573,6 +587,7 @@
         {
             "id": 15,
             "name": "ミニアム",
+            "enName": "minium",
             "introduceTweetId": "1864957970074812418",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -580,6 +595,7 @@
         {
             "id": 16,
             "name": "ビスマス",
+            "enName": "bismuth",
             "introduceTweetId": "1865320343021510917",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -587,6 +603,7 @@
         {
             "id": 17,
             "name": "ラリマー",
+            "enName": "larimar",
             "introduceTweetId": "1865682737044324518",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -594,6 +611,7 @@
         {
             "id": 18,
             "name": "シトリン",
+            "enName": "citrine",
             "introduceTweetId": "1866045128546066870",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -601,6 +619,7 @@
         {
             "id": 19,
             "name": "スピネル",
+            "enName": "spinel",
             "introduceTweetId": "1866407506458628516",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -608,6 +627,7 @@
         {
             "id": 20,
             "name": "モリオン",
+            "enName": "morion",
             "introduceTweetId": "1866769902364729735",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -615,6 +635,7 @@
         {
             "id": 21,
             "name": "ルチル",
+            "enName": "rutile",
             "introduceTweetId": "1867132291245391919",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -622,6 +643,7 @@
         {
             "id": 22,
             "name": "マーキュリー",
+            "enName": "mercury",
             "introduceTweetId": "1867494673235030407",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -629,6 +651,7 @@
         {
             "id": 23,
             "name": "スフェーン",
+            "enName": "sphene",
             "introduceTweetId": "1867857065991180791",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -636,6 +659,7 @@
         {
             "id": 24,
             "name": "レビン",
+            "enName": "levyne",
             "introduceTweetId": "1868219445488873908",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -643,6 +667,7 @@
         {
             "id": 25,
             "name": "ユナカイト",
+            "enName": "unakite",
             "introduceTweetId": "1868581846201540798",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -650,6 +675,7 @@
         {
             "id": 26,
             "name": "ネコアイト",
+            "enName": "nekoite",
             "introduceTweetId": "1868944227335626921",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -657,6 +683,7 @@
         {
             "id": 27,
             "name": "フローライト",
+            "enName": "fluorite",
             "introduceTweetId": "1889257637247869435",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -664,6 +691,7 @@
         {
             "id": 28,
             "name": "クォーツ",
+            "enName": "quartz",
             "introduceTweetId": "1889600335628419178",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -671,6 +699,7 @@
         {
             "id": 29,
             "name": "ベリル",
+            "enName": "beryl",
             "introduceTweetId": "1889962726941929531",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -678,6 +707,7 @@
         {
             "id": 30,
             "name": "タルク",
+            "enName": "talc",
             "introduceTweetId": "1890325126941380782",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -685,6 +715,7 @@
         {
             "id": 31,
             "name": "オパール",
+            "enName": "opal",
             "introduceTweetId": "1890687498034053386",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -692,6 +723,7 @@
         {
             "id": 32,
             "name": "ガーネット",
+            "enName": "garnet",
             "introduceTweetId": "1891049886948216908",
             "color": "#ffffff",
             "type": "IMAGINARY"
@@ -699,6 +731,7 @@
         {
             "id": 33,
             "name": "ネフェリン",
+            "enName": "nepheline",
             "introduceTweetId": "1891412282145673705",
             "color": "#ffffff",
             "type": "IMAGINARY"

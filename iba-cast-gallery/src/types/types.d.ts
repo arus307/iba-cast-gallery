@@ -4,6 +4,7 @@ declare global {
     type Cast = {
         id:number;
         name:string;
+        enName:string;
         introduceTweetId:string;
         color:string;
         type:CastType;
