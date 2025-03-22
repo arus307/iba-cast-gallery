@@ -3,7 +3,7 @@
 import Grid2 from "@mui/material/Grid2";
 import CastSelect from "components/CastSelect";
 import { useState } from "react";
-import Tweets from "components/Tweets";
+import Tweets from "components/MediaTweetList";
 
 export default function TweetFilter ({db}:{db:JoinedDb}) {
 

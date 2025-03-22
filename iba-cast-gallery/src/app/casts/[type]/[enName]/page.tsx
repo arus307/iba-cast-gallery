@@ -2,7 +2,7 @@
 import { notFound } from "next/navigation";
 import getDb from "getDb";
 import {Stack, Grid2 } from "@mui/material";
-import Tweets from "components/Tweets";
+import Tweets from "components/MediaTweetList";
 import { Tweet } from "components/tweet/swr";
 
 export async function generateStaticParams() {
