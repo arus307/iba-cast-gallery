@@ -1,5 +1,3 @@
-import { Dayjs } from "dayjs";
-
 declare global {
     type Cast = {
         id:number;
@@ -10,9 +8,11 @@ declare global {
         type:CastType;
     };
 
+    type CastType = "REAL" | "IMAGINARY";    
+
     type CastMediaTweet = {
         id: string;
-        postedAt: Dayjs;
+        postedAt: string;
         taggedCastIds: number[];
     };
 
@@ -21,7 +21,14 @@ declare global {
         casts: Cast[];
     };
 
-    type CastType = "REAL" | "IMAGINARY";    
+    type JoinedCastMediaTweet = Pick<CastMediaTweet, "id" | "postedAt"> & {
+        taggedCasts: Cast[];
+    };
+
+    type JoinedDb = {
+        tweets: JoinedCastMediaTweet[];
+        casts: Cast[];
+    }
 }
 
 export {Cast, CastMediaTweet, Db};

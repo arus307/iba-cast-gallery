@@ -7,8 +7,6 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { DataProvider } from "context/DataContext";
-import getDbJsonString from "getDbJsonString";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +30,6 @@ const roboto = Roboto({
   variable: '--font-roboto',
 });
 
-const jsonString = await getDbJsonString();
 
 export default function RootLayout({
   children,
@@ -44,7 +41,6 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <DataProvider jsonString={jsonString}>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline>
@@ -52,7 +48,6 @@ export default function RootLayout({
               </CssBaseline>
             </ThemeProvider>
           </AppRouterCacheProvider>
-        </DataProvider>
       </body>
       <GoogleAnalytics gaId="G-5LSG13J5E2" />
     </html>

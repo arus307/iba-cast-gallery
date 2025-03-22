@@ -1,14 +1,9 @@
 import React from 'react';
 import {Tweet} from 'components/tweet/swr';
 
-interface TweetCardProps {
-    tweet: CastMediaTweet;
-    taggedCasts: Cast[];
-}
-
-const TweetCard: React.FC<TweetCardProps> = ({ tweet, taggedCasts }) => {
+const TweetCard = ( {tweet}:{tweet:JoinedCastMediaTweet}) => {
     return (
-        <Tweet id={tweet.id} taggedCasts={taggedCasts}/>
+        <Tweet id={tweet.id} taggedCasts={tweet.taggedCasts}/>
     );
 };
 
