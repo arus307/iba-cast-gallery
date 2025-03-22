@@ -16,11 +16,11 @@ import {useData} from "../context/DataContext";
 const generateObjectSTring = (db:Db)=>{
   const objectString ="{\n" +
   "    \"tweets\": [ \n" +
-   db.tweets.sort((a, b) => a.postedAt.isAfter(b.postedAt) ? 1 : -1)
+   db.tweets.sort((a, b) => dayjs(a.postedAt).isAfter(dayjs(b.postedAt)) ? 1 : -1)
          .map((tweet) => 
            "        {\n" +
            "            \"id\": \"" + tweet.id + "\",\n" +
-           "            \"postedAt\": \"" + tweet.postedAt.format() + "\",\n" +
+           "            \"postedAt\": \"" + tweet.postedAt + "\",\n" +
            "            \"taggedCastIds\": [" + tweet.taggedCastIds.join(",") + "]\n" +
            "        }"
          ).join(",\n") + "\n" + 
@@ -30,6 +30,7 @@ const generateObjectSTring = (db:Db)=>{
            "        {\n" +
            "            \"id\": " + cast.id + ",\n" +
            "            \"name\": \"" + cast.name + "\",\n" +
+           "            \"enName\": \"" + cast.enName + "\",\n" +
            "            \"introduceTweetId\": \"" + cast.introduceTweetId + "\",\n" +
            "            \"color\": \"" + cast.color + "\",\n" +
            "            \"type\": \"" + cast.type + "\"\n" +
@@ -54,14 +55,16 @@ export default function Home() {
     if(!tweetId || !selectedCasts || !tweetDateTime) return;
     const newTweet = {
       id: tweetId,
-      postedAt: tweetDateTime,
+      postedAt: tweetDateTime.format(),
       taggedCastIds: selectedCasts.map(cast=>cast.id)
     }
+
+
 
     setTweets([
       ...tweets.filter((tweet)=>tweet.id !== newTweet.id), // すでに存在している場合は一度取り除く
       newTweet
-    ].sort((a,b)=>a.postedAt.isAfter(b.postedAt) ? 1 : -1));
+    ].sort((a,b)=>dayjs(a.postedAt).isAfter(dayjs(b.postedAt)) ? 1 : -1));
 
     setTweetId("");
     setSelectedCasts([]);
@@ -82,7 +85,7 @@ export default function Home() {
     const existTweet = tweets.find((tweet)=>tweet.id === tweetId);
     if(existTweet){
       setSelectedCasts(db.casts.filter((cast)=>existTweet.taggedCastIds.includes(cast.id)));
-      setTweetDateTime(existTweet.postedAt);
+      setTweetDateTime(dayjs(existTweet.postedAt));
     }
   },[tweetId]);
 

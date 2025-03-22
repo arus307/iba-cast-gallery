@@ -8,12 +8,7 @@ const DataContext = createContext<Db | undefined>(undefined);
   
 export function DataProvider({ jsonString, children }: { jsonString:string, children: ReactNode }) {
 
-  const db = JSON.parse(jsonString, (key,value)=>{
-      if(key==='postedAt' && typeof value==='string'){
-          return dayjs(value);
-      }
-      return value;
-  }) as Db;
+  const db = JSON.parse(jsonString) as Db;
 
   return (
     <DataContext.Provider value={db}>
