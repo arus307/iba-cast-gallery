@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import getDb from "getDb";
 import {Stack, Grid2 } from "@mui/material";
 import Tweets from "components/MediaTweetList";
-import { Tweet } from "components/tweet/swr";
+import IntroduceTweet from "components/IntroduceTweet";
 
 export async function generateStaticParams() {
     const db: JoinedDb = await getDb();
@@ -29,7 +29,7 @@ const CastPage = async ({ params }: { params: Promise<{type:CastType, enName:str
     return (
         <Stack direction="column" className="w-full" spacing={4}>
             <Grid2 size={12} container justifyContent="center" alignItems="center">
-                <Tweet id={cast.introduceTweetId} taggedCasts={[cast]}/>
+                <IntroduceTweet cast={cast}/>
             </Grid2>
             <Grid2 size={12}>
                 <Tweets joinedTweets={tweets}/>                
