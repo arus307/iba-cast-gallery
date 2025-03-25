@@ -7,6 +7,8 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
+import MenuDrawerWithButton from "app/client-components/MenuDrawerWithButton";
+import getDb from "getDb";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +33,16 @@ const roboto = Roboto({
 });
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const db = await getDb();
+
+  // TODO メニューボタンのレイアウト調整(layouts)
+
   return (
     <html lang="ja">
       <body
@@ -46,6 +53,7 @@ export default function RootLayout({
               <CssBaseline>
                 <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
                   <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+                    <MenuDrawerWithButton casts={db.casts}/>
                     {children}
                   </main>
                   <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
