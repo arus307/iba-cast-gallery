@@ -765,6 +765,30 @@
             "introduceTweetId": "1891412282145673705",
             "color": "#ffffff",
             "type": "IMAGINARY"
+        },
+        {
+            "id": 34,
+            "name": "サンゴ",
+            "enName": "coral",
+            "introduceTweetId": "",
+            "color": "#ffffff",
+            "type": "REAL"
+        },
+        {
+            "id": 35,
+            "name": "ラン",
+            "enName": "vivianite",
+            "introduceTweetId": "",
+            "color": "#ffffff",
+            "type": "REAL"
+        },
+        {
+            "id": 36,
+            "name": "ソウ",
+            "enName": "bismuthinite",
+            "introduceTweetId": "",
+            "color": "#ffffff",
+            "type": "REAL"
         }
     ]
 }
