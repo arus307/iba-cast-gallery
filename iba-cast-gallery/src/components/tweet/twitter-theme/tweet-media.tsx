@@ -12,6 +12,7 @@ import { MediaImg } from './media-img'
 import s from './tweet-media.module.css'
 import { PhotoProvider,PhotoView } from 'react-photo-view'
 import 'react-photo-view/dist/react-photo-view.css';
+import { Chip, Tooltip } from '@mui/material'
 
 const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
   let paddingBottom = 56.25 // default of 16x9
@@ -67,6 +68,41 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
                       draggable
                     />
                   </PhotoView>
+                  {
+                    media.ext_alt_text && (
+                      <Tooltip
+                        title={media.ext_alt_text}
+                        placement="top"
+                        componentsProps={{
+                          tooltip: {
+                            sx: {
+                              bgcolor: 'background.paper',
+                              color: 'text.primary',
+                              fontSize: '0.8rem',
+                            },
+                          },
+                        }}
+                      >
+                        <Chip
+                          label="ALT"
+                          size="small"
+                          sx={{
+                            height:'20px',
+                            borderRadius: 1,
+                            bgcolor: 'background.paper',
+                            opacity:0.8,
+                            zIndex:1,
+                            position: 'absolute',
+                            bottom: 0,
+                            right: 0,
+                            m:1,
+                            '& .MuiChip-label': {
+                              px: 0.5,
+                            },
+                          }}/>
+                      </Tooltip> 
+                    )
+                  }
                 </div>
               ) : (
                 <div key={media.media_url_https} className={s.mediaContainer}>
