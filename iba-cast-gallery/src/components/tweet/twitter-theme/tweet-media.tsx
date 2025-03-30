@@ -10,9 +10,9 @@ import type { TwitterComponents } from './types'
 import { TweetMediaVideo } from './tweet-media-video'
 import { MediaImg } from './media-img'
 import s from './tweet-media.module.css'
-import { PhotoProvider,PhotoView } from 'react-photo-view'
+import { PhotoProvider, PhotoView } from 'react-photo-view'
 import 'react-photo-view/dist/react-photo-view.css';
-import { Chip, Tooltip } from '@mui/material'
+import { Grid2, Chip, Tooltip, Typography, Paper } from '@mui/material'
 
 const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
   let paddingBottom = 56.25 // default of 16x9
@@ -51,7 +51,18 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
           length > 4 && s.grid2x2
         )}
       >
-        <PhotoProvider>
+        <PhotoProvider overlayRender={({ images, index }) => {
+          const media = tweet.mediaDetails?.at(index);
+          if(!media || media.type !== 'photo' || !media.ext_alt_text) return null;
+          return (
+          <Paper sx={{position:'absolute', bottom:0, p:3, zIndex:10, bgcolor: `rgba(0, 0, 0, 0.6)`, width:'100%'}}>
+            {
+              media.ext_alt_text && (
+                <Typography>{media.ext_alt_text}</Typography>
+              )
+            }
+          </Paper>
+        )}}>
           {tweet.mediaDetails?.map((media) => (
             <Fragment key={media.media_url_https}>
               {media.type === 'photo' ? (
