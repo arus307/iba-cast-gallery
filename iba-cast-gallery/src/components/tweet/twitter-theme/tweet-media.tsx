@@ -12,7 +12,7 @@ import { MediaImg } from './media-img'
 import s from './tweet-media.module.css'
 import { PhotoProvider, PhotoView } from 'react-photo-view'
 import 'react-photo-view/dist/react-photo-view.css';
-import { Grid2, Chip, Tooltip, Typography, Paper } from '@mui/material'
+import { Chip, Tooltip, Typography, Paper } from '@mui/material'
 
 const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
   let paddingBottom = 56.25 // default of 16x9
@@ -51,7 +51,7 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
           length > 4 && s.grid2x2
         )}
       >
-        <PhotoProvider overlayRender={({ images, index }) => {
+        <PhotoProvider overlayRender={({ index }) => {
           const media = tweet.mediaDetails?.at(index);
           if(!media || media.type !== 'photo' || !media.ext_alt_text) return null;
           return (
