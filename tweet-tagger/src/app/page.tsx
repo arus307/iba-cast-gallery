@@ -81,6 +81,12 @@ export default function Home() {
   }
 
   useEffect(()=>{
+    // URLからツイートIDを取得
+    const match = tweetId.match(/https:\/\/x\.com\/[^/]+\/status\/(\d+)\?/);
+    if (match) {
+      setTweetId(match[1]);
+    }
+
     // ツイートが既存だったらタグ付けされているキャストを読み込む
     const existTweet = tweets.find((tweet)=>tweet.id === tweetId);
     if(existTweet){
