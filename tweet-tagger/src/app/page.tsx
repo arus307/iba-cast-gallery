@@ -59,8 +59,6 @@ export default function Home() {
       taggedCastIds: selectedCasts.map(cast=>cast.id)
     }
 
-
-
     setTweets([
       ...tweets.filter((tweet)=>tweet.id !== newTweet.id), // すでに存在している場合は一度取り除く
       newTweet
@@ -82,9 +80,10 @@ export default function Home() {
 
   useEffect(()=>{
     // URLからツイートIDを取得
-    const match = tweetId.match(/https:\/\/x\.com\/[^/]+\/status\/(\d+)\?/);
+    const match = tweetId.match(/https:\/\/x\.com\/[^/]+\/status\/(\d+)/);
     if (match) {
       setTweetId(match[1]);
+      return;
     }
 
     // ツイートが既存だったらタグ付けされているキャストを読み込む
@@ -92,6 +91,9 @@ export default function Home() {
     if(existTweet){
       setSelectedCasts(db.casts.filter((cast)=>existTweet.taggedCastIds.includes(cast.id)));
       setTweetDateTime(dayjs(existTweet.postedAt));
+    }else{
+      setSelectedCasts([]);
+      setTweetDateTime(dayjs());
     }
   },[tweetId]);
 
