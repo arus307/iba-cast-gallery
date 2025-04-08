@@ -1,0 +1,15 @@
+{
+  "name": "IbaCastGallery",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/arus307/IbaCastGallery",
+  "author": "arus <57102101+arus307@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "turbo": "^2.5.0"
+  },
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "iba-cast-gallery"
+  ]
+}
