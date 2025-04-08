@@ -1,8 +1,8 @@
 {
-  "name": "IbaCastGallery",
+  "name": "iba-cast-gallery-monorepo",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/arus307/IbaCastGallery",
+  "repository": "https://github.com/arus307/iba-cast-gallery",
   "author": "arus <57102101+arus307@users.noreply.github.com>",
   "license": "MIT",
   "devDependencies": {
@@ -10,6 +10,8 @@
   },
   "packageManager": "yarn@1.22.22",
   "workspaces": [
-    "app/*"
-  ]
+    "app/*",
+    "packages/*"
+  ],
+  "private": true
 }
