@@ -10,6 +10,6 @@
   },
   "packageManager": "yarn@1.22.22",
   "workspaces": [
-    "iba-cast-gallery"
+    "app/*"
   ]
 }
