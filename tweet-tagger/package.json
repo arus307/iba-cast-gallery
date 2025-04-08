@@ -16,7 +16,7 @@
     "@mui/material-nextjs": "^6.4.3",
     "@mui/x-date-pickers": "^7.27.3",
     "dayjs": "^1.11.13",
-    "next": "15.2.2",
+    "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-tweet": "^3.2.2"
@@ -28,7 +28,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.2.2",
+    "eslint-config-next": "15.2.3",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
