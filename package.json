@@ -6,13 +6,13 @@
   "author": "arus <57102101+arus307@users.noreply.github.com>",
   "license": "MIT",
   "devDependencies": {
-    "turbo": "^2.5.0",
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "eslint": "^9",
+    "turbo": "^2.5.0",
     "typescript": "^5"
   },
-  "packageManager": "yarn@1.22.22",
+  "packageManager": "yarn@4.9.0",
   "workspaces": [
     "app/*",
     "packages/*"
