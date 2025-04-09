@@ -1,5 +1,5 @@
 {
-  "name": "dao",
+  "name": "@iba-cast-gallery/dao",
   "version": "0.1.0",
   "private": true,
   "main": "dist/index.js",
