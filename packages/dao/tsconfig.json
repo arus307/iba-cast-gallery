@@ -1,0 +1,19 @@
+// packages/dao/tsconfig.json
+{
+    "extends": "../../tsconfig.base.json", // ルートの基本設定を継承 (推奨)
+    "compilerOptions": {
+      "outDir": "dist", // ビルド成果物の出力先
+      "rootDir": "src", // ソースコードのルートディレクトリ
+      "declaration": true, // 型定義ファイル (.d.ts) を生成する
+      "emitDecoratorMetadata": true, // TypeORMのデコレータに必要
+      "experimentalDecorators": true, // TypeORMのデコレータに必要
+      "sourceMap": true, // デバッグ用にソースマップを生成
+      "strictPropertyInitialization": false, // TypeORMのEntityで初期化しないプロパティのエラーを抑制（必要に応じて）
+      "baseUrl": ".", // モジュール解決の基準パス (任意)
+      "paths": { // モジュール解決のエイリアス設定 (任意)
+        "@/*": ["src/*"]
+      }
+    },
+    "include": ["src/**/*"], // コンパイル対象
+    "exclude": ["node_modules", "dist"] // コンパイル除外対象
+  }
