@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: db
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:-postgres} # デフォルト 'postgres'
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password} # デフォルト 'password'
+      POSTGRES_DB: ${DB_DATABASE:-ibacastgallery}   # デフォルト 'ibacastgallery'
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# ボリューム定義
+volumes:
+  postgres_data: # 上記 services.postgres.volumes で指定した名前付きボリューム
