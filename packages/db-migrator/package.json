@@ -1,0 +1,30 @@
+{
+  "name": "@iba-cast-gallery/db-migrator",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "typeorm": "typeorm-ts-node-commonjs -d dist/data-source.js",
+    "migrate:run": "yarn typeorm migration:run",
+    "migrate:revert": "yarn typeorm migration:revert",
+    "migrate:show": "yarn typeorm migration:show",
+    "seed:run": "ts-node src/seeds/run.ts"
+  },
+  "dependencies": {
+    "@iba-cast-gallery/dao": "workspace:*",
+    "dotenv": "^16.4.5",
+    "pg": "^8.14.1",
+    "reflect-metadata": "^0.2.2",
+    "typeorm": "^0.3.22"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "rimraf": "^5.0.7",
+    "ts-node": "^10.9.2",
+    "typeorm-ts-node-commonjs": "^1.0.4",
+    "typescript": "^5.4.5"
+  }
+}
