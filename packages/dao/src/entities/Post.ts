@@ -1,19 +1,30 @@
-// ポストのエンティティ
-
-import { Column, Entity, ManyToMany,JoinTable } from "typeorm";
+import { Column, Entity, OneToMany,JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
 import { Cast } from "./Cast";
 
 
 @Entity('posts')
 export class Post {
 
-    @Column({length:30, unique:true})
+    @PrimaryColumn({length:30})
     id: string;
 
-    @Column("posted_at")
+    @Column({
+        name: "posted_at",
+        type: "timestamp"
+    })
     postedAt: Date;
 
-    @ManyToMany(() => Cast)
-    @JoinTable({name:"post_cast_tags"})
+    @ManyToMany(() => Cast, (cast)=>cast.taggedPosts, { onDelete: "CASCADE" })
+    @JoinTable({
+        name: "post_cast_tags",
+        joinColumn: {
+            name: "post_id",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "cast_id",
+            referencedColumnName: "id"
+        }
+    })
     taggedCasts: Cast[];
 }

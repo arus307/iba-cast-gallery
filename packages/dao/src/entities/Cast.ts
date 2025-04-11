@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Post } from "./Post";
 
 export enum CastType {
     REAL = 1,
@@ -46,4 +47,7 @@ export class Cast {
         default:true
     })
     isActive:boolean;
+
+    @ManyToMany(() => Post, (post) => post.taggedCasts, { onDelete: "CASCADE" })
+    taggedPosts: Post[];
 }
