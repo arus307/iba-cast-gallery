@@ -15,7 +15,7 @@ const options: DataSourceOptions = {
   password: process.env.DEV_DB_PASSWORD || 'password',
   database: process.env.DEV_DB_DATABASE || 'ibacastgallery',
   entities: [Post, Cast],
-  migrations: [path.join(__dirname, 'migrations/**/*.ts')],
+  migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
   logging: ['query', 'error'],
 };
