@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: ${DB_USERNAME:-postgres} # デフォルト 'postgres'
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password} # デフォルト 'password'
-      POSTGRES_DB: ${DB_DATABASE:-ibacastgallery}   # デフォルト 'ibacastgallery'
+      POSTGRES_DB: ${DB_DATABASE:-iba_cast_gallery}   # デフォルト 'iba_cast_gallery'
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:

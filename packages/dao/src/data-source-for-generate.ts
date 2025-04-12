@@ -13,7 +13,7 @@ const options: DataSourceOptions = {
   port: Number(process.env.DEV_DB_PORT) || 5432,
   username: process.env.DEV_DB_USERNAME || 'postgres',
   password: process.env.DEV_DB_PASSWORD || 'password',
-  database: process.env.DEV_DB_DATABASE || 'ibacastgallery',
+  database: process.env.DEV_DB_DATABASE || 'iba_cast_gallery',
   entities: [Post, Cast],
   migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
