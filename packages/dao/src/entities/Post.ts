@@ -10,9 +10,9 @@ export class Post {
 
     @Column({
         name: "posted_at",
-        type: "timestamp"
+        type: "timestamp with time zone"
     })
-    postedAt: Date;
+    postedAt: string;
 
     @ManyToMany(() => Cast, (cast)=>cast.taggedPosts, { onDelete: "CASCADE" })
     @JoinTable({
