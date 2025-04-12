@@ -2,4 +2,4 @@
 
     publish = "app/iba-cast-gallery/.next"
 
-    command = "yarn turbo migrate && yarn turbo build"
+    command = "yarn run migrate && yarn turbo build"
