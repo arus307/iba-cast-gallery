@@ -4,7 +4,9 @@ import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+if(process.env.NODE_ENV !== 'production') {
+  dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+}
 
 export const AppDataSource = new DataSource({
   ...(commonDataSourceOptions as Partial<DataSourceOptions>), // 型を明示的に指定

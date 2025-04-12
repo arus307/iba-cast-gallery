@@ -3,7 +3,9 @@ import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 
-dotenv.config(); // .env ファイルから環境変数を読み込む
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 export const appDataSource = new DataSource({
   ...commonDataSourceOptions,
