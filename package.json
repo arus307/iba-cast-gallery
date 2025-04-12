@@ -1,0 +1,21 @@
+{
+  "name": "iba-cast-gallery-monorepo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/arus307/iba-cast-gallery",
+  "author": "arus <57102101+arus307@users.noreply.github.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "eslint": "^9",
+    "turbo": "^2.5.0",
+    "typescript": "^5"
+  },
+  "packageManager": "yarn@4.9.0",
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
+  "private": true
+}
