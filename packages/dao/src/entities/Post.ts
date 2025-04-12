@@ -14,6 +14,13 @@ export class Post {
     })
     postedAt: string;
 
+    @Column({
+        name: "is_deleted",
+        type: "boolean",
+        default: false
+    })
+    isDeleted: boolean;
+
     @ManyToMany(() => Cast, (cast)=>cast.taggedPosts, { onDelete: "CASCADE" })
     @JoinTable({
         name: "post_cast_tags",
