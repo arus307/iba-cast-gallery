@@ -16,6 +16,8 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
     Cast,
     Post,
   ],
-  migrations: [],
+  migrations: [
+    'src/migrations/**/*.ts'
+  ],
   subscribers: [],
 };
