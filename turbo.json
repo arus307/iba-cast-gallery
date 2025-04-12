@@ -11,6 +11,19 @@
         "dev": {
             "persistent": true,
             "cache": false
+        },
+        "clean":{
+          "dependsOn": ["^clean"]
+        },
+
+        "@iba-cast-gallery/dao#build": {
+            "dependsOn": ["clean"]
+        },
+        "@iba-cast-gallery/db-migaroter#build":{
+            "dependsOn": ["clean", "dao#build"]
+        },
+        "@iba-cast-gallery/db-migrator#migrate:run":{
+            "dependsOn": ["build"]
         }
     }
 }

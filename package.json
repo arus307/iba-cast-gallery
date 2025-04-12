@@ -4,7 +4,9 @@
   "main": "index.js",
   "repository": "https://github.com/arus307/iba-cast-gallery",
   "author": "arus <57102101+arus307@users.noreply.github.com>",
-  "license": "MIT",
+  "scripts":{
+    "migrate":"yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
