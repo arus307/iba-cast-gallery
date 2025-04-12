@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
 import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 
 dotenv.config(); // .env ファイルから環境変数を読み込む
 
@@ -12,9 +13,9 @@ export const appDataSource = new DataSource({
   port: Number(process.env.DB_PORT) || 5432,
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'password',
-  database: process.env.DB_DATABASE || 'ibacastgallery',
+  database: process.env.DB_DATABASE || 'iba_cast_gallery',
   logging: process.env.NODE_ENV === 'development',
-});
+} as PostgresConnectionOptions);
 
 export const initializeDatabase = async () => {
   try {
