@@ -16,8 +16,7 @@ export class Post {
 
     @Column({
         name: "is_deleted",
-        type: "boolean",
-        default: false
+        type: "boolean"
     })
     isDeleted: boolean;
 
