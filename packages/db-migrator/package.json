@@ -7,11 +7,9 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist tsconfig.tsbuildinfo",
-    "typeorm": "ts-node -d data-source.ts",
-    "migrate:run": "yarn typeorm migration:run",
-    "migrate:revert": "yarn typeorm migration:revert",
-    "migrate:show": "yarn typeorm migration:show",
-    "seed:run": "ts-node src/seeds/run.ts"
+    "migrate:run": "yarn typeorm migration:run -d dist/data-source.js",
+    "migrate:revert": "yarn typeorm migration:revert -d dist/data-source.js",
+    "migrate:show": "yarn typeorm migration:show -d dist/data-source.js"
   },
   "dependencies": {
     "@iba-cast-gallery/dao": "workspace:*",
