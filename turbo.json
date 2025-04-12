@@ -25,5 +25,14 @@
         "@iba-cast-gallery/db-migrator#migrate:run":{
             "dependsOn": ["build"]
         }
-    }
+    },
+    "globalEnv": [
+        "DB_HOST",
+        "DB_PORT",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "DB_DATABASE",
+        "DB_MIGRATION_USER_USERNAME",
+        "DB_MIGRATION_USER_PASSWORD"
+    ]
 }
