@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { Cast } from './entities/Cast';
-import { Post } from './entities/Post';
 import path from 'path';
+
 
 /**
  * 共通のDataSource設定オプション。
@@ -14,8 +13,7 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
   synchronize: false,
   logging: false,
   entities: [
-    Cast,
-    Post,
+    path.join(__dirname, 'entities/**/*.js'),
   ],
   migrations: [
     path.join(__dirname, 'migrations/**/*.js'),
