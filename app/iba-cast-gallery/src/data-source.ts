@@ -3,6 +3,7 @@ import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import * as path from 'path';
+import 'reflect-metadata';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../../../.env.development') });
@@ -10,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export const appDataSource = new DataSource({
   ...commonDataSourceOptions,
-
+  
   type:'postgres',
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
