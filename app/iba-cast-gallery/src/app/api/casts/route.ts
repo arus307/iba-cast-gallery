@@ -5,7 +5,7 @@ import { Cast } from "@iba-cast-gallery/dao";
 /**
  * アクティブなキャスト情報を全件返却するAPI
  */
-export async function GET(request: Request) {
+export async function GET() {
     await initializeDatabase();
 
     const castRepository:Repository<Cast> = appDataSource.getRepository("Cast");

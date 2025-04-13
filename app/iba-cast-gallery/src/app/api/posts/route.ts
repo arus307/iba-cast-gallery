@@ -5,7 +5,7 @@ import { Post } from "@iba-cast-gallery/dao";
 /**
  * 有効なポスト情報を全件返却するAPI
  */
-export async function GET(request: Request) {
+export async function GET() {
     await initializeDatabase();
 
     const postRepository:Repository<Post> = appDataSource.getRepository("Post");
