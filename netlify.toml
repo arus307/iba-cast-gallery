@@ -1,6 +1,3 @@
 [build]
   publish = "app/iba-cast-gallery/.next"
   command = "yarn run migrate && yarn turbo build"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
