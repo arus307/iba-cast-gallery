@@ -411,7 +411,7 @@ const basePosts : {
     {
         id: "1896395150571753708",
         postedAt: "2025-03-03T12:00:00+09:00",
-        taggedCastIds: [7,9]
+        taggedCastIds: [7,8]
     },
     {
         id: "1896515926029467682",
