@@ -3,7 +3,10 @@
     "tasks": {
         "build": {
             "dependsOn": ["^build"],
-            "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+            "outputs": [
+                ".next/**",
+                "!.next/cache/**"
+            ]
         },
         "lint": {
             "dependsOn": ["^lint"]
@@ -17,10 +20,12 @@
         },
 
         "@iba-cast-gallery/dao#build": {
-            "dependsOn": ["clean"]
+            "dependsOn": ["clean"],
+            "outputs": ["dist/**"]
         },
         "@iba-cast-gallery/db-migaroter#build":{
-            "dependsOn": ["clean", "dao#build"]
+            "dependsOn": ["clean", "dao#build"],
+            "outputs": ["dist/**"]
         },
         "@iba-cast-gallery/db-migrator#migrate:run":{
             "dependsOn": ["build"]
