@@ -1,9 +1,9 @@
+import "reflect-metadata";
 import { DataSource } from 'typeorm';
 import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import * as path from 'path';
-import 'reflect-metadata';
 
 if (process.env.NODE_ENV !== 'production') {
   dotenv.config({ path: path.resolve(__dirname, '../../../.env.development') });
