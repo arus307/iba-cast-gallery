@@ -16,13 +16,16 @@
     "@mui/material": "^6.4.7",
     "@mui/material-nextjs": "^6.4.3",
     "@next/third-parties": "^15.2.2",
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.1",
     "dayjs": "^1.11.13",
     "next": "15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-photo-view": "^1.2.7",
     "react-tweet": "^3.2.2",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "stream-browserify": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
