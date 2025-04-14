@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { Cast, commonDataSourceOptions, Post } from '@iba-cast-gallery/dao';
 import * as dotenv from 'dotenv';
@@ -12,9 +12,7 @@ if (process.env.NODE_ENV !== 'production') {
 export const appDataSource = new DataSource({
   ...commonDataSourceOptions,
 
-  entities:[
-    Cast,Post
-  ],
+  entities:[Cast,Post],
   
   type:'postgres',
   host: process.env.DB_HOST,
