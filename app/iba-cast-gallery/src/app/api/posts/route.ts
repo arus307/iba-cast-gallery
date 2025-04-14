@@ -9,7 +9,7 @@ import { Post } from "@iba-cast-gallery/dao";
 export async function GET() {
     await initializeDatabase();
 
-    const postRepository:Repository<Post> = appDataSource.getRepository("Post");
+    const postRepository:Repository<Post> = appDataSource.getRepository(Post);
     const posts = await postRepository.find({
         where:{
             isDeleted: false,
