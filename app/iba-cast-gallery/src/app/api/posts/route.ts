@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { initializeDatabase,appDataSource } from "data-source";
 import { Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
