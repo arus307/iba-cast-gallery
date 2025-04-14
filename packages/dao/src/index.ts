@@ -3,7 +3,7 @@ export { commonDataSourceOptions } from './data-source';
 export type { DataSourceOptions } from 'typeorm'; // 必要ならTypeORMの型も再エクスポート
 
 // 2. Entity をエクスポート
-export { Cast } from './entities/Cast';
+export { Cast, CastType } from './entities/Cast';
 export { Post } from './entities/Post';
 
 // 3. Custom Repository や DAO をエクスポート (使う場合)
