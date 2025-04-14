@@ -8,7 +8,7 @@ import { Cast } from "@iba-cast-gallery/dao";
 export async function GET() {
     await initializeDatabase();
 
-    const castRepository:Repository<Cast> = appDataSource.getRepository("Cast");
+    const castRepository:Repository<Cast> = appDataSource.getRepository(Cast);
     const casts = await castRepository.findBy({
         isActive: true,
     });
