@@ -13,10 +13,10 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
   synchronize: false,
   logging: false,
   entities: [
-    path.join(__dirname, 'entities/**/*.js'),
+    path.join(__dirname, 'entities/**/*.{js,ts}'),
   ],
   migrations: [
-    path.join(__dirname, 'migrations/**/*.js'),
+    path.join(__dirname, 'migrations/**/*.{js,ts}'),
   ],
   subscribers: [],
 };
