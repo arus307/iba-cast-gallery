@@ -11,11 +11,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
@@ -27,9 +22,9 @@
     "experimentalDecorators": true, // TypeORMのデコレータに必要
     "sourceMap": true, // デバッグ用にソースマップを生成
     "strictPropertyInitialization": false, // TypeORMのEntityで初期化しないプロパティのエラーを抑制（必要に応じて）
-
-
   },
+  "include": ["src/**/*"], // コンパイル対象
+  "exclude": ["node_modules", "dist"] // コンパイル除外対象
 
   // "extends": "../../tsconfig.base.json", // ルートの基本設定を継承 (推奨)
   // "compilerOptions": {
@@ -45,6 +40,4 @@
   //     "@/*": ["src/*"]
   //   }
   // },
-  "include": ["src/**/*"], // コンパイル対象
-  "exclude": ["node_modules", "dist"] // コンパイル除外対象
 }
