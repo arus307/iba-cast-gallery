@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-import { Cast, CastType } from "../entities/Cast";
+import { Cast } from "../entities/Cast";
+import { CastType } from "@iba-cast-gallery/types";
 
 /**
  * キャストの初期データを挿入するマイグレーション(4/12まで)
