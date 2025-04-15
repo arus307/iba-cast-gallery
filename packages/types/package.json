@@ -1,0 +1,18 @@
+{
+  "name": "@iba-cast-gallery/types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist tsconfig.tsbuildinfo"
+  },
+  "keywords": [],
+  "dependencies": {
+    "@iba-cast-gallery/dao": "workspaces:*"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.7",
+    "typescript": "^5.2.2"
+  }
+}
