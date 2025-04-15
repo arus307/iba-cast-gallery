@@ -5,7 +5,8 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import * as path from 'path';
 
 if (process.env.NODE_ENV !== 'production') {
-  dotenv.config({ path: path.resolve(__dirname, '../../../.env.development') });
+  const pathToEnv = path.resolve(__dirname, '../../../../../../../.env.development')
+  dotenv.config({ path: pathToEnv });
 }
 
 export const appDataSource = new DataSource({
