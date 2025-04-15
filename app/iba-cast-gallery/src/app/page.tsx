@@ -23,18 +23,14 @@ async function getData(): Promise<data>{
   const castsApiUrl = `${baseUrl}/api/casts`;
 
   console.log("postsApiUrl", postsApiUrl);
-  console.log("castsApiUrl", castsApiUrl);
-
+  console.log("headers", headers);
+  
   try{
     const postsResponse = await fetch(postsApiUrl, { headers });
     const posts:PostDto[] = await postsResponse.json();
 
-    console.log("postsResponse", postsResponse);
-
     const castsResponse = await fetch(castsApiUrl, { headers });
     const casts:CastDto[] = await castsResponse.json();
-
-    console.log("castsResponse", castsResponse);
 
     return {
       casts: casts,
