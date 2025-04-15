@@ -1,10 +1,11 @@
 import React from 'react';
 import {Autocomplete, TextField} from '@mui/material';
+import { CastDto } from '@iba-cast-gallery/types';
 
 type props = {
-    casts: Cast[];
-    selectedCast: Cast | null;
-    setSelectedCast: (cast: Cast | null) => void;
+    casts: CastDto[];
+    selectedCast: CastDto | null;
+    setSelectedCast: (cast: CastDto | null) => void;
 }
 
 const CastSelect: React.FC<props> = ({casts, selectedCast, setSelectedCast}) => {
