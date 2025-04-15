@@ -51,6 +51,9 @@ async function getData(): Promise<data>{
 
 export default async function Home () {
 
+  const baseUrl = getBaseUrl();
+  console.log(baseUrl);
+
   const data = await getData();
 
   return (
