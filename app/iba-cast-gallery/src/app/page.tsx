@@ -10,6 +10,7 @@ interface data{
 
 async function getData(): Promise<data>{
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  console.log(baseUrl);
   const postsApiUrl = `${baseUrl}/api/posts`;
   const castsApiUrl = `${baseUrl}/api/casts`;
 
