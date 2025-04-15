@@ -10,6 +10,14 @@ interface data{
 }
 
 async function getData(): Promise<data>{
+
+  const headers: HeadersInit = {}; // Headers オブジェクトを初期化
+  const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+  // バイパスシークレットが設定されていればヘッダーに追加
+  if (bypassSecret) {
+    headers['x-vercel-protection-bypass'] = bypassSecret;
+  }
+
   const baseUrl = getBaseUrl();
   const postsApiUrl = `${baseUrl}/api/posts`;
   const castsApiUrl = `${baseUrl}/api/casts`;
@@ -18,12 +26,12 @@ async function getData(): Promise<data>{
   console.log("castsApiUrl", castsApiUrl);
 
   try{
-    const postsResponse = await fetch(postsApiUrl);
+    const postsResponse = await fetch(postsApiUrl, { headers });
     const posts:PostDto[] = await postsResponse.json();
 
     console.log("postsResponse", postsResponse);
 
-    const castsResponse = await fetch(castsApiUrl);
+    const castsResponse = await fetch(castsApiUrl, { headers });
     const casts:CastDto[] = await castsResponse.json();
 
     console.log("castsResponse", castsResponse);
