@@ -1,67 +1,18 @@
 "use server";
 import { Typography, Stack, Link } from "@mui/material";
 import TweetFilter from "./client-components/TweetFilter";
-import { CastDto, PostDto } from "@iba-cast-gallery/types";
-import { getBaseUrl } from "../util";
-
-interface data{
-  posts:JoinedPost[];
-  casts:CastDto[];
-}
-
-async function getData(): Promise<data>{
-
-  const headers: HeadersInit = {}; // Headers オブジェクトを初期化
-  const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-  // バイパスシークレットが設定されていればヘッダーに追加
-  if (bypassSecret) {
-    headers['x-vercel-protection-bypass'] = bypassSecret;
-  }
-
-  const baseUrl = getBaseUrl();
-  const postsApiUrl = `${baseUrl}/api/posts`;
-  const castsApiUrl = `${baseUrl}/api/casts`;
-
-  console.log("postsApiUrl", postsApiUrl);
-  console.log("headers", headers);
-  
-  try{
-    const postsResponse = await fetch(postsApiUrl, { headers });
-    const posts:PostDto[] = await postsResponse.json();
-
-    const castsResponse = await fetch(castsApiUrl, { headers });
-    const casts:CastDto[] = await castsResponse.json();
-
-    return {
-      casts: casts,
-      posts: posts.map((post) => {
-        const taggedCasts = post.taggedCasts.map((castId) => {
-          return casts.find((cast) => cast.id === castId);
-        }).filter((cast): cast is CastDto => cast !== undefined);
-        return {
-          id: post.id,
-          postedAt: post.postedAt,
-          taggedCasts: taggedCasts,
-        };
-      })  
-    };
-    
-  }catch(error){
-    console.error("Error fetching data:", error);
-    return {
-      casts: [],
-      posts: [],
-    };
-  }
-};
+import { getActiveCasts } from "services/castService";
+import { getExistsPosts } from "services/postService";
 
 export default async function Home () {
-  const data = await getData();
+
+  const casts = await getActiveCasts();
+  const posts = await getExistsPosts();
 
   return (
   <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
-      <TweetFilter casts={data.casts} posts={data.posts} />
+      <TweetFilter casts={casts} posts={posts} />
     </main>
     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
       <Stack direction="column" spacing={0.5} alignItems="center">

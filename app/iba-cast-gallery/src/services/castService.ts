@@ -1,3 +1,4 @@
+import "server-only"; // このモジュールがサーバーサイド専用であることを明示 (任意だが推奨)
 import 'reflect-metadata';
 import { initializeDatabase,appDataSource } from "data-source";
 import { Repository } from "@iba-cast-gallery/dao";
@@ -5,9 +6,9 @@ import { Cast } from "@iba-cast-gallery/dao";
 import { CastDto } from '@iba-cast-gallery/types';
 
 /**
- * アクティブなキャスト情報を全件返却するAPI
+ * 有効なキャスト情報を全件取得する
  */
-export async function GET() {
+export async function getActiveCasts(): Promise<CastDto[]> {
     await initializeDatabase();
 
     const castRepository:Repository<Cast> = appDataSource.getRepository(Cast);
@@ -15,7 +16,7 @@ export async function GET() {
         isActive: true,
     });
 
-    const castDtos:CastDto[] = casts.map((cast) => ({
+    return casts.map((cast) => ({
         id:cast.id,
         name:cast.name,
         enName:cast.enName,
@@ -23,6 +24,4 @@ export async function GET() {
         introduceTweetId:cast.introduceTweetId,
         taggedPosts:[],
     })); 
-
-    return Response.json(castDtos);
 }

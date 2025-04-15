@@ -5,9 +5,9 @@ import { Post } from "@iba-cast-gallery/dao";
 import { PostDto } from '@iba-cast-gallery/types';
 
 /**
- * 有効なポスト情報を全件返却するAPI
+ * 有効なポスト情報を全件取得する
  */
-export async function GET() {
+export async function getExistsPosts(): Promise<PostDto[]> {
     await initializeDatabase();
 
     const postRepository:Repository<Post> = appDataSource.getRepository(Post);
@@ -18,11 +18,9 @@ export async function GET() {
         relations:["taggedCasts"],
     });
 
-    const postDtos:PostDto[] = posts.map((post) => ({
+    return posts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,
         taggedCasts: post.taggedCasts.map((cast) => cast.id),
     }));
-
-    return Response.json(postDtos);
 }
