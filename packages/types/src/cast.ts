@@ -10,6 +10,5 @@ export interface CastDto {
     enName:string;
     introduceTweetId:string;
     type: CastType;
-    isActive:boolean;
     taggedPosts: number[];
 }
