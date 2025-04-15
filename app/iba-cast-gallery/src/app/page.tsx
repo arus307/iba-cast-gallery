@@ -11,9 +11,11 @@ interface data{
 
 async function getData(): Promise<data>{
   const baseUrl = getBaseUrl();
-  console.log(baseUrl);
   const postsApiUrl = `${baseUrl}/api/posts`;
   const castsApiUrl = `${baseUrl}/api/casts`;
+
+  console.log("postsApiUrl", postsApiUrl);
+  console.log("castsApiUrl", castsApiUrl);
 
   try{
     const postsResponse = await fetch(postsApiUrl);
@@ -50,10 +52,6 @@ async function getData(): Promise<data>{
 };
 
 export default async function Home () {
-
-  const baseUrl = getBaseUrl();
-  console.log(baseUrl);
-
   const data = await getData();
 
   return (
