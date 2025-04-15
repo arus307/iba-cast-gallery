@@ -2,6 +2,7 @@
 import { Typography, Stack, Link } from "@mui/material";
 import TweetFilter from "./client-components/TweetFilter";
 import { CastDto, PostDto } from "@iba-cast-gallery/types";
+import { getBaseUrl } from "../util";
 
 interface data{
   posts:JoinedPost[];
@@ -9,7 +10,7 @@ interface data{
 }
 
 async function getData(): Promise<data>{
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const baseUrl = getBaseUrl();
   console.log(baseUrl);
   const postsApiUrl = `${baseUrl}/api/posts`;
   const castsApiUrl = `${baseUrl}/api/casts`;
