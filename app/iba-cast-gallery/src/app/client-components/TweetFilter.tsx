@@ -5,6 +5,7 @@ import CastSelect from "components/CastSelect";
 import { useState } from "react";
 import Tweets from "components/Tweets";
 import { CastDto } from "@iba-cast-gallery/types";
+import dayjs from "dayjs";
 
 export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:CastDto[]}) {
 
@@ -15,6 +16,8 @@ export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:C
         } else {
             return true;
         }
+    }).sort((a, b) => {
+        return dayjs(b.postedAt).diff(dayjs(a.postedAt)) > 0 ? 1 : -1;
     });
 
     return (
