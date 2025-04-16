@@ -54,7 +54,7 @@ export default function RootLayout({
               <CssBaseline>
                 <>
                   <AppBar position='static' id='back-to-top-anchor'>
-                    <Typography variant='h5' sx={{
+                    <Typography variant='h4' sx={{
                     fontFamily: `${hachiMaruPop.style.fontFamily}`,
                     p: 2,
                   }}>
