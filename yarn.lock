@@ -432,10 +432,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iba-cast-gallery/dao@workspace:*, @iba-cast-gallery/dao@workspace:packages/dao":
+"@iba-cast-gallery/dao@workspace:*, @iba-cast-gallery/dao@workspace:packages/dao, @iba-cast-gallery/dao@workspaces:*":
   version: 0.0.0-use.local
   resolution: "@iba-cast-gallery/dao@workspace:packages/dao"
   dependencies:
+    "@iba-cast-gallery/types": "workspace:*"
     pg: "npm:^8.14.1"
     reflect-metadata: "npm:^0.2.2"
     rimraf: "npm:^5.0.7"
@@ -457,6 +458,16 @@ __metadata:
     ts-node: "npm:^10.9.2"
     typeorm: "npm:^0.3.22"
     typescript: "npm:^5.4.5"
+  languageName: unknown
+  linkType: soft
+
+"@iba-cast-gallery/types@workspace:*, @iba-cast-gallery/types@workspace:packages/types":
+  version: 0.0.0-use.local
+  resolution: "@iba-cast-gallery/types@workspace:packages/types"
+  dependencies:
+    "@iba-cast-gallery/dao": "workspaces:*"
+    rimraf: "npm:^5.0.7"
+    typescript: "npm:^5.2.2"
   languageName: unknown
   linkType: soft
 
@@ -3120,6 +3131,7 @@ __metadata:
     "@emotion/styled": "npm:^11.14.0"
     "@eslint/eslintrc": "npm:^3"
     "@iba-cast-gallery/dao": "workspace:*"
+    "@iba-cast-gallery/types": "workspace:*"
     "@mui/material": "npm:^6.4.7"
     "@mui/material-nextjs": "npm:^6.4.3"
     "@next/third-parties": "npm:^15.2.2"
@@ -5333,7 +5345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5, typescript@npm:^5.4.5":
+"typescript@npm:^5, typescript@npm:^5.2.2, typescript@npm:^5.4.5":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
   bin:
@@ -5343,7 +5355,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
   version: 5.8.3
   resolution: "typescript@patch:typescript@npm%3A5.8.3#optional!builtin<compat/typescript>::version=5.8.3&hash=5786d5"
   bin:

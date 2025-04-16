@@ -1,16 +1,30 @@
 "use server";
 import { Typography, Stack, Link } from "@mui/material";
-import getDb from "getDb";
 import TweetFilter from "./client-components/TweetFilter";
+import { getActiveCasts } from "services/castService";
+import { getExistsPosts } from "services/postService";
+import { CastDto } from "@iba-cast-gallery/types";
 
 export default async function Home () {
 
-  const db = await getDb();
+  const casts = await getActiveCasts();
+  const posts = await getExistsPosts();
+
+  const joinedPost:JoinedPost[] = posts.map((post) => {
+    const taggedCasts = post.taggedCasts.map((castId) => {
+      return casts.find((cast) => cast.id === castId);
+    }).filter((cast): cast is CastDto => cast !== undefined);
+    return {
+      id: post.id,
+      postedAt: post.postedAt,
+      taggedCasts: taggedCasts,
+    };
+  });
 
   return (
   <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
     <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
-      <TweetFilter db={db}/>
+      <TweetFilter casts={casts} posts={joinedPost} />
     </main>
     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
       <Stack direction="column" spacing={0.5} alignItems="center">

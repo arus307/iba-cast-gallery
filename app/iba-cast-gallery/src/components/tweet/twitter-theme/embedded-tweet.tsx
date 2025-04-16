@@ -13,11 +13,12 @@ import { enrichTweet } from '../utils'
 import { useMemo, useState } from 'react'
 import {Button, Stack, Grid2} from '@mui/material'
 import CastChip from 'components/CastChip'
+import { CastDto } from '@iba-cast-gallery/types'
 
 type Props = {
   tweet: Tweet
   components?: Omit<TwitterComponents, 'TweetNotFound'>
-  taggedCasts: Cast[];
+  taggedCasts: CastDto[];
 }
 
 export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {

@@ -13,6 +13,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@iba-cast-gallery/dao": "workspace:*",
+    "@iba-cast-gallery/types": "workspace:*",
     "@mui/material": "^6.4.7",
     "@mui/material-nextjs": "^6.4.3",
     "@next/third-parties": "^15.2.2",

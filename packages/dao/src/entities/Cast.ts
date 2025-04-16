@@ -1,10 +1,6 @@
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./Post";
-
-export enum CastType {
-    REAL = 1,
-    IMAGINARY = 2,
-}
+import { CastType } from "@iba-cast-gallery/types";
 
 /**
  * キャストのエンティティ
