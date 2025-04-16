@@ -34,7 +34,7 @@ export default function ScrollToTopButton() {
                 role="presentation"
                 sx={{ position: 'fixed', bottom: 16, right: 16 }}
             >
-                <Fab size="small" aria-label="トップにスクロール">
+                <Fab aria-label="トップにスクロール">
                     <KeyboardArrowUp />
                 </Fab>
             </Box>
