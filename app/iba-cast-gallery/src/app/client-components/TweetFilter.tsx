@@ -17,7 +17,8 @@ export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:C
             return true;
         }
     }).sort((a, b) => {
-        return dayjs(b.postedAt).diff(dayjs(a.postedAt)) > 0 ? 1 : -1;
+        const diff = dayjs(b.postedAt).diff(dayjs(a.postedAt));
+        return diff > 0 ? 1 : diff < 0 ? -1 : 0;
     });
 
     return (
