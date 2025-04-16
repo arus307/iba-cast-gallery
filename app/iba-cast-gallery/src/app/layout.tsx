@@ -7,6 +7,7 @@ import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto, Hachi_Maru_Pop } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
+import ScrollToTopButton from "./client-components/ScrollToTopButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IBA Gallery",
+  title: "IBA gallery",
   description: "Imaginary Base Akihabaraの写真付きツイートをまとめて見ることができるファンサイトです。",
 };
 
@@ -52,7 +53,7 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline>
                 <>
-                  <AppBar position='static'>
+                  <AppBar position='static' id='back-to-top-anchor'>
                     <Typography variant='h5' sx={{
                     fontFamily: `${hachiMaruPop.style.fontFamily}`,
                     p: 2,
@@ -61,6 +62,7 @@ export default function RootLayout({
                     </Typography>
                   </AppBar>
                   {children}
+                  <ScrollToTopButton />
                 </>
               </CssBaseline>
             </ThemeProvider>
