@@ -6,7 +6,7 @@ import * as dotenv from 'dotenv';
 import { Post } from './entities/Post';
 import { Cast } from './entities/Cast';
 
-if(process.env.NODE_ENV !== 'production') {
+if(process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'preview') {
   dotenv.config({ path: path.resolve(__dirname, '../../../.env.development') });
 }
 
