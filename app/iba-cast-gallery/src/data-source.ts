@@ -20,7 +20,7 @@ export const appDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   schema: process.env.DB_SCHEMA,
-  logging: process.env.NODE_ENV === 'development',
+  logging: NODE_ENV === 'development' || NODE_ENV === 'preview' ? ['query', 'error', 'migration'] : false,
   extra: {
     options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
   },
