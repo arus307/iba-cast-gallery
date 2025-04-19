@@ -20,6 +20,9 @@ export const appDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   schema: process.env.DB_SCHEMA,
   logging: process.env.NODE_ENV === 'development',
+  extra: {
+    options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
+  },
 } as PostgresConnectionOptions);
 
 export const initializeDatabase = async () => {

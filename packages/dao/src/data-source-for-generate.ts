@@ -22,6 +22,9 @@ const options: DataSourceOptions = {
   migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
   logging: ['query', 'error'],
+  extra: {
+    options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
+  },
 };
 
 export const AppDataSourceForGenerate = new DataSource(options);

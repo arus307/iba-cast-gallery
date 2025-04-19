@@ -19,4 +19,7 @@ export const AppDataSource = new DataSource({
   schema: process.env.DB_SCHEMA,
   logging: ['query', 'error', 'migration'],
   replication: undefined,
+  extra: {
+    options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
+  },
 });
