@@ -4,7 +4,8 @@ import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import * as path from 'path';
 
-if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'preview') {
+const NODE_ENV = process.env.NODE_ENV as 'development' | 'production' | 'preview' | undefined;
+if (NODE_ENV !== 'production' && NODE_ENV !== 'preview') {
   const pathToEnv = path.resolve(__dirname, '../../../../../../../.env.development')
   dotenv.config({ path: pathToEnv });
 }
