@@ -18,6 +18,7 @@ export const appDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  schema: process.env.DB_SCHEMA,
   logging: process.env.NODE_ENV === 'development',
 } as PostgresConnectionOptions);
 

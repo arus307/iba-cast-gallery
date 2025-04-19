@@ -16,6 +16,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_MIGRATION_USER_USERNAME,
   password: process.env.DB_MIGRATION_USER_PASSWORD,
   database: process.env.DB_DATABASE,
+  schema: process.env.DB_SCHEMA,
   logging: ['query', 'error', 'migration'],
   replication: undefined,
 });

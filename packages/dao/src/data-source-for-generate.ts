@@ -17,6 +17,7 @@ const options: DataSourceOptions = {
   username: process.env.DB_MIGRATION_USER_USERNAME,
   password: process.env.DB_MIGRATION_USER_PASSWORD,
   database: process.env.DB_DATABASE,
+  schema: process.env.DB_SCHEMA,
   entities: [Post, Cast],
   migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
