@@ -36,6 +36,7 @@
         "DB_PASSWORD",
         "DB_DATABASE",
         "DB_MIGRATION_USER_USERNAME",
-        "DB_MIGRATION_USER_PASSWORD"
+        "DB_MIGRATION_USER_PASSWORD",
+        "DB_SCHEMA"
     ]
 }
