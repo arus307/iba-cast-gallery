@@ -16,8 +16,6 @@ export async function getActiveCasts(): Promise<CastDto[]> {
         isActive: true,
     });
 
-    console.log("casts:", casts);
-
     return casts.map((cast) => ({
         id:cast.id,
         name:cast.name,
