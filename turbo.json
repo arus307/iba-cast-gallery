@@ -17,16 +17,19 @@
         },
 
         "@iba-cast-gallery/dao#build": {
-            "dependsOn": ["clean", "@iba-cast-gallery/types#build"]
+            "dependsOn": ["clean", "@iba-cast-gallery/types#build"],
+            "outputs": ["dist/**"]
         },
         "@iba-cast-gallery/db-migaroter#build":{
-            "dependsOn": ["clean", "dao#build"]
+            "dependsOn": ["clean", "dao#build"],
+            "outputs": ["dist/**"]
         },
         "@iba-cast-gallery/db-migrator#migrate:run":{
             "dependsOn": ["build"]
         },
         "@iba-cast-gallery/types#build": {
-            "dependsOn": ["clean"]
+            "dependsOn": ["clean"],
+            "outputs": ["dist/**"]
         }
     },
     "globalEnv": [
