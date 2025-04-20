@@ -328,7 +328,7 @@ const casts : Cast[] = [
         id:34,
         name:'アラレ',
         enName: 'aragonite',
-        introduceTweetId: '',
+        introduceTweetId: '1912830902922580054',
         type: CastType.REAL,
         isActive: true,
         taggedPosts: [],
