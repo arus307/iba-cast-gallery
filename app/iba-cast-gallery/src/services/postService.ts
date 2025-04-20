@@ -18,6 +18,7 @@ export async function getExistsPosts(): Promise<PostDto[]> {
         relations:["taggedCasts"],
     });
 
+
     return posts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,

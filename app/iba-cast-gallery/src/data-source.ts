@@ -4,7 +4,8 @@ import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 import * as path from 'path';
 
-if (process.env.NODE_ENV !== 'production') {
+const NODE_ENV = process.env.NODE_ENV as 'development' | 'production' | 'preview' | undefined;
+if (NODE_ENV !== 'production' && NODE_ENV !== 'preview') {
   const pathToEnv = path.resolve(__dirname, '../../../../../../../.env.development')
   dotenv.config({ path: pathToEnv });
 }
@@ -18,7 +19,11 @@ export const appDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  logging: process.env.NODE_ENV === 'development',
+  schema: process.env.DB_SCHEMA,
+  logging: NODE_ENV === 'development' || NODE_ENV === 'preview' ? ['query', 'error', 'migration'] : false,
+  extra: {
+    options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
+  },
 } as PostgresConnectionOptions);
 
 export const initializeDatabase = async () => {

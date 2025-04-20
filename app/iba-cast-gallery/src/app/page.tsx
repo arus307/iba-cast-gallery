@@ -1,9 +1,10 @@
-"use server";
 import { Typography, Stack, Link } from "@mui/material";
 import TweetFilter from "./client-components/TweetFilter";
 import { getActiveCasts } from "services/castService";
 import { getExistsPosts } from "services/postService";
 import { CastDto } from "@iba-cast-gallery/types";
+
+export const dynamic = 'force-dynamic';
 
 export default async function Home () {
 
