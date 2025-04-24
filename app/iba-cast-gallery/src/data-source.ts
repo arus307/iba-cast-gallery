@@ -1,14 +1,8 @@
 import { DataSource } from 'typeorm';
 import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
-import * as dotenv from 'dotenv';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
-import * as path from 'path';
 
 const NODE_ENV = process.env.NODE_ENV as 'development' | 'production' | 'preview' | undefined;
-if (NODE_ENV !== 'production' && NODE_ENV !== 'preview') {
-  const pathToEnv = path.resolve(__dirname, '../../../../../../../.env.development')
-  dotenv.config({ path: pathToEnv });
-}
 
 export const appDataSource = new DataSource({
   ...commonDataSourceOptions,
