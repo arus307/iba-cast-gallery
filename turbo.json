@@ -20,6 +20,12 @@
             "dependsOn": ["clean", "@iba-cast-gallery/types#build"],
             "outputs": ["dist/**"]
         },
+        "@iba-cast-gallery/dao#migration:create": {
+            "dependsOn": ["@iba-cast-gallery/dao#build"]
+        },
+        "@iba-cast-gallery/dao#migration:generate": {
+            "dependsOn": ["@iba-cast-gallery/dao#build"]
+        },
         "@iba-cast-gallery/db-migaroter#build":{
             "dependsOn": ["clean", "dao#build"],
             "outputs": ["dist/**"]
