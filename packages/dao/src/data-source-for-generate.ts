@@ -2,13 +2,8 @@
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as path from 'path';
-import * as dotenv from 'dotenv';
 import { Post } from './entities/Post';
 import { Cast } from './entities/Cast';
-
-if(process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'preview') {
-  dotenv.config({ path: path.resolve(__dirname, '../../../.env.development') });
-}
 
 const options: DataSourceOptions = {
   type: 'postgres',
