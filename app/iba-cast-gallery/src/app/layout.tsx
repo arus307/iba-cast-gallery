@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "app/globals.css";
-import { AppBar, CssBaseline, Typography } from "@mui/material";
+import { AppBar, CssBaseline, Typography, Stack, Link } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto, Hachi_Maru_Pop } from 'next/font/google';
@@ -61,7 +61,20 @@ export default function RootLayout({
                       IBAぎゃらりー
                     </Typography>
                   </AppBar>
-                  {children}
+
+                  <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
+                    {children}
+                    <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+                      <Stack direction="column" spacing={0.5} sx={{marginTop:4}} alignItems="center">
+                        <Typography variant="h6">
+                          このサイトは、IBA公式とは一切関係のないファンサイトです。
+                        </Typography>
+                        <Typography variant="subtitle2">
+                          タグ付けの誤りや反映されていないツイート、その他の問題がある場合はarus(X:<Link href="https://x.com/arus307" target='_blank' rel='noopener noreferrer'>@arus307</Link>)までご連絡ください。
+                        </Typography>
+                        </Stack>
+                    </footer>
+                  </div>
                   <ScrollToTopButton />
                 </>
               </CssBaseline>
