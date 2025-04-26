@@ -6,7 +6,7 @@
   "author": "arus <57102101+arus307@users.noreply.github.com>",
   "scripts": {
     "dev": "dotenv -e .env.development -- turbo run dev",
-    "migrate:dev" : "dotenv -e .env.development -- turbo run migrate:run --filter=@iba-cast-gallery/db-migrator",
+    "migrate:dev": "dotenv -e .env.development -- turbo run migrate:run --filter=@iba-cast-gallery/db-migrator",
     "migrate:create": "dotenv -e .env.development -- turbo run migration:create --filter=@iba-cast-gallery/dao",
     "migrate:generate": "dotenv -e .env.development -- turbo run migration:generate --filter=@iba-cast-gallery/dao",
     "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator"
@@ -16,7 +16,7 @@
     "@types/node": "^20",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9",
-    "turbo": "^2.5.0",
+    "turbo": "^2.5.2",
     "typescript": "^5"
   },
   "packageManager": "yarn@4.9.0",
