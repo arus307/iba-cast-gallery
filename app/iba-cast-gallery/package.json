@@ -19,7 +19,7 @@
     "@mui/material-nextjs": "^6.4.3",
     "@next/third-parties": "^15.2.2",
     "dayjs": "^1.11.13",
-    "next": "15.2.3",
+    "next": "15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-photo-view": "^1.2.7",
@@ -30,7 +30,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "eslint-config-next": "15.2.3",
+    "eslint-config-next": "15.2.4",
     "tailwindcss": "^4"
   }
 }
