@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "app/globals.css";
-import { AppBar, CssBaseline, Typography, Stack, Link } from "@mui/material";
+import { CssBaseline, Typography, Stack, Link } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import { Roboto, Hachi_Maru_Pop } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
+import CustomAppBar from "./client-components/AppBarWithMenu";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,15 +54,7 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline>
                 <>
-                  <AppBar position='static' id='back-to-top-anchor'>
-                    <Typography variant='h4' sx={{
-                    fontFamily: `${hachiMaruPop.style.fontFamily}`,
-                    p: 2,
-                  }}>
-                      IBAぎゃらりー
-                    </Typography>
-                  </AppBar>
-
+                  <CustomAppBar/>
                   <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
                     {children}
                     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
@@ -70,7 +63,10 @@ export default function RootLayout({
                           このサイトは、IBA公式とは一切関係のないファンサイトです。
                         </Typography>
                         <Typography variant="subtitle2">
-                          タグ付けの誤りや反映されていないツイート、その他の問題がある場合はarus(X:<Link href="https://x.com/arus307" target='_blank' rel='noopener noreferrer'>@arus307</Link>)までご連絡ください。
+                          arus(<Link href="https://x.com/arus307" target='_blank' rel='noopener noreferrer'>@arus307</Link>)が勝手に開発しています。
+                        </Typography>
+                        <Typography variant="subtitle2">
+                            タグ付けの誤りや反映されていないツイート、その他問題がありましたら<Link href="https://forms.gle/ATYKj4eXd3t8kJHB9" target='_blank' rel='noopener noreferrer'>お問い合わせフォーム</Link>もしくは上記のXアカウントまでご連絡ください。
                         </Typography>
                         </Stack>
                     </footer>
