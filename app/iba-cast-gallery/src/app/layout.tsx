@@ -8,7 +8,7 @@ import { Roboto, Hachi_Maru_Pop } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
-import CustomAppBar from "./client-components/AppBarWithMenu";
+import AppBar from "./client-components/AppBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,7 +54,7 @@ export default function RootLayout({
             <ThemeProvider theme={theme}>
               <CssBaseline>
                 <>
-                  <CustomAppBar/>
+                  <AppBar/>
                   <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
                     {children}
                     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
