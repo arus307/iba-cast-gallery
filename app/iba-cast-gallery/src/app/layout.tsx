@@ -4,7 +4,7 @@ import "app/globals.css";
 import { CssBaseline, Typography, Stack, Link } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { Roboto, Hachi_Maru_Pop } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
@@ -31,14 +31,6 @@ const roboto = Roboto({
   display: 'swap',
   variable: '--font-roboto',
 });
-
-const hachiMaruPop = Hachi_Maru_Pop({
-  weight: ['400'],
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-hachi-maru-pop',
-});
-
 
 export default function RootLayout({
   children,
