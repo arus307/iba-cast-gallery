@@ -14,16 +14,10 @@ import { PhotoProvider, PhotoView } from 'react-photo-view'
 import 'react-photo-view/dist/react-photo-view.css';
 import { Chip, Tooltip, Typography, Paper } from '@mui/material'
 
-const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
-  let paddingBottom = 56.25 // default of 16x9
+const getSkeletonStyle = (media: MediaDetails) => {
+  const paddingBottom =
+    (100 / media.original_info.width) * media.original_info.height
 
-  // if we only have 1 item, show at original ratio
-  if (itemCount === 1)
-    paddingBottom =
-      (100 / media.original_info.width) * media.original_info.height
-
-  // if we have 2 items, double the default to be 16x9 total
-  if (itemCount === 2) paddingBottom = paddingBottom * 2
 
   return {
     width: media.type === 'photo' ? undefined : 'unset',
@@ -38,7 +32,6 @@ type Props = {
 }
 
 export const TweetMedia = ({ tweet, components, quoted }: Props) => {
-  const length = tweet.mediaDetails?.length ?? 0
   const Img = components?.MediaImg ?? MediaImg
 
   return (
@@ -46,9 +39,6 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
       <div
         className={clsx(
           s.mediaWrapper,
-          length > 1 && s.grid2Columns,
-          length === 3 && s.grid3,
-          length > 4 && s.grid2x2
         )}
       >
         <PhotoProvider overlayRender={({ index }) => {
@@ -69,7 +59,7 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
                 <div className={clsx(s.mediaContainer, s.mediaLink)}>
                   <div
                     className={s.skeleton}
-                    style={getSkeletonStyle(media, length)}
+                    style={getSkeletonStyle(media)}
                   />
                   <PhotoView src={getMediaUrl(media,'large')}>
                     <Img
@@ -119,7 +109,7 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
                 <div key={media.media_url_https} className={s.mediaContainer}>
                   <div
                     className={s.skeleton}
-                    style={getSkeletonStyle(media, length)}
+                    style={getSkeletonStyle(media)}
                   />
                   <TweetMediaVideo tweet={tweet} media={media} />
                 </div>
