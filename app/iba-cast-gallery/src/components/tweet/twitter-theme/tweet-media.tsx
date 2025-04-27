@@ -15,15 +15,9 @@ import 'react-photo-view/dist/react-photo-view.css';
 import { Chip, Tooltip, Typography, Paper } from '@mui/material'
 
 const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
-  let paddingBottom = 56.25 // default of 16x9
+  const paddingBottom =
+    (100 / media.original_info.width) * media.original_info.height
 
-  // if we only have 1 item, show at original ratio
-  if (itemCount === 1)
-    paddingBottom =
-      (100 / media.original_info.width) * media.original_info.height
-
-  // if we have 2 items, double the default to be 16x9 total
-  if (itemCount === 2) paddingBottom = paddingBottom * 2
 
   return {
     width: media.type === 'photo' ? undefined : 'unset',
@@ -46,9 +40,6 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
       <div
         className={clsx(
           s.mediaWrapper,
-          length > 1 && s.grid2Columns,
-          length === 3 && s.grid3,
-          length > 4 && s.grid2x2
         )}
       >
         <PhotoProvider overlayRender={({ index }) => {
