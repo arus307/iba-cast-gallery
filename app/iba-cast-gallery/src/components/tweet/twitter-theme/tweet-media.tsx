@@ -14,7 +14,7 @@ import { PhotoProvider, PhotoView } from 'react-photo-view'
 import 'react-photo-view/dist/react-photo-view.css';
 import { Chip, Tooltip, Typography, Paper } from '@mui/material'
 
-const getSkeletonStyle = (media: MediaDetails, itemCount: number) => {
+const getSkeletonStyle = (media: MediaDetails) => {
   const paddingBottom =
     (100 / media.original_info.width) * media.original_info.height
 
@@ -32,7 +32,6 @@ type Props = {
 }
 
 export const TweetMedia = ({ tweet, components, quoted }: Props) => {
-  const length = tweet.mediaDetails?.length ?? 0
   const Img = components?.MediaImg ?? MediaImg
 
   return (
@@ -60,7 +59,7 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
                 <div className={clsx(s.mediaContainer, s.mediaLink)}>
                   <div
                     className={s.skeleton}
-                    style={getSkeletonStyle(media, length)}
+                    style={getSkeletonStyle(media)}
                   />
                   <PhotoView src={getMediaUrl(media,'large')}>
                     <Img
@@ -110,7 +109,7 @@ export const TweetMedia = ({ tweet, components, quoted }: Props) => {
                 <div key={media.media_url_https} className={s.mediaContainer}>
                   <div
                     className={s.skeleton}
-                    style={getSkeletonStyle(media, length)}
+                    style={getSkeletonStyle(media)}
                   />
                   <TweetMediaVideo tweet={tweet} media={media} />
                 </div>
