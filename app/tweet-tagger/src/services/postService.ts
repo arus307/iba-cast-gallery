@@ -2,12 +2,11 @@ import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
 import { Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
-import { PostDto } from '@iba-cast-gallery/types';
 
 /**
  * ポスト情報を全件取得する
  */
-export async function getWholePosts(): Promise<PostDto[]> {
+export async function getAllPosts(): Promise<Post[]> {
     await initializeDatabase();
 
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
@@ -15,10 +14,16 @@ export async function getWholePosts(): Promise<PostDto[]> {
         relations: ["taggedCasts"],
     });
 
+    return posts;
+}
 
-    return posts.map((post) => ({
-        id: post.id,
-        postedAt: post.postedAt,
-        taggedCasts: post.taggedCasts.map((cast) => cast.id),
-    }));
+/**
+ * ポスト情報を登録する
+ * 
+ * @param request 登録するポスト情報
+ */
+export async function registerPost(post: Post): Promise<void> {
+    await initializeDatabase();
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    postRepository.save(post);
 }
