@@ -27,3 +27,14 @@ export async function registerPost(post: Post): Promise<void> {
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     postRepository.save(post);
 }
+
+export async function getPostById(postId: string): Promise<Post | null> {
+    await initializeDatabase();
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const post = await postRepository.findOne({
+        where: { id: postId },
+        relations: ["taggedCasts"],
+    });
+
+    return post;
+}

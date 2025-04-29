@@ -77,6 +77,29 @@ const TweetEditor = () => {
     }
   };
 
+  const checkExistTweet = async (tweetId: string) => {
+    try {
+      const response = await fetch(`/api/posts/${tweetId}`);
+
+      if (response.status === 404) {
+        return;
+      }
+
+      if (!response.ok) {
+        // エラー処理
+        console.error("Failed to fetch post");
+        return;
+      }
+
+      const data: Post = await response.json();
+
+      setSelectedCasts(data.taggedCasts);
+      setTweetDateTime(dayjs(data.postedAt));
+    } catch (error) {
+      console.error("Error fetch post:", error);
+    }
+  }
+
   useEffect(() => {
     // URLからツイートIDを取得
     const match = tweetId.match(/https:\/\/x\.com\/[^/]+\/status\/(\d+)/);
@@ -86,6 +109,7 @@ const TweetEditor = () => {
     }
 
     // ツイートが既存のものか確認して既存ならキャスト情報/投稿日時を更新する
+    checkExistTweet(tweetId);
   }, [tweetId]);
 
   return (
