@@ -1,7 +1,7 @@
 "use server";
 
-import { auth, signOut } from "src/auth";
-import { Button, Typography } from "@mui/material";
+import { auth } from "src/auth";
+import { Typography } from "@mui/material";
 import TweetEditor from "./client-component/TweetEditor";
 import { redirect } from "next/navigation";
 import NotAdmin from "./client-component/NotAdmin";
