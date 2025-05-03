@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPostById } from "@/services/postService";
+import { auth } from "@/auth";
 
 /**
  * idを元にポストを取得するAPI
@@ -11,7 +12,11 @@ export async function GET(
     request: Request,
     { params }: { params: Promise<{ postId: string }> }
 ) {
-    // TODO 認証チェック
+    const session = await auth();
+    if (session?.user?.email !== process.env.ADMIN_EMAIL) {
+        console.log(session);
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     try {
         const post = await getPostById((await params).postId);

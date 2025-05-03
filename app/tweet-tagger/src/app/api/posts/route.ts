@@ -2,13 +2,17 @@ import { Post } from "@iba-cast-gallery/dao";
 import { NextResponse } from "next/server";
 import { registerPost } from "@/services/postService";
 import { getAllCasts } from "@/services/castService";
+import { auth } from "@/auth";
 
 
 /**
  * ポスト情報を登録する
  */
 export async function POST(request: Request) {
-    // TODO 認証チェック
+    const session = await auth();
+    if (session?.user?.email !== process.env.ADMIN_EMAIL) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     try {
         const body = await request.json();
