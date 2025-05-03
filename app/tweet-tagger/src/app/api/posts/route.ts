@@ -16,8 +16,8 @@ export async function POST(request: Request) {
 
         // キャストの存在チェック
         const casts = await getAllCasts();
-        const containNotExistCast = post.taggedCasts.find((cast) => {
-            return casts.findIndex((c) => c === cast) === -1;
+        const containNotExistCast = post.taggedCasts.some((cast) => {
+            return casts.findIndex((c) => c.id === cast.id) === -1;
         });
         if (containNotExistCast) {
             return NextResponse.json({ error: "キャストが存在しません" }, { status: 400 });
