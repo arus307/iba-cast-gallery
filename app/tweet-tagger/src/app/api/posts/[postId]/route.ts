@@ -9,12 +9,12 @@ import { getPostById } from "@/services/postService";
  */
 export async function GET(
     request: Request,
-    { params }: { params: { postId: string } }
+    { params }: { params: Promise<{ postId: string }> }
 ) {
-    console.log("GET postId:", params.postId);
+    // TODO 認証チェック
 
     try {
-        const post = await getPostById(params.postId);
+        const post = await getPostById((await params).postId);
         if (post === null) {
             return NextResponse.json({ error: "ポストが存在しません" }, { status: 404 });
         }
