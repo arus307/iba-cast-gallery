@@ -5310,6 +5310,8 @@ __metadata:
     "@emotion/cache": "npm:^11.14.0"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
+    "@iba-cast-gallery/dao": "workspace:*"
+    "@iba-cast-gallery/types": "workspace:*"
     "@mui/material": "npm:^6.4.7"
     "@mui/material-nextjs": "npm:^6.4.3"
     "@mui/x-date-pickers": "npm:^7.27.3"
