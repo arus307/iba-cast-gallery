@@ -5,6 +5,7 @@ import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import theme from '../theme';
+import AuthSessionProviders from "./AuthSessionProvider"; // 作成したプロバイダーコンポーネント
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,13 +32,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline>
-              {children}
-            </CssBaseline>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+        <AuthSessionProviders>
+          <AppRouterCacheProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline>
+                {children}
+              </CssBaseline>
+            </ThemeProvider>
+          </AppRouterCacheProvider>
+        </AuthSessionProviders>
       </body>
     </html>
   );

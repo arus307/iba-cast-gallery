@@ -46,6 +46,11 @@
         "DB_DATABASE",
         "DB_MIGRATION_USER_USERNAME",
         "DB_MIGRATION_USER_PASSWORD",
-        "DB_SCHEMA"
+        "DB_SCHEMA",
+        "AUTH_SECRET",
+        "AUTH_GITHUB_ID",
+        "AUTH_GITHUB_SECRET",
+        "ADMIN_EMAIL",
+        "AUTH_URL"
     ]
 }

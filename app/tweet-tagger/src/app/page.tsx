@@ -1,9 +1,23 @@
 "use server";
 
-import { Typography } from "@mui/material";
+import { auth, signOut } from "src/auth";
+import { Button, Typography } from "@mui/material";
 import TweetEditor from "./client-component/TweetEditor";
+import { redirect } from "next/navigation";
+import NotAdmin from "./client-component/NotAdmin";
 
 export default async function Home() {
+
+  const session = await auth();
+  if (!session?.user) {
+    redirect('/api/auth/signin');
+  }
+
+  if (session.user.email !== process.env.ADMIN_EMAIL) {
+    return (
+      <NotAdmin />
+    );
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
