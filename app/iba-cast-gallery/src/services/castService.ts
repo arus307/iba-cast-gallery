@@ -13,11 +13,9 @@ export async function getActiveCasts(): Promise<CastDto[]> {
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
     const casts = await castRepository.find({
-        where: [
-            {
-                isActive: true,
-            }
-        ],
+        where: {
+            isActive: true,
+        },
         order: {
             id: "ASC",
         }
