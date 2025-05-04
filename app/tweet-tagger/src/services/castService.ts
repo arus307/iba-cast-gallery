@@ -11,7 +11,11 @@ export async function getAllCasts(): Promise<Cast[]> {
     await initializeDatabase();
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
-    const casts = await castRepository.find();
+    const casts = await castRepository.find({
+        order: {
+            id: "ASC",
+        },
+    });
 
     return casts;
 }
