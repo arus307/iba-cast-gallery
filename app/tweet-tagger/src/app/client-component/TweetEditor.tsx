@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, Stack, Autocomplete, Button, } from "@mui/material";
+import { TextField, Stack, Autocomplete, Button, Checkbox, FormControlLabel, } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -46,6 +46,7 @@ const TweetEditor = ({ initialId }: {
   const [tweetId, setTweetId] = useState<string>(initialId ?? "");
   const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs | null>(dayjs());
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const registerTweet = async () => {
     if (tweetDateTime === null) return;
@@ -99,6 +100,7 @@ const TweetEditor = ({ initialId }: {
 
       setSelectedCasts(Array.isArray(data.taggedCasts) ? data.taggedCasts : []);
       setTweetDateTime(dayjs(data.postedAt));
+      setIsDeleted(data.isDeleted);
     } catch (error) {
       console.error("Error fetch post:", error);
     }
@@ -138,7 +140,8 @@ const TweetEditor = ({ initialId }: {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
-      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}>登録</Button>
+      <FormControlLabel control={<Checkbox value={isDeleted} />} label="削除フラグ" />
+      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}> 登録</Button>
     </Stack>
   );
 };

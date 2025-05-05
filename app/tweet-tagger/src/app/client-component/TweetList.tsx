@@ -56,6 +56,7 @@ const TweetList = () => {
                 }
                 <Typography variant="body1">id: {post.id}</Typography>
                 <Typography variant="body1">postedAt: {dayjs(post.postedAt).format('YYYY-MM-DD hh:mm:ss')}</Typography>
+                <Typography variant="body1">isDeleted: {post.isDeleted ? "true" : "false"}</Typography>
                 <Button onClick={() => { handleEdit(post) }} variant="outlined">
                   編集
                 </Button>
