@@ -31,6 +31,10 @@ export async function registerPost(post: Post): Promise<void> {
     postRepository.save(post);
 }
 
+/**
+ * 指定のポストIDのポストを取得する
+ * @param postId ポストID
+ */
 export async function getPostById(postId: string): Promise<Post | null> {
     await initializeDatabase();
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
@@ -40,4 +44,16 @@ export async function getPostById(postId: string): Promise<Post | null> {
     });
 
     return post;
+}
+
+/**
+ * 指定のポストIDのポストを削除する(物理削除)
+ * @param postId ポストID
+ */
+export async function deletePostById(postId: string): Promise<boolean> {
+    await initializeDatabase();
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const result = await postRepository.delete(postId);
+
+    return result.affected !== 0;
 }
