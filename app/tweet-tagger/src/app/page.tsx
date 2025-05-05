@@ -1,10 +1,10 @@
 "use server";
 
-import { auth } from "src/auth";
+import { auth } from "auth";
 import { Typography } from "@mui/material";
-import TweetEditor from "./client-component/TweetEditor";
+import TweetEditor from "app/client-component/TweetEditor";
 import { redirect } from "next/navigation";
-import NotAdmin from "./client-component/NotAdmin";
+import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";
 
 export default async function Home() {

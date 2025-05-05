@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getAllCasts } from "@/services/castService";
-import { auth } from "@/auth";
+import { getAllCasts } from "services/castService";
+import { auth } from "auth";
 
 export async function GET() {
     const session = await auth();

@@ -1,10 +1,10 @@
 "use server";
 
-import { auth } from "src/auth";
+import { auth } from "auth";
 import { Grid2, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
-import NotAdmin from "../client-component/NotAdmin";
-import { getAllPosts } from "@/services/postService";
+import NotAdmin from "app/client-component/NotAdmin";
+import { getAllPosts } from "services/postService";
 import { Tweet } from "react-tweet";
 import dayjs from "dayjs";
 import Link from "next/link";

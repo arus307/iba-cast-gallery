@@ -1,8 +1,8 @@
 import { Post } from "@iba-cast-gallery/dao";
 import { NextResponse } from "next/server";
-import { registerPost } from "@/services/postService";
-import { getAllCasts } from "@/services/castService";
-import { auth } from "@/auth";
+import { registerPost } from "services/postService";
+import { getAllCasts } from "services/castService";
+import { auth } from "auth";
 
 
 /**

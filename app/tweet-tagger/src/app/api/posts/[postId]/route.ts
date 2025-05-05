@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getPostById } from "@/services/postService";
-import { auth } from "@/auth";
+import { getPostById } from "services/postService";
+import { auth } from "auth";
 
 /**
  * idを元にポストを取得するAPI

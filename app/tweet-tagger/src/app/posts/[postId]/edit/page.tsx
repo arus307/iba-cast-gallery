@@ -1,9 +1,9 @@
 "use server";
 
-import { auth } from "src/auth";
+import { auth } from "auth";
 import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
-import NotAdmin from "@/app/client-component/NotAdmin";
+import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";
 
 export default async function Page(
