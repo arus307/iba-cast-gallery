@@ -4,7 +4,6 @@ import { auth } from "auth";
 import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
-import { getAllPosts } from "services/postService";
 import TweetList from "app/client-component/TweetList";
 
 export default async function Home() {
@@ -19,8 +18,6 @@ export default async function Home() {
       <NotAdmin />
     );
   }
-
-  const posts = await getAllPosts();
 
   return (
     <>

@@ -1,7 +1,7 @@
 "use server";
 
 import { auth } from "auth";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";
