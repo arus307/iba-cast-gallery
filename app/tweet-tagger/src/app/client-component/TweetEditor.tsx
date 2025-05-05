@@ -92,7 +92,7 @@ const TweetEditor = () => {
 
       const data: Post = await response.json();
 
-      setSelectedCasts(data.taggedCasts);
+      setSelectedCasts(Array.isArray(data.taggedCasts) ? data.taggedCasts : []);
       setTweetDateTime(dayjs(data.postedAt));
     } catch (error) {
       console.error("Error fetch post:", error);
