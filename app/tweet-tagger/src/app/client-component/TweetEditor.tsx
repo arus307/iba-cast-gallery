@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, Stack, Autocomplete, Button, } from "@mui/material";
+import { TextField, Stack, Autocomplete, Button, Checkbox, FormControlLabel, } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -13,9 +13,14 @@ import { Cast, Post } from "@iba-cast-gallery/dao";
 /**
  * ツイート情報を編集するコンポーネント
  * 
- * @param casts タグ付け候補となるキャスト情報
+ * @param initialId 編集対象のツイートID (新規登録時は空文字)
  */
-const TweetEditor = () => {
+const TweetEditor = ({ initialId }: {
+  initialId: string;
+}) => {
+
+  // 初期値がある場合は編集不可とする
+  const isDisableTweetId = initialId !== undefined && initialId !== "";
 
   const [casts, setCasts] = useState<Cast[]>([]);
 
@@ -38,9 +43,10 @@ const TweetEditor = () => {
     fetchCasts();
   }, []);
 
-  const [tweetId, setTweetId] = useState<string>("");
+  const [tweetId, setTweetId] = useState<string>(initialId ?? "");
   const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs | null>(dayjs());
+  const [isDeleted, setIsDeleted] = useState<boolean>(false);
 
   const registerTweet = async () => {
     if (tweetDateTime === null) return;
@@ -92,8 +98,9 @@ const TweetEditor = () => {
 
       const data: Post = await response.json();
 
-      setSelectedCasts(data.taggedCasts);
+      setSelectedCasts(Array.isArray(data.taggedCasts) ? data.taggedCasts : []);
       setTweetDateTime(dayjs(data.postedAt));
+      setIsDeleted(data.isDeleted);
     } catch (error) {
       console.error("Error fetch post:", error);
     }
@@ -113,7 +120,7 @@ const TweetEditor = () => {
 
   return (
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
-      <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" />
+      <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
       <Tweet id={tweetId} />
       <Autocomplete
         multiple
@@ -133,7 +140,8 @@ const TweetEditor = () => {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
-      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}>登録</Button>
+      <FormControlLabel control={<Checkbox value={isDeleted} />} label="削除フラグ" />
+      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}> 登録</Button>
     </Stack>
   );
 };

@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -36,7 +36,11 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline>
-                {children}
+                <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
+                  <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+                    {children}
+                  </main>
+                </div>
               </CssBaseline>
             </ThemeProvider>
           </AppRouterCacheProvider>
