@@ -54,9 +54,8 @@ const TweetList = () => {
                     <Tweet id={post.id} taggedCasts={post.taggedCasts} />
                   )
                 }
-                <Typography variant="body1">{post.id}</Typography>
-                <Typography variant="body1">{dayjs(post.postedAt).format('YYYY-MM-DD hh:mm:ss')}</Typography>
-                <Typography variant="body1">{post.taggedCasts.map(cast => cast.name).join(", ")}</Typography>
+                <Typography variant="body1">id: {post.id}</Typography>
+                <Typography variant="body1">postedAt: {dayjs(post.postedAt).format('YYYY-MM-DD hh:mm:ss')}</Typography>
                 <Button onClick={() => { handleEdit(post) }} variant="outlined">
                   編集
                 </Button>
