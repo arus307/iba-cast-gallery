@@ -12,6 +12,9 @@ export async function getAllPosts(): Promise<Post[]> {
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const posts = await postRepository.find({
         relations: ["taggedCasts"],
+        order: {
+            postedAt: "DESC",
+        },
     });
 
     return posts;
