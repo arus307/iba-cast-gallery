@@ -26,7 +26,7 @@ export default async function Home() {
         <Typography variant="body2" color="primary">登録済みポスト一覧</Typography>
       </Link>
       <Typography>登録画面</Typography>
-      <TweetEditor />
+      <TweetEditor initialId="" />
     </>
   );
 }

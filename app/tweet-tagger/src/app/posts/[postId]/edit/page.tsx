@@ -5,6 +5,7 @@ import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";
+import TweetEditor from "app/client-component/TweetEditor";
 
 export default async function Page(
   { params }: { params: Promise<{ postId: string }> }
@@ -28,8 +29,9 @@ export default async function Page(
       <Link href="/posts">
         <Typography variant="body2" color="primary">登録済みポスト一覧</Typography>
       </Link>
+      <TweetEditor initialId={postId}/>
       <Typography>編集画面</Typography>
-      <Typography>ポストID: {postId}</Typography>
+      <Typography>id: {postId}</Typography>
     </>
   );
 }

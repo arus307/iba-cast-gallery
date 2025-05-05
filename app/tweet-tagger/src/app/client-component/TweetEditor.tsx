@@ -13,9 +13,14 @@ import { Cast, Post } from "@iba-cast-gallery/dao";
 /**
  * ツイート情報を編集するコンポーネント
  * 
- * @param casts タグ付け候補となるキャスト情報
+ * @param initialId 編集対象のツイートID (新規登録時は空文字)
  */
-const TweetEditor = () => {
+const TweetEditor = ({ initialId }: {
+  initialId: string;
+}) => {
+
+  // 初期値がある場合は編集不可とする
+  const isDisableTweetId = initialId !== undefined && initialId !== "";
 
   const [casts, setCasts] = useState<Cast[]>([]);
 
@@ -38,7 +43,7 @@ const TweetEditor = () => {
     fetchCasts();
   }, []);
 
-  const [tweetId, setTweetId] = useState<string>("");
+  const [tweetId, setTweetId] = useState<string>(initialId ?? "");
   const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs | null>(dayjs());
 
@@ -113,7 +118,7 @@ const TweetEditor = () => {
 
   return (
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
-      <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" />
+      <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
       <Tweet id={tweetId} />
       <Autocomplete
         multiple
