@@ -1,3 +1,6 @@
+// @ts-nocheck
+// (エンティティの変更によってエラーが出るようになったので、ts-nocheckを追加しています)
+
 import { MigrationInterface, QueryRunner } from "typeorm";
 import { Cast } from "../entities/Cast";
 import { CastType } from "@iba-cast-gallery/types";
@@ -26,7 +29,7 @@ export class InsertCasts1744428540129 implements MigrationInterface {
     }
 }
 
-const casts : Cast[] = [
+const casts: Cast[] = [
     {
         id: 1,
         name: 'メノウ',
@@ -73,7 +76,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:6,
+        id: 6,
         name: 'コハク',
         enName: 'amber',
         introduceTweetId: '1880540647691587684',
@@ -91,7 +94,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:8,
+        id: 8,
         name: 'ヒスイ',
         enName: 'jade',
         introduceTweetId: '1881265418603786573',
@@ -100,7 +103,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:9,
+        id: 9,
         name: 'ホタル',
         enName: 'florite',
         introduceTweetId: '1881627800299565408',
@@ -109,7 +112,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:10,
+        id: 10,
         name: 'ザクロ',
         enName: 'garnet',
         introduceTweetId: '1881990198072062114',
@@ -118,7 +121,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:11,
+        id: 11,
         name: 'リシア',
         enName: 'spodumene',
         introduceTweetId: '1863523515242049540',
@@ -127,7 +130,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:12,
+        id: 12,
         name: 'マイカ',
         enName: 'mica',
         introduceTweetId: '1863885898036949230',
@@ -136,7 +139,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:13,
+        id: 13,
         name: 'サファイア',
         enName: 'sapphire',
         introduceTweetId: '1864248285940134212',
@@ -145,7 +148,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:14,
+        id: 14,
         name: 'テルル',
         enName: 'tellurite',
         introduceTweetId: '1864610677970678102',
@@ -154,7 +157,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:15,
+        id: 15,
         name: 'ミニアム',
         enName: 'minium',
         introduceTweetId: '1864957970074812418',
@@ -163,7 +166,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:16,
+        id: 16,
         name: 'ビスマス',
         enName: 'bismuth',
         introduceTweetId: '1865320343021510917',
@@ -172,7 +175,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:17,
+        id: 17,
         name: 'ラリマー',
         enName: 'larimar',
         introduceTweetId: '1865682737044324518',
@@ -181,7 +184,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:18,
+        id: 18,
         name: 'シトリン',
         enName: 'citrine',
         introduceTweetId: '1866045128546066870',
@@ -190,7 +193,7 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:19,
+        id: 19,
         name: 'スピネル',
         enName: 'spinel',
         introduceTweetId: '1866407506458628516',
@@ -199,8 +202,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:20,
-        name:'モリオン',
+        id: 20,
+        name: 'モリオン',
         enName: 'morion',
         introduceTweetId: '1866769902364729735',
         type: CastType.IMAGINARY,
@@ -208,8 +211,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:21,
-        name:'ルチル',
+        id: 21,
+        name: 'ルチル',
         enName: 'rutile',
         introduceTweetId: '1867132291245391919',
         type: CastType.IMAGINARY,
@@ -217,8 +220,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:22,
-        name:'マーキュリー',
+        id: 22,
+        name: 'マーキュリー',
         enName: 'mercury',
         introduceTweetId: '1867494673235030407',
         type: CastType.IMAGINARY,
@@ -226,8 +229,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:23,
-        name:'スフェーン',
+        id: 23,
+        name: 'スフェーン',
         enName: 'sphene',
         introduceTweetId: '1867857065991180791',
         type: CastType.IMAGINARY,
@@ -235,8 +238,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:24,
-        name:'レビン',
+        id: 24,
+        name: 'レビン',
         enName: 'levyne',
         introduceTweetId: '1868219445488873908',
         type: CastType.IMAGINARY,
@@ -244,8 +247,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:25,
-        name:'ユナカイト',
+        id: 25,
+        name: 'ユナカイト',
         enName: 'unakite',
         introduceTweetId: '1868581846201540798',
         type: CastType.IMAGINARY,
@@ -253,8 +256,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:26,
-        name:'ネコアイト',
+        id: 26,
+        name: 'ネコアイト',
         enName: 'necoite',
         introduceTweetId: '1868944227335626921',
         type: CastType.IMAGINARY,
@@ -262,8 +265,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:27,
-        name:'フローライト',
+        id: 27,
+        name: 'フローライト',
         enName: 'fluorite',
         introduceTweetId: '1889257637247869435',
         type: CastType.IMAGINARY,
@@ -271,8 +274,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:28,
-        name:'クォーツ',
+        id: 28,
+        name: 'クォーツ',
         enName: 'quartzs',
         introduceTweetId: '1889600335628419178',
         type: CastType.IMAGINARY,
@@ -280,8 +283,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:29,
-        name:'ベリル',
+        id: 29,
+        name: 'ベリル',
         enName: 'beryl',
         introduceTweetId: '1889962726941929531',
         type: CastType.IMAGINARY,
@@ -289,8 +292,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:30,
-        name:'タルク',
+        id: 30,
+        name: 'タルク',
         enName: 'talc',
         introduceTweetId: '1890325126941380782',
         type: CastType.IMAGINARY,
@@ -298,17 +301,17 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:31,
-        name:'オパール',
+        id: 31,
+        name: 'オパール',
         enName: 'opal',
         introduceTweetId: '1890687498034053386',
         type: CastType.IMAGINARY,
-        isActive: true, 
+        isActive: true,
         taggedPosts: [],
     },
     {
-        id:32,
-        name:'ガーネット',
+        id: 32,
+        name: 'ガーネット',
         enName: 'garnet',
         introduceTweetId: '1891049886948216908',
         type: CastType.IMAGINARY,
@@ -316,8 +319,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:33,
-        name:'ネフェリン',
+        id: 33,
+        name: 'ネフェリン',
         enName: 'nepheline',
         introduceTweetId: '1891412282145673705',
         type: CastType.IMAGINARY,
@@ -325,8 +328,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:34,
-        name:'アラレ',
+        id: 34,
+        name: 'アラレ',
         enName: 'aragonite',
         introduceTweetId: '1912830902922580054',
         type: CastType.REAL,
@@ -334,8 +337,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:35,
-        name:'サンゴ',
+        id: 35,
+        name: 'サンゴ',
         enName: 'coral',
         introduceTweetId: '1911721093628567673',
         type: CastType.REAL,
@@ -343,8 +346,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:36,
-        name:'ラン',
+        id: 36,
+        name: 'ラン',
         enName: 'vivianite',
         introduceTweetId: '1912083488758792543',
         type: CastType.REAL,
@@ -352,8 +355,8 @@ const casts : Cast[] = [
         taggedPosts: [],
     },
     {
-        id:37,
-        name:'ソウ',
+        id: 37,
+        name: 'ソウ',
         enName: 'bismuhinite',
         introduceTweetId: '1912445864242757802',
         type: CastType.REAL,
