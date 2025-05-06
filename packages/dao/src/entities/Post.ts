@@ -1,36 +1,41 @@
-import { Column, Entity, OneToMany,JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
+import { Column, Entity, OneToMany, JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
 import { Cast } from "./Cast";
-
+import { PostCastTag } from "./PostCastTag";
 
 @Entity('posts')
 export class Post {
 
-    @PrimaryColumn({length:30})
-    id: string;
+  @PrimaryColumn({ length: 30 })
+  id: string;
 
-    @Column({
-        name: "posted_at",
-        type: "timestamp with time zone"
-    })
-    postedAt: string;
+  @Column({
+    name: "posted_at",
+    type: "timestamp with time zone"
+  })
+  postedAt: string;
 
-    @Column({
-        name: "is_deleted",
-        type: "boolean"
-    })
-    isDeleted: boolean;
+  @Column({
+    name: "is_deleted",
+    type: "boolean"
+  })
+  isDeleted: boolean;
 
-    @ManyToMany(() => Cast, (cast)=>cast.taggedPosts, { onDelete: "CASCADE" })
-    @JoinTable({
-        name: "post_cast_tags",
-        joinColumn: {
-            name: "post_id",
-            referencedColumnName: "id"
-        },
-        inverseJoinColumn: {
-            name: "cast_id",
-            referencedColumnName: "id"
-        }
-    })
-    taggedCasts: Cast[];
+  /**
+   * キャストのタグ付情報
+   */
+  @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.post, { onDelete: 'CASCADE', orphanedRowAction: 'delete', eager: true })
+  castTags: PostCastTag[];
+
+  /**
+   * タグ付けされたキャスト情報
+   */
+  get taggedCasts(): Cast[] {
+    if (!this.castTags) {
+      return [];
+    }
+    // 順序でソートしてCastのみを返す
+    return this.castTags
+      .sort((a, b) => a.order - b.order)
+      .map(castTag => castTag.cast);
+  }
 }

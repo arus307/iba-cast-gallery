@@ -1,9 +1,9 @@
-// packages/dao/src/data-source-for-generate.ts
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import * as path from 'path';
 import { Post } from './entities/Post';
 import { Cast } from './entities/Cast';
+import { PostCastTag } from './entities/PostCastTag';
 
 const options: DataSourceOptions = {
   type: 'postgres',
@@ -13,7 +13,7 @@ const options: DataSourceOptions = {
   password: process.env.DB_MIGRATION_USER_PASSWORD,
   database: process.env.DB_DATABASE,
   schema: process.env.DB_SCHEMA,
-  entities: [Post, Cast],
+  entities: [Post, Cast, PostCastTag],
   migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
   logging: ['query', 'error'],
