@@ -18,7 +18,6 @@ export async function getExistsPosts(): Promise<PostDto[]> {
         order: {
             postedAt: "DESC",
         },
-        relations: ["taggedCasts"],
     });
 
     return posts.map((post) => ({
