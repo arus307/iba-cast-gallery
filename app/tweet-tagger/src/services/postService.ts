@@ -11,7 +11,6 @@ export async function getAllPosts(): Promise<Post[]> {
 
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const posts = await postRepository.find({
-        relations: ["taggedCasts"],
         order: {
             postedAt: "DESC",
         },
@@ -40,7 +39,6 @@ export async function getPostById(postId: string): Promise<Post | null> {
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const post = await postRepository.findOne({
         where: { id: postId },
-        relations: ["taggedCasts"],
     });
 
     return post;

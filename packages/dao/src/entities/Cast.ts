@@ -1,6 +1,8 @@
-import { Column, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Post } from "./Post";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { CastType } from "@iba-cast-gallery/types";
+import { Post } from "./Post";
+import { PostCastTag } from "./PostCastTag";
+import dayjs from "dayjs";
 
 /**
  * キャストのエンティティ
@@ -9,27 +11,27 @@ import { CastType } from "@iba-cast-gallery/types";
 export class Cast {
 
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
     @Column({
-        type:"varchar",        
-        length:30,
+        type: "varchar",
+        length: 30,
     })
-    name:string;
+    name: string;
 
     @Column({
-        name:"en_name",
-        type:"varchar",
-        length:30
+        name: "en_name",
+        type: "varchar",
+        length: 30
     })
-    enName:string;
+    enName: string;
 
     @Column({
-        name:"introduce_tweet_id",
-        type:"varchar",
-        length:100
+        name: "introduce_tweet_id",
+        type: "varchar",
+        length: 100
     })
-    introduceTweetId:string;
+    introduceTweetId: string;
 
     @Column({
         type: "enum",
@@ -38,12 +40,25 @@ export class Cast {
     type: CastType;
 
     @Column({
-        name:"is_active",
-        type:"boolean",
-        default:true
+        name: "is_active",
+        type: "boolean",
+        default: true
     })
-    isActive:boolean;
+    isActive: boolean;
 
-    @ManyToMany(() => Post, (post) => post.taggedCasts, { onDelete: "CASCADE" })
-    taggedPosts: Post[];
+    @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.cast, { onDelete: "CASCADE" })
+    postCastTags: PostCastTag[];
+
+    /**
+     * キャストがタグ付けされているポスト一覧
+     */
+    get taggedPosts(): Post[] {
+        if (!this.postCastTags) {
+            return [];
+        }
+        // 投稿日順でソートしてPostのみを返す
+        return this.postCastTags
+            .sort((a, b) => dayjs(a.post.postedAt).isAfter(dayjs(b.post.postedAt)) ? -1 : 1)
+            .map(postCastTag => postCastTag.post);
+    }
 }

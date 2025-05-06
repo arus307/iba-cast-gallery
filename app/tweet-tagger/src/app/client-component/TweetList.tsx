@@ -51,7 +51,7 @@ const TweetList = () => {
                   post.isDeleted ? (
                     <Typography variant="body2" color="error">削除済み</Typography>
                   ) : (
-                    <Tweet id={post.id} taggedCasts={post.taggedCasts} />
+                    <Tweet id={post.id} taggedCasts={post.castTags.sort((a, b) => a.order - b.order).map((castTag) => castTag.cast)} />
                   )
                 }
                 <Typography variant="body1">id: {post.id}</Typography>
