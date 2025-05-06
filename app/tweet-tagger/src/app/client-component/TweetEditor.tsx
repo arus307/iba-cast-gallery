@@ -7,7 +7,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Tweet } from "react-tweet";
 import dayjs, { Dayjs } from "dayjs";
-import { Cast, Post } from "@iba-cast-gallery/dao";
+import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
 
 
 /**
@@ -55,7 +55,12 @@ const TweetEditor = ({ initialId }: {
       id: tweetId,
       postedAt: tweetDateTime?.toISOString(),
       isDeleted: false,
-      taggedCasts: selectedCasts,
+      castTags: selectedCasts.map((cast, index) => ({
+        castid: cast.id,
+        order: index + 1,
+        cast: cast,
+      } as PostCastTag)),
+      taggedCasts: [],
     };
 
     try {
@@ -98,7 +103,9 @@ const TweetEditor = ({ initialId }: {
 
       const data: Post = await response.json();
 
-      setSelectedCasts(Array.isArray(data.taggedCasts) ? data.taggedCasts : []);
+      const newCasts = Array.isArray(data.castTags) ? data.castTags.sort((a, b) => a.order - b.order).map((castTag) => castTag.cast) : [];
+
+      setSelectedCasts(newCasts);
       setTweetDateTime(dayjs(data.postedAt));
       setIsDeleted(data.isDeleted);
     } catch (error) {
