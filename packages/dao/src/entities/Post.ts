@@ -23,7 +23,7 @@ export class Post {
   /**
    * キャストのタグ付情報
    */
-  @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.post, { onDelete: 'CASCADE', orphanedRowAction: 'delete', eager: true })
+  @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.post, { cascade: ['insert', 'update'], orphanedRowAction: 'delete', eager: true })
   castTags: PostCastTag[];
 
   /**
