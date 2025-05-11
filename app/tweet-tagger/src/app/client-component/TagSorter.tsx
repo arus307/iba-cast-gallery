@@ -1,10 +1,11 @@
+"use client";
+
 import { Dispatch, SetStateAction } from "react";
 import { PostCastTag } from "@iba-cast-gallery/dao";
-import {Stack, Chip} from "@mui/material";
-import CastChip from "components/CastChip";
-import { DndContext } from "@dnd-kit/core";
-import {SortableContext, useSortable} from "@dnd-kit/sortable";
-import {CSS} from '@dnd-kit/utilities';
+import { Stack, Chip } from "@mui/material";
+import { DragEndEvent, DndContext } from "@dnd-kit/core";
+import { SortableContext, useSortable } from "@dnd-kit/sortable";
+import { CSS } from '@dnd-kit/utilities';
 
 type TagSorterProps = {
     castTags: PostCastTag[];
@@ -50,7 +51,7 @@ const SortableTag = ({castTag}:{ castTag:PostCastTag}) => {
 const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
 
   // ドラッグ終了時に配列を更新する
-  const onDragEnd = (event: any) => {    
+  const onDragEnd = (event: DragEndEvent) => {    
     const { active, over } = event;
     if(over==null)return;
     if (active.id !== over.id) {
@@ -74,7 +75,7 @@ const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
   return (
     <DndContext onDragEnd={onDragEnd}>
       <SortableContext items={castTags.map(tag=>tag.castid)}>
-        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1}} sx={{flexWrap: "wrap"}}>
+        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap"}}>
           {castTags.map((tag) => (
             <SortableTag
               key={tag.castid}

@@ -1,8 +1,8 @@
+"use client";
 
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Cast, PostCastTag } from "@iba-cast-gallery/dao";
 import { Button, Autocomplete, TextField, Stack } from "@mui/material";
-import CastChip from "components/CastChip";
 import TagSorter from "./TagSorter";
 
 type TagEditorProps = {
