@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Cast, PostCastTag } from "@iba-cast-gallery/dao";
 import { Button, Autocomplete, TextField, Stack } from "@mui/material";
 import CastChip from "components/CastChip";
+import TagSorter from "./TagSorter";
 
 type TagEditorProps = {
   casts: Cast[];
@@ -18,21 +19,6 @@ type TagEditorProps = {
  * @param setCastTags タグ情報を設定する関数
  */
 const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
-
-  const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
-
-  useEffect(() => {
-    const newCastTags: PostCastTag[] = selectedCasts.map((cast, index) => {
-      return {
-        castid: cast.id,
-        order: index + 1,
-        cast: cast,
-      } as PostCastTag;
-    });
-    setCastTags(newCastTags);
-  }, [selectedCasts])
-
-
   const [selectedCast, setSelectedCast] = useState<Cast | null>(null);
 
   const handleAddTag = () => {
@@ -52,18 +38,8 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
   }
 
   return (
-    <div>
-      タグ編集
-
-      <Stack spacing={1} direction="row" sx={{ py: 1 }}>
-        {castTags.map((tag) => (
-          <CastChip
-            key={tag.order}
-            cast={tag.cast}
-          />
-        ))}
-      </Stack>
-
+    <>
+      <TagSorter castTags={castTags} setCastTags={setCastTags} />
       <Stack spacing={2} direction="row">
         <Autocomplete
           fullWidth
@@ -81,7 +57,7 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
         />
         <Button onClick={handleAddTag}>追加</Button>
       </Stack>
-    </div>
+    </>
   )
 };
 
