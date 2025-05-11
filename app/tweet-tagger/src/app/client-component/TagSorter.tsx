@@ -53,7 +53,7 @@ const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
   // ドラッグ終了時に配列を更新する
   const onDragEnd = (event: DragEndEvent) => {    
     const { active, over } = event;
-    if(over==null)return;
+    if(over === null)return;
     if (active.id !== over.id) {
       const oldIndex = castTags.findIndex(tag => tag.castid === active.id);
       const newIndex = castTags.findIndex(tag => tag.castid === over.id);
