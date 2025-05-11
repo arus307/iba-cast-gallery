@@ -8,6 +8,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Tweet } from "react-tweet";
 import dayjs, { Dayjs } from "dayjs";
 import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
+import TagEditor from "./TagEditor";
 
 
 /**
@@ -44,9 +45,9 @@ const TweetEditor = ({ initialId }: {
   }, []);
 
   const [tweetId, setTweetId] = useState<string>(initialId ?? "");
-  const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs | null>(dayjs());
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
+  const [castTags, setCastTags] = useState<PostCastTag[]>([]);
 
   const registerTweet = async () => {
     if (tweetDateTime === null) return;
@@ -55,11 +56,7 @@ const TweetEditor = ({ initialId }: {
       id: tweetId,
       postedAt: tweetDateTime?.toISOString(),
       isDeleted: false,
-      castTags: selectedCasts.map((cast, index) => ({
-        castid: cast.id,
-        order: index + 1,
-        cast: cast,
-      } as PostCastTag)),
+      castTags: castTags,
       taggedCasts: [],
     };
 
@@ -80,7 +77,7 @@ const TweetEditor = ({ initialId }: {
 
       // 登録完了で諸々リセット
       setTweetId("");
-      setSelectedCasts([]);
+      setCastTags([]);
       setTweetDateTime(dayjs());
     } catch (error) {
       console.error("Error registering post:", error);
@@ -103,9 +100,9 @@ const TweetEditor = ({ initialId }: {
 
       const data: Post = await response.json();
 
-      const newCasts = Array.isArray(data.castTags) ? data.castTags.sort((a, b) => a.order - b.order).map((castTag) => castTag.cast) : [];
-
-      setSelectedCasts(newCasts);
+      if (Array.isArray(data.castTags)) {
+        setCastTags(data.castTags);
+      }
       setTweetDateTime(dayjs(data.postedAt));
       setIsDeleted(data.isDeleted);
     } catch (error) {
@@ -129,21 +126,7 @@ const TweetEditor = ({ initialId }: {
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
       <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
       <Tweet id={tweetId} />
-      <Autocomplete
-        multiple
-        fullWidth
-        options={casts}
-        getOptionLabel={(option) => option.name}
-        value={selectedCasts}
-        onChange={(event, newValue) => setSelectedCasts(newValue)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="写ってるキャストを選択"
-            variant="outlined"
-          />
-        )}
-      />
+      <TagEditor casts={casts} castTags={castTags} setCastTags={setCastTags} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
