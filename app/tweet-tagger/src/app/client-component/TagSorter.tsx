@@ -74,7 +74,7 @@ const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
   return (
     <DndContext onDragEnd={onDragEnd}>
       <SortableContext items={castTags.map(tag=>tag.castid)}>
-        <Stack spacing={1} direction="row" sx={{ py: 1}}>
+        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1}} sx={{flexWrap: "wrap"}}>
           {castTags.map((tag) => (
             <SortableTag
               key={tag.castid}
