@@ -1,7 +1,8 @@
 
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Cast, PostCastTag } from "@iba-cast-gallery/dao";
-import { Autocomplete, TextField } from "@mui/material";
+import { Button, Autocomplete, TextField, Stack } from "@mui/material";
+import CastChip from "components/CastChip";
 
 type TagEditorProps = {
   casts: Cast[];
@@ -31,26 +32,55 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
     setCastTags(newCastTags);
   }, [selectedCasts])
 
+
+  const [selectedCast, setSelectedCast] = useState<Cast | null>(null);
+
+  const handleAddTag = () => {
+    if (!selectedCast) return;
+
+    setCastTags((prevTags) => {
+      const newTags = [...prevTags, {
+        castid: selectedCast.id,
+        order: prevTags.length + 1,
+        cast: selectedCast,
+      } as PostCastTag];
+      newTags.sort((a, b) => a.order - b.order);
+      return newTags;
+    });
+
+    setSelectedCast(null);
+  }
+
   return (
     <div>
       タグ編集
 
-      <Autocomplete
-        multiple
-        fullWidth
-        options={casts}
-        getOptionLabel={(option) => option.name}
-        value={selectedCasts}
-        onChange={(event, newValue) => setSelectedCasts(newValue)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="写ってるキャストを選択"
-            variant="outlined"
+      <Stack spacing={1} direction="row" sx={{ py: 1 }}>
+        {castTags.map((tag) => (
+          <CastChip
+            key={tag.order}
+            cast={tag.cast}
           />
-        )}
-      />
+        ))}
+      </Stack>
 
+      <Stack spacing={2} direction="row">
+        <Autocomplete
+          fullWidth
+          options={casts.filter(cast => castTags.every(tag => tag.castid !== cast.id))}
+          getOptionLabel={(option) => option.name}
+          value={selectedCast}
+          onChange={(event, newValue) => setSelectedCast(newValue)}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="写ってるキャストを選択"
+              variant="outlined"
+            />
+          )}
+        />
+        <Button onClick={handleAddTag}>追加</Button>
+      </Stack>
     </div>
   )
 };
