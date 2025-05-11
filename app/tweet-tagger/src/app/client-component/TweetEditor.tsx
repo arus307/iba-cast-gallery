@@ -101,7 +101,7 @@ const TweetEditor = ({ initialId }: {
       const data: Post = await response.json();
 
       if (Array.isArray(data.castTags)) {
-        setCastTags(data.castTags);
+        setCastTags(data.castTags.sort((a, b) => a.order - b.order));
       }
       setTweetDateTime(dayjs(data.postedAt));
       setIsDeleted(data.isDeleted);
