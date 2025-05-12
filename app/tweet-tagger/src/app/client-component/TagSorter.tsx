@@ -8,15 +8,15 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 
 type TagSorterProps = {
-    castTags: PostCastTag[];
-    setCastTags: Dispatch<SetStateAction<PostCastTag[]>>
+  castTags: PostCastTag[];
+  setCastTags: Dispatch<SetStateAction<PostCastTag[]>>
 };
 
 /**
  * 並べかえ可能なタグ
  * @params castTag 表示するタグ
  */
-const SortableTag = ({castTag}:{ castTag:PostCastTag}) => {
+const SortableTag = ({ castTag }: { castTag: PostCastTag }) => {
 
   const {
     attributes,
@@ -24,13 +24,14 @@ const SortableTag = ({castTag}:{ castTag:PostCastTag}) => {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({id: castTag.castid});
+  } = useSortable({ id: castTag.castid });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    "touch-action": "none",
   };
-  
+
   return (
     <Chip
       ref={setNodeRef}
@@ -48,12 +49,12 @@ const SortableTag = ({castTag}:{ castTag:PostCastTag}) => {
  * @params castTags タグ情報
  * @params setCastTags タグ情報を設定する関数
  */
-const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
+const TagSorter = ({ castTags, setCastTags }: TagSorterProps) => {
 
   // ドラッグ終了時に配列を更新する
-  const onDragEnd = (event: DragEndEvent) => {    
+  const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if(over === null)return;
+    if (over === null) return;
     if (active.id !== over.id) {
       const oldIndex = castTags.findIndex(tag => tag.castid === active.id);
       const newIndex = castTags.findIndex(tag => tag.castid === over.id);
@@ -74,8 +75,8 @@ const TagSorter = ({castTags, setCastTags}: TagSorterProps)=>{
 
   return (
     <DndContext onDragEnd={onDragEnd}>
-      <SortableContext items={castTags.map(tag=>tag.castid)}>
-        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap"}}>
+      <SortableContext items={castTags.map(tag => tag.castid)}>
+        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap" }}>
           {castTags.map((tag) => (
             <SortableTag
               key={tag.castid}
