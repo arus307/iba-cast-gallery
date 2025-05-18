@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { Tweet } from "react-tweet";
+import { Tweet } from "../../components/tweet/swr";
 import dayjs, { Dayjs } from "dayjs";
 import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
 import TagEditor from "./TagEditor";
@@ -125,7 +125,7 @@ const TweetEditor = ({ initialId }: {
   return (
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
       <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
-      <Tweet id={tweetId} />
+      <Tweet id={tweetId} taggedCasts={[]} />
       <TagEditor casts={casts} castTags={castTags} setCastTags={setCastTags} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
