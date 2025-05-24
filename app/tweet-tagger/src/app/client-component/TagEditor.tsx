@@ -27,7 +27,7 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
     setCastTags((prevTags) => {
       const newTags = [
         ...prevTags,
-        ...selectedCasts.map((selectedCast, index) => {
+        ...selectedCasts.map((selectedCast) => {
           return {
             castid: selectedCast.id,
             order: prevTags.length + 1,
