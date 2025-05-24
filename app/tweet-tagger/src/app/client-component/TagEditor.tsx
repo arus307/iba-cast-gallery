@@ -19,22 +19,26 @@ type TagEditorProps = {
  * @param setCastTags タグ情報を設定する関数
  */
 const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
-  const [selectedCast, setSelectedCast] = useState<Cast | null>(null);
+  const [selectedCasts, setSelectedCasts] = useState<Cast[]>([]);
 
   const handleAddTag = () => {
-    if (!selectedCast) return;
+    if (selectedCasts.length === 0) return;
 
     setCastTags((prevTags) => {
-      const newTags = [...prevTags, {
-        castid: selectedCast.id,
-        order: prevTags.length + 1,
-        cast: selectedCast,
-      } as PostCastTag];
+      const newTags = [
+        ...prevTags,
+        ...selectedCasts.map((selectedCast, index) => {
+          return {
+            castid: selectedCast.id,
+            order: prevTags.length + 1,
+            cast: selectedCast,
+          } as PostCastTag;
+        })];
       newTags.sort((a, b) => a.order - b.order);
       return newTags;
     });
 
-    setSelectedCast(null);
+    setSelectedCasts([]);
   }
 
   return (
@@ -43,10 +47,11 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
       <Stack spacing={2} direction="row">
         <Autocomplete
           fullWidth
+          multiple
           options={casts.filter(cast => castTags.every(tag => tag.castid !== cast.id))}
           getOptionLabel={(option) => option.name}
-          value={selectedCast}
-          onChange={(event, newValue) => setSelectedCast(newValue)}
+          value={selectedCasts}
+          onChange={(event, newValue) => setSelectedCasts(newValue)}
           renderInput={(params) => (
             <TextField
               {...params}
