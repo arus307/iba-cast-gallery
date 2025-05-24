@@ -3,7 +3,7 @@
 import { Dispatch, SetStateAction } from "react";
 import { PostCastTag } from "@iba-cast-gallery/dao";
 import { Stack, Chip } from "@mui/material";
-import { DragEndEvent, DndContext } from "@dnd-kit/core";
+import { DragEndEvent, DndContext, useSensors, PointerSensor, useSensor } from "@dnd-kit/core";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from '@dnd-kit/utilities';
 
@@ -16,7 +16,7 @@ type TagSorterProps = {
  * 並べかえ可能なタグ
  * @params castTag 表示するタグ
  */
-const SortableTag = ({ castTag }: { castTag: PostCastTag }) => {
+const SortableTag = ({ castTag, handleDelete }: { castTag: PostCastTag, handleDelete: () => void }) => {
 
   const {
     attributes,
@@ -29,7 +29,7 @@ const SortableTag = ({ castTag }: { castTag: PostCastTag }) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    "touch-action": "none",
+    touchAction: "none",
   };
 
   return (
@@ -38,6 +38,7 @@ const SortableTag = ({ castTag }: { castTag: PostCastTag }) => {
       {...attributes}
       {...listeners}
       style={style}
+      onDelete={handleDelete}
       label={castTag.cast.name}
     />
   );
@@ -50,6 +51,15 @@ const SortableTag = ({ castTag }: { castTag: PostCastTag }) => {
  * @params setCastTags タグ情報を設定する関数
  */
 const TagSorter = ({ castTags, setCastTags }: TagSorterProps) => {
+
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 5, // 5px以上動かないとドラッグが開始しない
+      },
+    })
+  );
 
   // ドラッグ終了時に配列を更新する
   const onDragEnd = (event: DragEndEvent) => {
@@ -74,13 +84,17 @@ const TagSorter = ({ castTags, setCastTags }: TagSorterProps) => {
   }
 
   return (
-    <DndContext onDragEnd={onDragEnd}>
+    <DndContext onDragEnd={onDragEnd} sensors={sensors}>
       <SortableContext items={castTags.map(tag => tag.castid)}>
         <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap" }}>
           {castTags.map((tag) => (
             <SortableTag
               key={tag.castid}
               castTag={tag}
+              handleDelete={() => {
+                // 削除されたタグ以外で再構成
+                setCastTags(castTags.filter(t => t.castid !== tag.castid));
+              }}
             />
           ))}
         </Stack>
