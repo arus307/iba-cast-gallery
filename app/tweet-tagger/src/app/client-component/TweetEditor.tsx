@@ -55,7 +55,7 @@ const TweetEditor = ({ initialId }: {
     const newPost: Post = {
       id: tweetId,
       postedAt: tweetDateTime?.toISOString(),
-      isDeleted: false,
+      isDeleted: isDeleted,
       castTags: castTags,
       taggedCasts: [],
     };
@@ -130,7 +130,7 @@ const TweetEditor = ({ initialId }: {
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
-      <FormControlLabel control={<Checkbox value={isDeleted} />} label="削除フラグ" />
+      <FormControlLabel control={<Checkbox checked={isDeleted} onChange={(e, checked) => setIsDeleted(checked)} />} label="削除フラグ" />
       <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}> 登録</Button>
     </Stack>
   );
