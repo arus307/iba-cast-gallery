@@ -104,7 +104,9 @@ const TweetEditor = ({ initialId }: {
         setCastTags(data.castTags.sort((a, b) => a.order - b.order));
       }
       setTweetDateTime(dayjs(data.postedAt));
-      setIsDeleted(data.isDeleted);
+      if (data.isDeleted !== undefined) {
+        setIsDeleted(data.isDeleted);
+      }
     } catch (error) {
       console.error("Error fetch post:", error);
     }
