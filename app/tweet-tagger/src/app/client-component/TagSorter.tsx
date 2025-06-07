@@ -39,7 +39,7 @@ const SortableTag = ({ castTag, handleDelete }: { castTag: PostCastTag, handleDe
       {...listeners}
       style={style}
       onDelete={handleDelete}
-      label={castTag.cast.name}
+      label={`${castTag.order} ${castTag.cast.name}`}
     />
   );
 }
