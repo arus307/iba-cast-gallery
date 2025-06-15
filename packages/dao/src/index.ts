@@ -6,6 +6,9 @@ export type { DataSourceOptions } from 'typeorm'; // 必要ならTypeORMの型�
 export { Cast } from './entities/Cast';
 export { Post } from './entities/Post';
 export { PostCastTag } from './entities/PostCastTag';
+export { User } from './entities/User';
+export { UserAccount } from './entities/UserAccount';
+export { Favorite } from './entities/Favorite';
 
 // 3. Custom Repository や DAO をエクスポート (使う場合)
 // 例1: カスタムリポジトリのファクトリ関数と型
