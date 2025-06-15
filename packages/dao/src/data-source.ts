@@ -3,6 +3,9 @@ import { DataSourceOptions } from 'typeorm';
 import { Cast } from './entities/Cast';
 import { Post } from './entities/Post';
 import { PostCastTag } from './entities/PostCastTag';
+import { User } from './entities/User';
+import { UserAccount } from './entities/UserAccount';
+import { Favorite } from './entities/Favorite';
 import path from 'path';
 
 /**
@@ -18,6 +21,9 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
     Cast,
     Post,
     PostCastTag,
+    User,
+    UserAccount,
+    Favorite,
   ],
   migrations: [
     path.join(__dirname, 'migrations/**/*.js'),

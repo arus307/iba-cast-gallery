@@ -4,6 +4,11 @@ import * as path from 'path';
 import { Post } from './entities/Post';
 import { Cast } from './entities/Cast';
 import { PostCastTag } from './entities/PostCastTag';
+import { User } from './entities/User';
+import { UserAccount } from './entities/UserAccount';
+import { Favorite } from './entities/Favorite';
+
+console.log(process.env);
 
 const options: DataSourceOptions = {
   type: 'postgres',
@@ -13,7 +18,7 @@ const options: DataSourceOptions = {
   password: process.env.DB_MIGRATION_USER_PASSWORD,
   database: process.env.DB_DATABASE,
   schema: process.env.DB_SCHEMA,
-  entities: [Post, Cast, PostCastTag],
+  entities: [Post, Cast, PostCastTag, User, UserAccount, Favorite],
   migrations: [path.join(__dirname, 'migrations/**/*.js')],
   synchronize: false,
   logging: ['query', 'error'],
