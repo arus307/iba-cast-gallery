@@ -20,7 +20,7 @@ interface MenuDrawerProps {
  */
 const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
 
-    const { data: sessien, status } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
 
     const [openAboutDialog, setOpenAboutDialog] = useState(false);
