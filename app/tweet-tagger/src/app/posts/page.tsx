@@ -5,7 +5,7 @@ import { Fab, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
 import TweetList from "app/client-component/TweetList";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 
 export default async function Home() {
 
