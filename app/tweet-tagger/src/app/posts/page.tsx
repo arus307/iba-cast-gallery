@@ -24,7 +24,7 @@ export default async function Home() {
     <>
       <Typography>登録済みポスト一覧</Typography>
       <TweetList />
-      <Fab color="primary" aria-label="新規ポスト登録" href="/" style={{ position: 'fixed', bottom: 16, right: 16 }}>
+      <Fab color="primary" aria-label="新規ポスト登録" href="/" sx={{ position: 'fixed', bottom: 16, right: 16 }}>
         <AddIcon />
       </Fab>
     </>
