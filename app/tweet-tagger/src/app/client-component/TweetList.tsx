@@ -42,7 +42,7 @@ const TweetList = () => {
     <Grid2 container spacing={2} className="w-full">
       {
         isLoading ? (
-          <Grid2 container xs={12} justifyContent="center" className="w-full">
+          <Grid2 container justifyContent="center" className="w-full">
             <CircularProgress />
           </Grid2>
         ) : (
