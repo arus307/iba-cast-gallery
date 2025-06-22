@@ -42,7 +42,9 @@ const TweetList = () => {
     <Grid2 container spacing={2} className="w-full">
       {
         isLoading ? (
-          <CircularProgress />
+          <Grid2 container justifyContent="center" className="w-full">
+            <CircularProgress />
+          </Grid2>
         ) : (
           posts.map((post) => (
             <Grid2 key={post.id} size={{ xs: 12, md: 6, lg: 4, xl: 3 }}>

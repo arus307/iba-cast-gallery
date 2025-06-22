@@ -36,8 +36,8 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline>
-                <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
-                  <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
+                <div className="grid items-start justify-items-center min-h-screen p-8 sm:p-20">
+                  <main className="flex flex-col gap-[32px] items-center w-full">
                     {children}
                   </main>
                 </div>
