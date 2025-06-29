@@ -6,6 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
 import theme from '../theme';
 import AuthSessionProviders from "./AuthSessionProvider"; // 作成したプロバイダーコンポーネント
+import Loader from "./client-component/Loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,6 +28,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+
   return (
     <html lang="ja">
       <body
@@ -36,6 +39,7 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
               <CssBaseline>
+                <Loader/>
                 <div className="grid items-start justify-items-center min-h-screen p-8 sm:p-20">
                   <main className="flex flex-col gap-[32px] items-center w-full">
                     {children}

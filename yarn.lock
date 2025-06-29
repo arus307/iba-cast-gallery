@@ -3260,6 +3260,7 @@ __metadata:
     dayjs: "npm:^1.11.13"
     eslint-config-next: "npm:15.2.4"
     next: "npm:15.2.4"
+    nextjs-toploader: "npm:^3.8.16"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-photo-view: "npm:^1.2.7"
@@ -4059,6 +4060,27 @@ __metadata:
   bin:
     next: dist/bin/next
   checksum: 10c0/a5c02cc0d9347e867e80ffa092ce46f00b190632e5414fb625a47eac2df25e97bdec7d193cfb6435624a7d9137543a33ca0c584bb01e838223aa32582207b766
+  languageName: node
+  linkType: hard
+
+"nextjs-toploader@npm:^3.8.16":
+  version: 3.8.16
+  resolution: "nextjs-toploader@npm:3.8.16"
+  dependencies:
+    nprogress: "npm:^0.2.0"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    next: ">= 6.0.0"
+    react: ">= 16.0.0"
+    react-dom: ">= 16.0.0"
+  checksum: 10c0/b705a81638dbf68d6c278b391ae00be1e59e823e7085ad3a4f638b804b007603d6bfe7c5d84e94770dd04cae3eb7101acf8df7bdcf0144bcc40f6a9f8a25e85b
+  languageName: node
+  linkType: hard
+
+"nprogress@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "nprogress@npm:0.2.0"
+  checksum: 10c0/eab9a923a1ad1eed71a455ecfbc358442dd9bcd71b9fa3fa1c67eddf5159360b182c218f76fca320c97541a1b45e19ced04e6dcb044a662244c5419f8ae9e821
   languageName: node
   linkType: hard
 
@@ -5373,6 +5395,7 @@ __metadata:
     eslint-config-next: "npm:15.2.4"
     next: "npm:15.2.4"
     next-auth: "npm:^5.0.0-beta.27"
+    nextjs-toploader: "npm:^3.8.16"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-tweet: "npm:^3.2.2"

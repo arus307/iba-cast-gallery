@@ -9,6 +9,7 @@ import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
 import AppBar from "./client-components/AppBar";
+import Loader from "./client-components/Loader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -64,6 +65,7 @@ export default function RootLayout({
                     </footer>
                   </div>
                   <ScrollToTopButton />
+                  <Loader/>
                 </>
               </CssBaseline>
             </ThemeProvider>
