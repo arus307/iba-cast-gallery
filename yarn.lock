@@ -3265,6 +3265,7 @@ __metadata:
     react-dom: "npm:^19.0.0"
     react-photo-view: "npm:^1.2.7"
     react-tweet: "npm:^3.2.2"
+    swr: "npm:^2.3.3"
     tailwindcss: "npm:^4"
   languageName: unknown
   linkType: soft
@@ -5185,7 +5186,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"swr@npm:^2.2.4":
+"swr@npm:^2.2.4, swr@npm:^2.3.3":
   version: 2.3.3
   resolution: "swr@npm:2.3.3"
   dependencies:
