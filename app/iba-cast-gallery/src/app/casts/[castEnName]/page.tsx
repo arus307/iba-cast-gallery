@@ -7,10 +7,10 @@ import {Tweet} from 'components/tweet/swr';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default async function Page(
-  { params }: { params: Promise<{ castEnName: string }> }
+  { params }: { params: { castEnName: string } }
 ) {
 
-  const castEnName = await params.then(p => p.castEnName);
+  const castEnName = params.castEnName;
   const cast = await getCastDetail(castEnName);
 
   const joinedPosts : JoinedPost[]  = cast.taggedPosts.map((post)=>{
