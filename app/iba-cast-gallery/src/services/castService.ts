@@ -51,10 +51,21 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
     const cast = await castRepository.findOne({
         where: {
             isActive: true,
-            enName: castEnName
+            enName: castEnName,
+            postCastTags: {
+                post: {
+                    isDeleted: false,
+                }
+            }
+
         },
         order: {
-            id: "ASC",
+            postCastTags:{
+                post: {
+                    postedAt: "DESC",
+                },
+                order: "ASC",
+            },
         },
         relations: {
             postCastTags: {

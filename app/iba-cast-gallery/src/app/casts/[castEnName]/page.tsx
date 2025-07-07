@@ -5,6 +5,7 @@ import { getCastDetail } from "services/castService";
 import Tweets from "../../../components/Tweets";
 import {Tweet} from 'components/tweet/swr';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import dayjs from "dayjs";
 
 export default async function Page(
   { params }: { params: Promise<{ castEnName: string }> }
@@ -19,7 +20,7 @@ export default async function Page(
       postedAt: post.postedAt,
       taggedCasts: post.taggedCasts,
     };
-  });
+  }).sort((a,b)=>dayjs(a.postedAt).isAfter(dayjs(b.postedAt)) ? -1 : 1);
 
   return (
     <Box>
