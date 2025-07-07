@@ -75,12 +75,13 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
         enName: cast.enName,
         type: cast.type,
         introduceTweetId: cast.introduceTweetId,
-        taggedPosts: cast.taggedPosts.map(post=>{
+        taggedPosts: cast.postCastTags.map(postCastTag => {
+            const post = postCastTag.post;
             return {
                 id: post.id,
                 postedAt: post.postedAt,
                 taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => ({
-                    id: castTag.castid,
+                    id: castTag.cast.id,
                     name: castTag.cast.name,
                     enName: castTag.cast.enName,
                 })),
