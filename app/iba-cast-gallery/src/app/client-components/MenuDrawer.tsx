@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Drawer, Box, List, ListItem, ListItemButton, ListItemText, Collapse, } from "@mui/material";
+import { Drawer, List, ListItem, ListItemButton, ListItemText, Collapse, } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import AboutDialog from "./AboutDialog";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";

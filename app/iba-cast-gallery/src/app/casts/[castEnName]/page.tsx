@@ -1,7 +1,7 @@
 "use server";
 
-import { Typography, Box, Divider, Accordion, AccordionSummary,AccordionDetails } from "@mui/material";
-import {  getCastDetail } from "services/castService";
+import { Typography, Box, Accordion, AccordionSummary,AccordionDetails } from "@mui/material";
+import { getCastDetail } from "services/castService";
 import Tweets from "../../../components/Tweets";
 import {Tweet} from 'components/tweet/swr';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
