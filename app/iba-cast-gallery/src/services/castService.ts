@@ -32,6 +32,7 @@ export async function getActiveCasts(): Promise<CastDto[]> {
     }));
 }
 
+// TODO ここに書くのが適切か検討したい
 export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "introduceTweetId"> & {
     taggedPosts: Array<Pick<PostDto, "id" | "postedAt"> & {
         taggedCasts: Pick<CastDto, "id" |"name"|"enName">[];
@@ -45,7 +46,6 @@ export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "i
  */
 export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
     await initializeDatabase();
-    console.log("castEnName:",castEnName);
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
     const cast = await castRepository.findOne({
@@ -68,7 +68,6 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
     if (!cast) {
         notFound();
     }
-
 
     return {
         id: cast.id,
