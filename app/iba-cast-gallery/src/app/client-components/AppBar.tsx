@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import {  AppBar as MUIAppBar, Toolbar, IconButton, Typography  } from '@mui/material';
+import { AppBar as MUIAppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import { Hachi_Maru_Pop } from 'next/font/google';
 import MenuDrawer from './MenuDrawer';
-import Link from 'next/link';
 import Link from 'next/link';
 
 const hachiMaruPop = Hachi_Maru_Pop({
