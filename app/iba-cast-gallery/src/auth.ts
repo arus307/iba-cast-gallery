@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import Discord from "next-auth/providers/discord"
-
+import {getUserByDiscordId,createNewUserByDiscordId} from "./services/userService";
+import { DefaultSession } from "next-auth";
 
 /**
  * 一部型定義を拡張
@@ -40,63 +41,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
      */
     async signIn({ user, account, profile }) {
       console.log("signIn Callback Triggered:", { user, account, profile });
-      // TODO ちゃんと実装する
 
       // Discordプロバイダーからのログインの場合のみ処理を実行
       if (account?.provider === "discord") {
         try {
-          // --- ここからがカスタムDB処理 ---
-
-          // 1. データベースリポジトリを取得
-          const accountRepository = AppDataSource.getRepository(Account);
-          const userRepository = AppDataSource.getRepository(User);
-
-          // 2. このDiscordアカウントが既にDBに登録済みか確認
-          const existingAccount = await accountRepository.findOne({
-            where: {
-              provider: account.provider,
-              providerAccountId: account.providerAccountId,
-            },
-          });
-
-          if (existingAccount) {
-            // 既に存在する場合: 何もせずサインインを許可
+          const user = await getUserByDiscordId(profile?.id || "");
+          if (user) {
+            // 既に存在する場合: サインインを許可
             console.log("既存のDiscordアカウントです。サインインを許可します。");
             return true;
           }
 
-          // 3. 初めてこのDiscordアカウントでログインする場合
+          // 存在しない場合: 新しいユーザーを作成
           console.log("新規のDiscordアカウントです。ユーザーとアカウントを作成します。");
-
-          // 4. 新しいユーザーをusersテーブルに作成
-          // profileから名前や画像を取得
-          const newUser = userRepository.create({
-            name: profile?.username || "New User", // Discordのusernameを利用
-            image: profile?.image_url,
-          });
-          await userRepository.save(newUser);
-          console.log("新しいユーザーを作成しました:", newUser);
-
-
-          // 5. 新しいアカウントをaccountsテーブルに作成
-          const newAccount = accountRepository.create({
-            userId: newUser.id, // 作成したユーザーのIDをセット
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
-            access_token: account.access_token,
-            refresh_token: account.refresh_token,
-            expires_at: account.expires_at,
-            token_type: account.token_type,
-            scope: account.scope,
-          });
-          await accountRepository.save(newAccount);
-          console.log("新しいアカウントを作成しました:", newAccount);
-          
-          return true; // すべて成功したのでサインインを許可
-
+          await createNewUserByDiscordId(profile?.id || "");          
+          return true;
         } catch (error) {
           console.error("signInコールバックでエラーが発生しました:", error);
-          // エラーが発生した場合はサインインを拒否
           return false;
         }
       }
@@ -113,7 +74,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user, account, profile }) {
       console.log("JWT Callback:", { token, user, account, profile });
 
-      if(account && profile) {
+      if(account && profile && profile.id) {
         switch(account.provider) {
           case "discord":
             // Discordのアカウント情報をトークンに保存
@@ -142,4 +103,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   }
-})
+});
