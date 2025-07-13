@@ -4,7 +4,7 @@ import {useSession} from "next-auth/react";
 import {CircularProgress} from "@mui/material";
 
 export default function Favorites() {
-    
+        
     const { data: session, status } = useSession();
 
     if(status === "loading") {
@@ -21,6 +21,8 @@ export default function Favorites() {
             </div>
         );
     }
+
+    const favoritePosts = fetch('/api/favorites');
 
     return (
         <div>
