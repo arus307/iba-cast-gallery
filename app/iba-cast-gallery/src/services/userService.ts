@@ -2,7 +2,7 @@ import "server-only";
 import { initializeDatabase, appDataSource } from "data-source";
 import { Cast, Favorite, PostCastTag, Repository } from "@iba-cast-gallery/dao";
 import { User, UserAccount } from "@iba-cast-gallery/dao";
-import { PostDto } from '@iba-cast-gallery/types';
+import { PostDto, PostWithCastsDto,CastDto } from '@iba-cast-gallery/types';
 import { Post } from "@iba-cast-gallery/dao";
 
 /**
@@ -64,24 +64,45 @@ export async function createNewUserByDiscordId(discordId: string): Promise<User>
  * @param user ユーザー情報
  * @returns お気に入りポストの配列
  */
-export async function getFavoritePosts(user:User): Promise<PostDto[]> {
+export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
     await initializeDatabase();
 
+    const favoriteRepository = appDataSource.getRepository(Favorite);
+    const favorites = await favoriteRepository.find({
+        where: { userId: user.id },
+        order: { createdAt: "DESC" },
+        select: ["postId"],
+    });
+
+
+    // お気に入り登録順のid配列
+    const postIds = favorites.map(fav => fav.postId);
+    if (postIds.length === 0) {
+        return [];
+    }
+
+    // 配列に含まれるidの投稿を取得
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
-    const qb = postRepository.createQueryBuilder("post");
+    const posts = await postRepository.createQueryBuilder("post")
+        .leftJoinAndSelect("post.castTags", "castTag")
+        .leftJoinAndSelect("castTag.cast", "cast")
+        .where("post.id IN (:...postIds)", { postIds })
+        .getMany();
 
-    const favoritePosts = await qb
-    .leftJoinAndMapMany("post.castTags", PostCastTag, "castTag", "castTag.postId = post.id")
-    .leftJoinAndMapMany("castTag.cast", Cast, "cast", "cast.id = castTag.castid")
-    .leftJoinAndMapMany("post.favorite", Favorite,"favorite", "favorite.postId = post.id")
-    .leftJoinAndMapMany("favorite.user", User, "user", "user.id = favorite.userId")
-    .where("user.id = :userId", { userId: user.id })
-    .orderBy("favorite.createdAt", "DESC")
-    .getMany();
+    // お気に入り登録順になるように再マップ
+    const postsById = new Map(posts.map(p => [p.id, p]));
+    const orderedPosts = postIds.map(id => postsById.get(id)).filter((p): p is Post => p !== undefined);
 
-    return favoritePosts.map((post) => ({
+    return orderedPosts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,
-        taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => castTag.castid),
+        taggedCasts: post.castTags?.map((castTag) => ({
+            id: castTag.cast.id,
+            name: castTag.cast.name,
+            enName: castTag.cast.enName,
+            introduceTweetId: castTag.cast.introduceTweetId,
+            type: castTag.cast.type,
+            taggedPosts: []
+        })) || []
     }));
 }
