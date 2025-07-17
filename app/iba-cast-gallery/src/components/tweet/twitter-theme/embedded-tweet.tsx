@@ -11,20 +11,37 @@ import { TweetReplies } from './tweet-replies'
 import { QuotedTweet } from './quoted-tweet/index'
 import { enrichTweet } from '../utils'
 import { useMemo, useState } from 'react'
-import {Button, Stack, Grid2} from '@mui/material'
+import {Button, Stack, Grid2, IconButton} from '@mui/material'
 import CastChip from 'components/CastChip'
 import { CastDto } from '@iba-cast-gallery/types'
+import { Star, StarBorderOutlined } from '@mui/icons-material'
+import { yellow } from '@mui/material/colors';
+import { addFavoritePostAction, deleteFavoritePostAction } from 'app/actions'
 
 type Props = {
   tweet: Tweet
   components?: Omit<TwitterComponents, 'TweetNotFound'>
   taggedCasts: CastDto[];
+  initialIsFavorite: boolean;
 }
 
-export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
+export const EmbeddedTweet = ({ tweet: t, components, taggedCasts, initialIsFavorite = false }: Props) => {
   // useMemo does nothing for RSC but it helps when the component is used in the client (e.g by SWR)
   const tweet = useMemo(() => enrichTweet(t), [t])
   const [displayTweet, setDisplayTweet] = useState<boolean>(false);
+
+  const [isFavorite, setIsFavorite] = useState<boolean>(initialIsFavorite);
+
+  const addFavorite = ()=>{
+    addFavoritePostAction(tweet.id_str);
+    setIsFavorite(true);
+  };
+
+  const deleteFavorite = ()=>{
+    deleteFavoritePostAction(tweet.id_str);
+    setIsFavorite(false);
+  };
+
   return (
     <TweetContainer>
       {displayTweet && <TweetHeader tweet={tweet} components={components} />}
@@ -44,6 +61,19 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
               <CastChip key={cast.id} cast={cast} />
             ))}
           </Stack>
+        </Grid2>
+        <Grid2>
+          {
+            isFavorite ? (
+              <IconButton aria-label="unfavorite" onClick={deleteFavorite}>
+                <Star sx={{ color: yellow[500] }} />
+              </IconButton>
+            ):(
+              <IconButton aria-label="favorite" onClick={addFavorite}>
+                <StarBorderOutlined color="action"/>
+              </IconButton>
+            )
+          }
         </Grid2>
         <Grid2>
           <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : '詳細表示'}</Button>
