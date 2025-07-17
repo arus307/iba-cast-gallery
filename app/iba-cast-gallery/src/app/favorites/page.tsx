@@ -3,7 +3,7 @@
 import { useSession } from "next-auth/react";
 import { CircularProgress } from "@mui/material";
 import Tweets from "components/Tweets";
-import { getFavoritesAction } from "app/actions";
+import { getFavoritePostIdsAction, getFavoritesAction } from "app/actions";
 import useSWR from "swr";
 
 export default function Favorites() {
@@ -26,10 +26,12 @@ export default function Favorites() {
     );
   }
 
+  const favoritePostIds = favoritePosts.map(post => post.id);
+
   return (
     <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
       お気に入りページ
-      <Tweets joinedPosts={favoritePosts} />
+      <Tweets joinedPosts={favoritePosts} favoritePostIds={favoritePostIds} />
     </main>
   );
 };
