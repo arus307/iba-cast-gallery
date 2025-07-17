@@ -10,36 +10,44 @@ import { TweetActions } from './tweet-actions'
 import { TweetReplies } from './tweet-replies'
 import { QuotedTweet } from './quoted-tweet/index'
 import { enrichTweet } from '../utils'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import {Button, Stack, Grid2, IconButton} from '@mui/material'
 import CastChip from 'components/CastChip'
 import { CastDto } from '@iba-cast-gallery/types'
 import { Star, StarBorderOutlined } from '@mui/icons-material'
 import { yellow } from '@mui/material/colors';
 import { addFavoritePostAction, deleteFavoritePostAction } from 'app/actions'
+import { useFavoritePostIds } from 'app/client-components/FavoritePostIdsProvider'
 
 type Props = {
   tweet: Tweet
   components?: Omit<TwitterComponents, 'TweetNotFound'>
   taggedCasts: CastDto[];
-  initialIsFavorite: boolean;
 }
 
-export const EmbeddedTweet = ({ tweet: t, components, taggedCasts, initialIsFavorite = false }: Props) => {
+export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   // useMemo does nothing for RSC but it helps when the component is used in the client (e.g by SWR)
   const tweet = useMemo(() => enrichTweet(t), [t])
   const [displayTweet, setDisplayTweet] = useState<boolean>(false);
 
-  const [isFavorite, setIsFavorite] = useState<boolean>(initialIsFavorite);
+  const { favoritePostIds, addFavorite: addFavoriteContext, removeFavorite: removeFavoriteContext, isLoading } = useFavoritePostIds();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setIsFavorite(favoritePostIds.includes(tweet.id_str));
+    }
+  }, [favoritePostIds, isLoading, tweet.id_str]);
+
 
   const addFavorite = ()=>{
     addFavoritePostAction(tweet.id_str);
-    setIsFavorite(true);
+    addFavoriteContext(tweet.id_str);
   };
 
   const deleteFavorite = ()=>{
     deleteFavoritePostAction(tweet.id_str);
-    setIsFavorite(false);
+    removeFavoriteContext(tweet.id_str);
   };
 
   return (

@@ -16,7 +16,6 @@ export type TweetProps = Omit<TweetCoreProps, 'id'> & {
   components?: TwitterComponents
   fetchOptions?: RequestInit
   taggedCasts: CastDto[];
-  favoritePostIds: string[]
 } & (
     | {
         id: string
@@ -36,7 +35,6 @@ export const Tweet = ({
   fetchOptions,
   onError,
   taggedCasts,
-  favoritePostIds,
 }: TweetProps) => {
   const { data, error, isLoading } = useTweet(id, apiUrl, fetchOptions)
 
@@ -46,5 +44,5 @@ export const Tweet = ({
     return <NotFound error={onError ? onError(error) : error} />
   }
 
-  return <EmbeddedTweet tweet={data} components={components} taggedCasts={taggedCasts} initialIsFavorite={favoritePostIds.includes(data.id_str)} />
+  return <EmbeddedTweet tweet={data} components={components} taggedCasts={taggedCasts} />
 }

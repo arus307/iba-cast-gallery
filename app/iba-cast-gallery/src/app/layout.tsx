@@ -9,8 +9,8 @@ import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
 import AppBar from "./client-components/AppBar";
-import Loader from "./client-components/Loader";
 import { SessionProvider } from "next-auth/react";
+import { FavoritePostIdsProvider } from './client-components/FavoritePostIdsProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,10 +45,10 @@ export default function RootLayout({
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AppRouterCacheProvider>
-          <SessionProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline>
-                <>
+          <ThemeProvider theme={theme}>
+            <CssBaseline>
+              <SessionProvider>
+                <FavoritePostIdsProvider>
                   <AppBar />
                   <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
                     {children}
@@ -67,11 +67,10 @@ export default function RootLayout({
                     </footer>
                   </div>
                   <ScrollToTopButton />
-                  <Loader/>
-                </>
-              </CssBaseline>
-            </ThemeProvider>
-          </SessionProvider>
+                </FavoritePostIdsProvider>
+              </SessionProvider>
+            </CssBaseline>
+          </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
       <GoogleAnalytics gaId="G-5LSG13J5E2" />

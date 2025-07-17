@@ -1,9 +1,9 @@
 import React from 'react';
 import {Tweet} from 'components/tweet/swr';
 
-const TweetCard = ( {tweet, favoritePostIds}:{tweet:JoinedPost, favoritePostIds: string[]}) => {
+const TweetCard = ( {tweet}:{tweet:JoinedPost}) => {
     return (
-        <Tweet id={tweet.id} taggedCasts={tweet.taggedCasts} favoritePostIds={favoritePostIds}/>
+        <Tweet id={tweet.id} taggedCasts={tweet.taggedCasts}/>
     );
 };
 

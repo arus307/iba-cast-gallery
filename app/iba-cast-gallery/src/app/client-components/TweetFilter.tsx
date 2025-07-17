@@ -7,7 +7,7 @@ import Tweets from "components/Tweets";
 import { CastDto } from "@iba-cast-gallery/types";
 import dayjs from "dayjs";
 
-export default function TweetFilter ({posts, casts,favoritePostIds}:{posts:JoinedPost[], casts:CastDto[], favoritePostIds: string[]}) {
+export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:CastDto[]}) {
 
     const [selectedCast, setSelectedCast] = useState<CastDto | null>(null);
     const displayPosts = posts.filter((post) => {
@@ -26,7 +26,7 @@ export default function TweetFilter ({posts, casts,favoritePostIds}:{posts:Joine
         <Grid2 size={12}>
             <CastSelect casts={casts} selectedCast={selectedCast} setSelectedCast={setSelectedCast} />
         </Grid2>
-        <Tweets joinedPosts={displayPosts} favoritePostIds={favoritePostIds}/>
+        <Tweets joinedPosts={displayPosts} />
     </Grid2>
     );
 };
