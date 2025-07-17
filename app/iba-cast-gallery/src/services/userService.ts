@@ -106,3 +106,19 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
         })) || []
     }));
 }
+
+/**
+ * お気に入りポストのIDの配列を取得
+ * @param user ユーザー情報
+ */
+export async function getFavoritePostIds(user:User): Promise<string[]>{
+    await initializeDatabase();
+
+    const favoriteRepository: Repository<Favorite> = appDataSource.getRepository(Favorite);
+    const favorites = await favoriteRepository.find({
+        where: { userId: user.id },
+        select: ["postId"],
+    });
+
+    return favorites.map(fav => fav.postId);
+}

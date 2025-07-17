@@ -3,7 +3,7 @@
 
 import { auth } from "auth";
 import { getActiveCasts } from "services/castService";
-import { getUserByDiscordId, getFavoritePosts } from "services/userService";
+import { getUserByDiscordId, getFavoritePosts,getFavoritePostIds } from "services/userService";
 import { addFavoritePost, deleteFavoritePost } from "services/favoriteService";
 
 /**
@@ -11,6 +11,26 @@ import { addFavoritePost, deleteFavoritePost } from "services/favoriteService";
  */
 export async function getActiveCastsAction() {
     return await getActiveCasts();
+}
+
+/**
+ * お気に入りのポストIDを取得するアクション
+ */
+export async function getFavoritePostIdsAction(){
+    const session = await auth();
+
+    if(!session || session.user?.discordId === undefined){
+        // ユーザーが認証されていない場合、401 Unauthorizedを返す
+        return Error("Unauthorized");
+    }
+
+    const user = await getUserByDiscordId(session.user.discordId)       
+    if(!user){
+        return [];
+    }
+
+    const favoritePostIds = await getFavoritePostIds(user);
+    return favoritePostIds;
 }
 
 /**
