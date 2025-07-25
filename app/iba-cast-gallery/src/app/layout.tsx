@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "app/globals.css";
 import { CssBaseline, Typography, Stack, Link } from "@mui/material";
@@ -24,6 +24,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "IBA gallery",
   description: "Imaginary Base Akihabaraの写真付きツイートをまとめて見ることができるファンサイトです。",
+};
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 const roboto = Roboto({
