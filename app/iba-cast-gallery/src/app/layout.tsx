@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   viewportFit: "cover",
-}
+};
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
