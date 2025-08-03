@@ -9,7 +9,8 @@ import theme from 'theme';
 import { GoogleAnalytics } from "@next/third-parties/google";
 import ScrollToTopButton from "./client-components/ScrollToTopButton";
 import AppBar from "./client-components/AppBar";
-import Loader from "./client-components/Loader";
+import { SessionProvider } from "next-auth/react";
+import { FavoritePostIdsProvider } from './client-components/FavoritePostIdsProvider';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -47,15 +48,16 @@ export default function RootLayout({
       <body
         className={`${roboto.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <AppRouterCacheProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline>
-                <>
-                  <AppBar/>
+        <AppRouterCacheProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline>
+              <SessionProvider>
+                <FavoritePostIdsProvider>
+                  <AppBar />
                   <div className="grid items-center justify-items-center min-h-screen p-8 sm:p-20">
                     {children}
                     <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-                      <Stack direction="column" spacing={0.5} sx={{marginTop:4}} alignItems="center">
+                      <Stack direction="column" spacing={0.5} sx={{ marginTop: 4 }} alignItems="center">
                         <Typography variant="h6">
                           このサイトは、IBA公式とは一切関係のないファンサイトです。
                         </Typography>
@@ -63,17 +65,17 @@ export default function RootLayout({
                           arus(<Link href="https://x.com/arus307" target='_blank' rel='noopener noreferrer'>@arus307</Link>)が勝手に開発しています。
                         </Typography>
                         <Typography variant="subtitle2">
-                            タグ付けの誤りや反映されていないツイート、その他問題がありましたら<Link href="https://forms.gle/ATYKj4eXd3t8kJHB9" target='_blank' rel='noopener noreferrer'>お問い合わせフォーム</Link>もしくは上記のXアカウントまでご連絡ください。
+                          タグ付けの誤りや反映されていないツイート、その他問題がありましたら<Link href="https://forms.gle/ATYKj4eXd3t8kJHB9" target='_blank' rel='noopener noreferrer'>お問い合わせフォーム</Link>もしくは上記のXアカウントまでご連絡ください。
                         </Typography>
-                        </Stack>
+                      </Stack>
                     </footer>
                   </div>
                   <ScrollToTopButton />
-                  <Loader/>
-                </>
-              </CssBaseline>
-            </ThemeProvider>
-          </AppRouterCacheProvider>
+                </FavoritePostIdsProvider>
+              </SessionProvider>
+            </CssBaseline>
+          </ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
       <GoogleAnalytics gaId="G-5LSG13J5E2" />
     </html>

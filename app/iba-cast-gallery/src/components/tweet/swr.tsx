@@ -44,5 +44,5 @@ export const Tweet = ({
     return <NotFound error={onError ? onError(error) : error} />
   }
 
-  return <EmbeddedTweet tweet={data} components={components} taggedCasts={taggedCasts}/>
+  return <EmbeddedTweet tweet={data} components={components} taggedCasts={taggedCasts} />
 }

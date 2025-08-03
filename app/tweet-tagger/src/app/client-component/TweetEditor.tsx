@@ -58,6 +58,7 @@ const TweetEditor = ({ initialId }: {
       isDeleted: isDeleted,
       castTags: castTags,
       taggedCasts: [],
+      favorites: [],
     };
 
     try {

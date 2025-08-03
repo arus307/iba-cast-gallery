@@ -26,7 +26,7 @@ export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:C
         <Grid2 size={12}>
             <CastSelect casts={casts} selectedCast={selectedCast} setSelectedCast={setSelectedCast} />
         </Grid2>
-        <Tweets joinedPosts={displayPosts}/>
+        <Tweets joinedPosts={displayPosts} />
     </Grid2>
     );
 };

@@ -2,7 +2,6 @@ import TweetFilter from "./client-components/TweetFilter";
 import { getActiveCasts } from "services/castService";
 import { getExistsPosts } from "services/postService";
 import { CastDto } from "@iba-cast-gallery/types";
-
 export const dynamic = 'force-dynamic';
 
 export default async function Home () {
@@ -23,7 +22,7 @@ export default async function Home () {
 
   return (
     <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full">
-      <TweetFilter casts={casts} posts={joinedPost} />
+      <TweetFilter casts={casts} posts={joinedPost}/>
     </main>
   );
 }

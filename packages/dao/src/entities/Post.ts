@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
 import { Cast } from "./Cast";
 import { PostCastTag } from "./PostCastTag";
+import { Favorite } from "./Favorite";
 
 @Entity('posts')
 export class Post {
@@ -25,6 +26,12 @@ export class Post {
    */
   @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.post, { cascade: ['insert', 'update'], orphanedRowAction: 'delete', eager: true })
   castTags: PostCastTag[];
+
+  /**
+   * お気に入り情報
+   */
+  @OneToMany(() => Favorite, (favorite) => favorite.post)
+  favorites: Favorite[];
 
   /**
    * タグ付けされたキャスト情報

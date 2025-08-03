@@ -1,7 +1,8 @@
 import TweetCard from "components/TweetCard";
 import Grid2 from "@mui/material/Grid2";
+import { PostWithCastsDto } from "@iba-cast-gallery/types";
 
-export default function Tweets ({joinedPosts}:{joinedPosts:JoinedPost[]}) {
+export default function Tweets ({joinedPosts}:{joinedPosts: PostWithCastsDto[]}) {
 
   return (
     <Grid2 container spacing={2} className="w-full">

@@ -3260,6 +3260,7 @@ __metadata:
     dayjs: "npm:^1.11.13"
     eslint-config-next: "npm:15.2.4"
     next: "npm:15.2.4"
+    next-auth: "npm:^5.0.0-beta.27"
     nextjs-toploader: "npm:^3.8.16"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
