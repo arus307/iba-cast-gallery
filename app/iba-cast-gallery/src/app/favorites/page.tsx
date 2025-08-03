@@ -15,7 +15,6 @@ export default function Favorites() {
     );
   }
 
-  console.log("favoritePosts", favoritePosts);
 
   if (!favoritePosts || favoritePosts instanceof Error || error) {
     return (
