@@ -53,8 +53,10 @@ export async function createNewUserByDiscordId(discordId: string): Promise<User>
     
     await userAccountRepository.save(userAccount);
 
-    console.log("新しいユーザーを作成しました:", newUser);
-    console.log("新しいアカウントを作成しました:", userAccount);
+    if (process.env.NODE_ENV === 'development') {
+        console.log("新しいユーザーを作成しました:", newUser);
+        console.log("新しいアカウントを作成しました:", userAccount);
+    }
 
     return savedUser;
 }
