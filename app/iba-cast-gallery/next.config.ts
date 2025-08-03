@@ -4,6 +4,7 @@ const allowedOrigins =  (process.env.NODE_ENV === 'development' ? ['localhost:30
 
 const nextConfig: NextConfig = {
   /* config options here */
+  productionBrowserSourceMaps: true, //エラー調査のため一時的に
   transpilePackages: [
     "@iba-cast-gallery/dao",
     "@iba-cast-gallery/types"
