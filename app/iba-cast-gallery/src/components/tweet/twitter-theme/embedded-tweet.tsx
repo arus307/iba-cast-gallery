@@ -11,7 +11,7 @@ import { TweetReplies } from './tweet-replies'
 import { QuotedTweet } from './quoted-tweet/index'
 import { enrichTweet } from '../utils'
 import { useMemo, useState, useEffect } from 'react'
-import {Button, Stack, Grid2, IconButton, Popover, Typography, Link} from '@mui/material'
+import {Button, Stack, Grid2, IconButton, Popover, Typography, Link, Snackbar, Alert} from '@mui/material'
 import CastChip from 'components/CastChip'
 import { CastDto } from '@iba-cast-gallery/types'
 import { Star, StarBorderOutlined } from '@mui/icons-material'
@@ -39,6 +39,11 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const openPopover = Boolean(anchorEl);
 
+  // Snackbarの状態管理
+  const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+  const [snackbarMessage, setSnackbarMessage] = useState<string>('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'info'>('success');
+
   useEffect(() => {
     if (!isLoading) {
       setIsFavorite(favoritePostIds.includes(tweet.id_str));
@@ -49,11 +54,17 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   const addFavorite = ()=>{
     addFavoritePostAction(tweet.id_str);
     addFavoriteContext(tweet.id_str);
+    setSnackbarMessage('お気に入りに追加しました');
+    setSnackbarSeverity('success');
+    setSnackbarOpen(true);
   };
 
   const deleteFavorite = ()=>{
     deleteFavoritePostAction(tweet.id_str);
     removeFavoriteContext(tweet.id_str);
+    setSnackbarMessage('お気に入りから削除しました');
+    setSnackbarSeverity('info');
+    setSnackbarOpen(true);
   };
 
   const handleFavoriteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -73,6 +84,10 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -119,7 +134,7 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
               horizontal: 'center',
             }}
           >
-            <div style={{ padding: 4, maxWidth: '300px' }}>
+            <div style={{ padding: '16px', maxWidth: '300px' }}>
               <Typography variant="body1" gutterBottom>
                 お気に入り機能を使用するにはログインが必要です
               </Typography>
@@ -138,6 +153,22 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
           <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : '詳細表示'}</Button>
         </Grid2>
       </Grid2>
+
+      {/* 登録・削除完了を通知するSnackbar */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={handleSnackbarClose} 
+          severity={snackbarSeverity}
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </TweetContainer>
   )
 }
