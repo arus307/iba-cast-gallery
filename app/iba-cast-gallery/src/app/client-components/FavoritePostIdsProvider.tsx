@@ -22,7 +22,7 @@ export const useFavoritePostIds = () => {
 };
 
 export const FavoritePostIdsProvider = ({ children }: { children: ReactNode }) => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [favoritePostIds, setFavoritePostIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -20,7 +20,7 @@ interface MenuDrawerProps {
  */
 const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
 
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const router = useRouter();
 
     const [openAboutDialog, setOpenAboutDialog] = useState(false);
@@ -38,7 +38,7 @@ const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
     }
 
     const onClickLogout = () => {
-        signOut("discord");
+        signOut();
     }
 
     const [isOpenCastList, setIsOpenCastList] = useState(false);
