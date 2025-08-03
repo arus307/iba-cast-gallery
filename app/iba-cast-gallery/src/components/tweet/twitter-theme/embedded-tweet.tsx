@@ -11,13 +11,14 @@ import { TweetReplies } from './tweet-replies'
 import { QuotedTweet } from './quoted-tweet/index'
 import { enrichTweet } from '../utils'
 import { useMemo, useState, useEffect } from 'react'
-import {Button, Stack, Grid2, IconButton} from '@mui/material'
+import {Button, Stack, Grid2, IconButton, Popover, Typography, Link} from '@mui/material'
 import CastChip from 'components/CastChip'
 import { CastDto } from '@iba-cast-gallery/types'
 import { Star, StarBorderOutlined } from '@mui/icons-material'
 import { yellow } from '@mui/material/colors';
 import { addFavoritePostAction, deleteFavoritePostAction } from 'app/actions'
 import { useFavoritePostIds } from 'app/client-components/FavoritePostIdsProvider'
+import { useSession } from 'next-auth/react'
 
 type Props = {
   tweet: Tweet
@@ -32,6 +33,11 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
 
   const { favoritePostIds, addFavorite: addFavoriteContext, removeFavorite: removeFavoriteContext, isLoading } = useFavoritePostIds();
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const { data: session } = useSession();
+  
+  // ポップオーバーの状態管理
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const openPopover = Boolean(anchorEl);
 
   useEffect(() => {
     if (!isLoading) {
@@ -48,6 +54,25 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   const deleteFavorite = ()=>{
     deleteFavoritePostAction(tweet.id_str);
     removeFavoriteContext(tweet.id_str);
+  };
+
+  const handleFavoriteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!session?.user) {
+      // ログインしていない場合はポップオーバーを表示
+      setAnchorEl(event.currentTarget);
+      return;
+    }
+
+    // ログインしている場合は通常のお気に入り処理
+    if (isFavorite) {
+      deleteFavorite();
+    } else {
+      addFavorite();
+    }
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -71,17 +96,43 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
           </Stack>
         </Grid2>
         <Grid2>
-          {
-            isFavorite ? (
-              <IconButton aria-label="unfavorite" onClick={deleteFavorite}>
-                <Star sx={{ color: yellow[500] }} />
-              </IconButton>
-            ):(
-              <IconButton aria-label="favorite" onClick={addFavorite}>
-                <StarBorderOutlined color="action"/>
-              </IconButton>
-            )
-          }
+          <IconButton 
+            aria-label={isFavorite ? "unfavorite" : "favorite"} 
+            onClick={handleFavoriteClick}
+          >
+            {isFavorite ? (
+              <Star sx={{ color: yellow[500] }} />
+            ) : (
+              <StarBorderOutlined color="action"/>
+            )}
+          </IconButton>
+          <Popover
+            open={openPopover}
+            anchorEl={anchorEl}
+            onClose={handlePopoverClose}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+          >
+            <div style={{ padding: 4, maxWidth: '300px' }}>
+              <Typography variant="body1" gutterBottom>
+                お気に入り機能を使用するにはログインが必要です
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Discordアカウントでログインしてください
+              </Typography>
+              <Link href="/api/auth/signin" underline="none">
+                <Button variant="contained" color="primary" fullWidth sx={{ mt: 1 }}>
+                  ログイン
+                </Button>
+              </Link>
+            </div>
+          </Popover>
         </Grid2>
         <Grid2>
           <Button size="small" variant="outlined" onClick={()=>setDisplayTweet(!displayTweet)}>{displayTweet ? '画像のみ表示' : '詳細表示'}</Button>
