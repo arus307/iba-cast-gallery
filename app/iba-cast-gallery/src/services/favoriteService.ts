@@ -27,7 +27,7 @@ export async function addFavoritePost(userId:number, postId : string): Promise<v
 
     // 新しいお気に入りを作成
     const newFavorite = favoriteRepository.create({ userId, postId });
-    await favoriteRepository.save(newFavorite);
+    await favoriteRepository.insert(newFavorite);
     
     console.log("お気に入り投稿を追加しました:", newFavorite);
 }
