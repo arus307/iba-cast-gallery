@@ -66,6 +66,28 @@ const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
                                 <ListItemText primary="このサイトについて" />
                             </ListItemButton>
                         </ListItem>
+
+                        <ListItem>
+                            <ListItemButton onClick={toggleCastList}>
+                            <ListItemText primary="キャスト一覧" />
+                            {isOpenCastList ? <ExpandLess /> : <ExpandMore />}
+                            </ListItemButton>
+                        </ListItem>
+                        <Collapse in={isOpenCastList}>
+                            <List component="div" disablePadding>
+                            {isLoading && <ListItemText primary="読み込み中..." />}
+                            {error && <ListItemText primary="キャストの取得に失敗しました" />}
+                            {
+                                casts && casts.map((cast) => (
+                                <ListItem key={cast.id}>
+                                    <ListItemButton href={`/casts/${cast.enName}`} sx={{ pl: 4 }}>
+                                    <ListItemText primary={cast.name} />
+                                    </ListItemButton>
+                                </ListItem>
+                                ))}
+                            </List>
+                        </Collapse>
+
                         {status === "authenticated" && (
                             <ListItem>
                                 <ListItemButton onClick={onClickFavorites}>
@@ -88,29 +110,6 @@ const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
                                 </ListItemButton>
                             </ListItem>
                         )}
-
-                      <ListItem>
-                        <ListItemButton onClick={toggleCastList}>
-                          <ListItemText primary="キャスト一覧" />
-                          {isOpenCastList ? <ExpandLess /> : <ExpandMore />}
-                        </ListItemButton>
-                      </ListItem>
-
-                      <Collapse in={isOpenCastList}>
-                        <List component="div" disablePadding>
-                          {isLoading && <ListItemText primary="読み込み中..." />}
-                          {error && <ListItemText primary="キャストの取得に失敗しました" />}
-                          {
-                            casts && casts.map((cast) => (
-                              <ListItem key={cast.id}>
-                                <ListItemButton href={`/casts/${cast.enName}`} sx={{ pl: 4 }}>
-                                  <ListItemText primary={cast.name} />
-                                </ListItemButton>
-                              </ListItem>
-                            ))}
-                        </List>
-                      </Collapse>
-
                     </List>
                 </Box>
             </Drawer>
