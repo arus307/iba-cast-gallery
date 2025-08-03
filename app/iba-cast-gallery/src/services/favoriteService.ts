@@ -17,7 +17,7 @@ export async function addFavoritePost(userId:number, postId : string): Promise<v
 
     // お気に入り登録が既に存在するか確認
     const existingFavorite = await favoriteRepository.findOne({
-        where: { postId: postId },
+        where: { userId: userId, postId: postId },
     });
 
     if (existingFavorite) {
