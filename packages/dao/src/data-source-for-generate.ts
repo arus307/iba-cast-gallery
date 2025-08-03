@@ -8,8 +8,6 @@ import { User } from './entities/User';
 import { UserAccount } from './entities/UserAccount';
 import { Favorite } from './entities/Favorite';
 
-console.log(process.env);
-
 const options: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
