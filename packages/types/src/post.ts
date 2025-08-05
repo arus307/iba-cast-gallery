@@ -9,5 +9,8 @@ export interface PostDto {
 export interface PostWithCastsDto {
     id: string;
     postedAt: string;
-    taggedCasts: CastDto[];
+    taggedCasts: {
+        order: number;
+        cast: CastDto;
+    }[];
 }

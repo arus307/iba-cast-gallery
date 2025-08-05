@@ -99,12 +99,15 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
         id: post.id,
         postedAt: post.postedAt,
         taggedCasts: post.castTags?.map((castTag) => ({
-            id: castTag.cast.id,
-            name: castTag.cast.name,
-            enName: castTag.cast.enName,
-            introduceTweetId: castTag.cast.introduceTweetId,
-            type: castTag.cast.type,
-            taggedPosts: []
+            order: castTag.order,
+            cast: {
+                id: castTag.cast.id,
+                name: castTag.cast.name,
+                enName: castTag.cast.enName,
+                introduceTweetId: castTag.cast.introduceTweetId,
+                type: castTag.cast.type,
+                taggedPosts: []
+            },
         })) || []
     }));
 }
