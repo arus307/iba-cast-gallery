@@ -14,7 +14,10 @@ import { CastDto } from '@iba-cast-gallery/types'
 export type { TweetProps }
 
 type TweetContentProps = Omit<TweetProps, 'fallback'> &{
-  taggedCasts: CastDto[];
+  taggedCasts: {
+    order: number;
+    cast:CastDto
+  }[];
 }
 
 const TweetContent = async ({
