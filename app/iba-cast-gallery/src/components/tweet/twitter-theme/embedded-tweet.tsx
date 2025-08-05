@@ -23,7 +23,11 @@ import { useSession } from 'next-auth/react'
 type Props = {
   tweet: Tweet
   components?: Omit<TwitterComponents, 'TweetNotFound'>
-  taggedCasts: CastDto[];
+  taggedCasts: {
+    order: number
+    cast: CastDto
+  }[];
+
 }
 
 export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
@@ -105,8 +109,8 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
       <Grid2 container alignItems="center">
         <Grid2 size='grow'>
           <Stack direction='row' spacing={0.5} alignItems={'center'} useFlexGap sx={{width: '100%', flexWrap: 'wrap'}}>
-            {taggedCasts.map((cast) => (
-              <CastChip key={cast.id} cast={cast} />
+            {taggedCasts.sort((a, b) => a.order - b.order).map((a) => (
+              <CastChip key={a.cast.id} cast={a.cast} />
             ))}
           </Stack>
         </Grid2>

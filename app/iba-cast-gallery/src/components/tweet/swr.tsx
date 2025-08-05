@@ -15,7 +15,10 @@ export type TweetProps = Omit<TweetCoreProps, 'id'> & {
   fallback?: ReactNode
   components?: TwitterComponents
   fetchOptions?: RequestInit
-  taggedCasts: CastDto[];
+  taggedCasts: {
+    order: number
+    cast: CastDto
+  }[]
 } & (
     | {
         id: string
@@ -25,7 +28,7 @@ export type TweetProps = Omit<TweetCoreProps, 'id'> & {
         id?: string
         apiUrl: string | undefined
       }
-  )
+  );
 
 export const Tweet = ({
   id,
