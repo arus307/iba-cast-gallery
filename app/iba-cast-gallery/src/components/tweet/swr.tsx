@@ -28,7 +28,7 @@ export type TweetProps = Omit<TweetCoreProps, 'id'> & {
         id?: string
         apiUrl: string | undefined
       }
-  );
+  )
 
 export const Tweet = ({
   id,
