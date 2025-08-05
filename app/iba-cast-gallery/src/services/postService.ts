@@ -23,6 +23,11 @@ export async function getExistsPosts(): Promise<PostDto[]> {
     return posts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,
-        taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => castTag.castid),
+        taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => {
+            return {
+                order: castTag.order,
+                castId: castTag.castid
+            };
+        }),
     }));
 }

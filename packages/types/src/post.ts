@@ -3,7 +3,10 @@ import {CastDto} from "./cast";
 export interface PostDto {
     id: string;
     postedAt: string;
-    taggedCasts: number[];
+    taggedCasts: {
+        order:number;
+        castId: number;
+    }[];
 }
 
 export interface PostWithCastsDto {

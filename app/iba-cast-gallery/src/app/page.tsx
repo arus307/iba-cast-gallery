@@ -1,7 +1,7 @@
 import TweetFilter from "./client-components/TweetFilter";
 import { getActiveCasts } from "services/castService";
 import { getExistsPosts } from "services/postService";
-import { CastDto } from "@iba-cast-gallery/types";
+import { CastDto, PostWithCastsDto } from "@iba-cast-gallery/types";
 export const dynamic = 'force-dynamic';
 
 export default async function Home () {
@@ -9,10 +9,13 @@ export default async function Home () {
   const casts = await getActiveCasts();
   const posts = await getExistsPosts();
 
-  const joinedPost:JoinedPost[] = posts.map((post) => {
-    const taggedCasts = post.taggedCasts.map((castId) => {
-      return casts.find((cast) => cast.id === castId);
-    }).filter((cast): cast is CastDto => cast !== undefined);
+  const joinedPost:PostWithCastsDto[] = posts.map((post) => {
+    const taggedCasts = post.taggedCasts.map((a) => {
+      return {
+        order: a.order,
+        cast: casts.find((cast) => cast.id === a.castId),
+      };
+    }).filter((cast): cast is {order:number, cast:CastDto} => cast !== undefined);
     return {
       id: post.id,
       postedAt: post.postedAt,
