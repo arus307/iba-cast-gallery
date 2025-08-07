@@ -23,6 +23,7 @@
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.27",
     "nextjs-toploader": "^3.8.16",
+    "pino": "^9.7.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-tweet": "^3.2.2"

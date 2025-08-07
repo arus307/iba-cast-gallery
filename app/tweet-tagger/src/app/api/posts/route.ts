@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { registerPost, getAllPosts } from "services/postService";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
+import logger from "logger";
 
 
 /**
@@ -17,6 +18,8 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         const post: Post = body.post;
+
+        logger.info({body}, `ポスト登録リクエスト受信`);
 
         // キャストの存在チェック
         const casts = await getAllCasts();
