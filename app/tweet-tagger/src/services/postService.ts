@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
 import { Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
+import logger from "../logger";
 
 /**
  * ポスト情報を全件取得する
@@ -23,11 +24,15 @@ export async function getAllPosts(): Promise<Post[]> {
  * ポスト情報を登録する
  * 
  * @param request 登録するポスト情報
+ * @return 登録されたポスト情報
  */
-export async function registerPost(post: Post): Promise<void> {
+export async function registerPost(post: Post): Promise<Post> {
     await initializeDatabase();
+
+    logger.info({post},`ポスト登録`);
+
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
-    postRepository.save(post);
+    return await postRepository.save(post);
 }
 
 /**
