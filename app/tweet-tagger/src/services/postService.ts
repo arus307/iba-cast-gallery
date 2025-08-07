@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
-import { Repository } from "@iba-cast-gallery/dao";
+import { PostCastTag, Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
 import logger from "../logger";
 
@@ -26,13 +26,23 @@ export async function getAllPosts(): Promise<Post[]> {
  * @param request 登録するポスト情報
  * @return 登録されたポスト情報
  */
-export async function registerPost(post: Post): Promise<Post> {
+export async function registerPost(post: Post): Promise<void> {
     await initializeDatabase();
 
-    logger.info({post},`ポスト登録`);
-
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
-    return await postRepository.save(post);
+    postRepository.insert(post);
+
+    logger.info({post},`ポスト登録完了`);
+
+    const postCastTagRepository: Repository<PostCastTag> = appDataSource.getRepository(PostCastTag);
+    const postCastTags = post.castTags.map((castTag) => ({
+            postId: post.id,
+            castid: castTag.castid,
+            order: castTag.order,
+        }));
+    postCastTagRepository.insert(postCastTags);
+
+    logger.info({postCastTags}, `タグ登録完了 (postId: ${post.id})`);
 }
 
 /**
