@@ -30,11 +30,24 @@ export async function registerPost(post: Post): Promise<void> {
     await initializeDatabase();
 
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
-    postRepository.insert(post);
 
-    logger.info({post},`ポスト登録完了`);
+    const isExists = await postRepository.findOne({
+        where: { id: post.id },
+    });
+
+    if(isExists) {
+        postRepository.update(post.id, post);
+        logger.info({post},`ポスト更新完了`);
+    } else {
+        postRepository.insert(post);
+        logger.info({post},`ポスト登録完了`);
+    }
 
     const postCastTagRepository: Repository<PostCastTag> = appDataSource.getRepository(PostCastTag);
+
+    postCastTagRepository.delete({ postId: post.id }); // 既存のキャストタグを削除
+    logger.info({post}, `既存のキャストタグ削除完了 (postId: ${post.id})`);
+
     const postCastTags = post.castTags.map((castTag) => ({
             postId: post.id,
             castid: castTag.castid,
