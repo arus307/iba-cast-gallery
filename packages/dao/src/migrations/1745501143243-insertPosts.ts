@@ -8,7 +8,8 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class InsertPosts1745501143243 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         const casts: Cast[] = await queryRunner.manager.find("casts");
         // id指定になっているcastをインスタンスに設定
         const posts: Post[] = basePosts.map((basePost) => {
@@ -26,16 +27,20 @@ export class InsertPosts1745501143243 implements MigrationInterface {
             return post;
         });
         await queryRunner.manager.save(posts);
+        */
 
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         const idsToDelete = basePosts.map(p => p.id);
         await queryRunner.manager.createQueryBuilder()
             .delete()
             .from(Post)
             .where("id IN (:...ids)", { ids: idsToDelete })
             .execute();
+        */
     }
 }
 
