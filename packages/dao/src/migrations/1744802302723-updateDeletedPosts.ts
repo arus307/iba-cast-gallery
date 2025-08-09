@@ -8,21 +8,25 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class UpdateDeletedPosts1744802302723 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         await queryRunner.manager.createQueryBuilder()
             .update(Post)
             .set({ isDeleted: true })
             .where("id IN (:...ids)", { ids: targetPostIds })
             .execute();
+        */
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         await queryRunner.manager.createQueryBuilder()
             .update(Post)
             .set({ isDeleted: false })
             .where("id IN (:...ids)", { ids: targetPostIds })
             .execute();
+        */
     }
 
 }
