@@ -16,3 +16,7 @@
 **/dist
 
 .env.local
+
+# Playwright test results
+/playwright-report/
+/test-results/
