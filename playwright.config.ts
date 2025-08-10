@@ -20,40 +20,41 @@ export default defineConfig({
     },
   ],
 
-  webServer: [
-    {
-      command: 'yarn workspace tweet-tagger dev',
-      url: 'http://localhost:3001',
-      reuseExistingServer: !process.env.CI,
-      timeout: 300000, // 5 minutes
-      env: {
-        E2E_TESTING: "true",
-        ADMIN_EMAIL: ADMIN_EMAIL,
-        AUTH_SECRET: "dummy_secret_for_local_development",
-        DB_HOST: "localhost",
-        DB_PORT: "5432",
-        DB_USERNAME: "postgres",
-        DB_PASSWORD: "password",
-        DB_DATABASE: "ibacastgallery",
-        AUTH_GITHUB_ID: "dummy",
-        AUTH_GITHUB_SECRET: "dummy",
-      }
-    },
-    {
-      command: 'yarn workspace iba-cast-gallery dev',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
-      timeout: 300000, // 5 minutes
-      env: {
-        DB_HOST: "localhost",
-        DB_PORT: "5432",
-        DB_USERNAME: "postgres",
-        DB_PASSWORD: "password",
-        DB_DATABASE: "ibacastgallery",
-        AUTH_GITHUB_ID: "dummy",
-        AUTH_GITHUB_SECRET: "dummy",
-        AUTH_SECRET: "dummy_secret_for_local_development",
-      }
-    },
-  ],
+  // 手動で立ち上げるのでコメントアウト
+  // webServer: [
+  //   {
+  //     command: 'yarn workspace tweet-tagger dev',
+  //     url: 'http://localhost:3001',
+  //     reuseExistingServer: !process.env.CI,
+  //     timeout: 300000, // 5 minutes
+  //     env: {
+  //       E2E_TESTING: "true",
+  //       ADMIN_EMAIL: ADMIN_EMAIL,
+  //       AUTH_SECRET: "dummy_secret_for_local_development",
+  //       DB_HOST: "localhost",
+  //       DB_PORT: "5432",
+  //       DB_USERNAME: "postgres",
+  //       DB_PASSWORD: "password",
+  //       DB_DATABASE: "ibacastgallery",
+  //       AUTH_GITHUB_ID: "dummy",
+  //       AUTH_GITHUB_SECRET: "dummy",
+  //     }
+  //   },
+  //   {
+  //     command: 'yarn workspace iba-cast-gallery dev',
+  //     url: 'http://localhost:3000',
+  //     reuseExistingServer: !process.env.CI,
+  //     timeout: 300000, // 5 minutes
+  //     env: {
+  //       DB_HOST: "localhost",
+  //       DB_PORT: "5432",
+  //       DB_USERNAME: "postgres",
+  //       DB_PASSWORD: "password",
+  //       DB_DATABASE: "ibacastgallery",
+  //       AUTH_GITHUB_ID: "dummy",
+  //       AUTH_GITHUB_SECRET: "dummy",
+  //       AUTH_SECRET: "dummy_secret_for_local_development",
+  //     }
+  //   },
+  // ],
 });
