@@ -39,6 +39,9 @@ jobs:
 
       - name: Build applications
         run: yarn turbo build
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
 
       - name: Start production servers
         run: |
