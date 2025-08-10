@@ -2,10 +2,10 @@ import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
 
-const providers = [
+const providers: Array<ReturnType<typeof GitHub> | ReturnType<typeof Credentials>> = [
     GitHub({
-        clientId: process.env.AUTH_GITHUB_ID,
-        clientSecret: process.env.AUTH_GITHUB_SECRET,
+        clientId: process.env.AUTH_GITHUB_ID!,
+        clientSecret: process.env.AUTH_GITHUB_SECRET!,
     }),
 ];
 
@@ -29,7 +29,7 @@ if (process.env.E2E_TESTING === "true") {
 
 export const authConfig = {
     providers,
-    secret: process.env.AUTH_SECRET || "dummy_secret_for_local_development",
+    secret: getAuthSecret(),
     callbacks: {
         jwt({ token, user }) {
             if (user) {
@@ -45,3 +45,18 @@ export const authConfig = {
         },
     }
 } satisfies NextAuthConfig;
+
+function getAuthSecret() {
+    console.log("process.env");
+    console.log(process.env);
+
+    if (process.env.AUTH_SECRET) {  
+        return process.env.AUTH_SECRET;  
+    }  
+    // Allow fallback only in development or E2E testing  
+    const env = process.env.NODE_ENV;  
+    if (env === "development" || process.env.E2E_TESTING === "true") {  
+        return "dummy_secret_for_local_development";  
+    }  
+    throw new Error("AUTH_SECRET environment variable must be set in production.");  
+}  
