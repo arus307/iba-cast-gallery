@@ -5,6 +5,7 @@
   "repository": "https://github.com/arus307/iba-cast-gallery",
   "author": "arus <57102101+arus307@users.noreply.github.com>",
   "scripts": {
+    "build": "dotenv -e .env.production -- turbo run build",
     "dev": "dotenv -e .env.development -e .env.local -- turbo run dev",
     "migrate:dev": "dotenv -e .env.development -- turbo run migrate:run --filter=@iba-cast-gallery/db-migrator",
     "migrate:create": "dotenv -e .env.development -- turbo run migration:create --filter=@iba-cast-gallery/dao",
