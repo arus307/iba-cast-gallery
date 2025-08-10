@@ -5,7 +5,7 @@ import { Cast } from "../entities/Cast";
 import { Post } from "../entities/Post";
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class ConsolidatePostSeedData1800000000000 implements MigrationInterface {
+export class ConsolidatePostSeedData1754797829269 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         const casts: Cast[] = await queryRunner.manager.find("casts");
