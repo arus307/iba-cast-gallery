@@ -81,7 +81,7 @@ jobs:
         run: |
           npm install -g wait-on
           tail -F tweet-tagger-server.log iba-cast-gallery-server.log &
-          wait-on http://localhost:3000 http://localhost:3001
+          wait-on http://localhost:3000
 
       - name: Run Playwright tests
         run: yarn playwright test
