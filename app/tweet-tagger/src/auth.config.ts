@@ -1,31 +1,12 @@
 import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
-import Credentials from 'next-auth/providers/credentials';
 
-const providers: Array<ReturnType<typeof GitHub> | ReturnType<typeof Credentials>> = [
+const providers: Array<ReturnType<typeof GitHub>> = [
     GitHub({
         clientId: process.env.AUTH_GITHUB_ID!,
         clientSecret: process.env.AUTH_GITHUB_SECRET!,
     }),
 ];
-
-if (process.env.E2E_TESTING === "true") {
-    providers.push(
-        Credentials({
-            name: 'Credentials',
-            credentials: {
-                email: { label: "Email", type: "text" },
-            },
-            async authorize(credentials) {
-                if (credentials) {
-                    // In E2E tests, we trust the email is the admin email
-                    return { id: "1", email: credentials.email as string };
-                }
-                return null;
-            },
-        })
-    );
-}
 
 export const authConfig = {
     providers,
@@ -47,9 +28,6 @@ export const authConfig = {
 } satisfies NextAuthConfig;
 
 function getAuthSecret() {
-    console.log("process.env");
-    console.log(process.env);
-
     if (process.env.AUTH_SECRET) {  
         return process.env.AUTH_SECRET;  
     }  
