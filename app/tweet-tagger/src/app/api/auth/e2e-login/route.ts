@@ -3,8 +3,8 @@ import { cookies } from 'next/headers';
 
 // このAPIルートは開発環境またはテスト環境でのみ動作させる
 export async function POST() {
-    // 本番環境ではこのAPIを無効化する
-    if (process.env.NODE_ENV === 'production') {
+    // E2E実行時以外はこのAPIを無効化する
+    if (!process.env.E2E_TESTING) {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
 
