@@ -24,6 +24,13 @@ export const authConfig = {
             }
             return session;
         },
+    },
+    // E2E等で利用しているCookie名を固定するため
+    useSecureCookies: false,   
+    cookies: {
+        sessionToken: {
+        name: `iba-gallery-admin.session-token`,
+        },
     }
 } satisfies NextAuthConfig;
 

@@ -9,7 +9,7 @@ export async function POST() {
     }
 
     // Auth.js v5のデフォルトCookie名 (auth.tsの設定に合わせる)
-    const cookieName = '__Secure-authjs.session-token'; 
+    const cookieName = 'iba-gallery-admin.session-token'; 
 
     try {
 
