@@ -57,10 +57,16 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
               {...params}
               label="写ってるキャストを選択"
               variant="outlined"
+              data-testid='cast-autocomplete'
             />
           )}
+          slotProps={{
+            listbox:{
+              'id':'cast-autocomplete-listbox',
+            }
+          }}
         />
-        <Button onClick={handleAddTag}>追加</Button>
+        <Button data-testid='add-tag-button' onClick={handleAddTag}>追加</Button>
       </Stack>
     </>
   )

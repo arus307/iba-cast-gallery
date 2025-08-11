@@ -34,6 +34,7 @@ const SortableTag = ({ castTag, handleDelete }: { castTag: PostCastTag, handleDe
 
   return (
     <Chip
+      data-testid={`cast-tag-${castTag.order}`}
       ref={setNodeRef}
       {...attributes}
       {...listeners}
@@ -86,7 +87,7 @@ const TagSorter = ({ castTags, setCastTags }: TagSorterProps) => {
   return (
     <DndContext onDragEnd={onDragEnd} sensors={sensors}>
       <SortableContext items={castTags.map(tag => tag.castid)}>
-        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap" }}>
+        <Stack spacing={1} useFlexGap direction="row" sx={{ py: 1, flexWrap: "wrap" }} data-testid='tag-sorter'>
           {castTags.map((tag) => (
             <SortableTag
               key={tag.castid}

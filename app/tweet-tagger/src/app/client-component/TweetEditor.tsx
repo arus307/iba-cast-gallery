@@ -127,14 +127,14 @@ const TweetEditor = ({ initialId }: {
 
   return (
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
-      <TextField fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
+      <TextField  slotProps={{ htmlInput: { 'data-testid': 'tweet-id-input' } }} fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
       <Tweet id={tweetId} taggedCasts={[]} />
       <TagEditor casts={casts} castTags={castTags} setCastTags={setCastTags} />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
       <FormControlLabel control={<Checkbox checked={isDeleted} onChange={(e, checked) => setIsDeleted(checked)} />} label="削除フラグ" />
-      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet}> 登録</Button>
+      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet} data-testid='tweet-register-button'> 登録</Button>
     </Stack>
   );
 };
