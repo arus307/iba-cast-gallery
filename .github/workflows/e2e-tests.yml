@@ -45,7 +45,8 @@ jobs:
 
       - name: Start production server - gallery
         run: |
-          yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
+          # ログ出力のバッファリングを0にしつつ起動
+          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
         env:
           E2E_TESTING: "true"
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -58,7 +59,8 @@ jobs:
       
       - name: Start production server - admin
         run: |
-          yarn workspace tweet-tagger start > tweet-tagger-server.log &
+          # ログ出力のバッファリングを0にしつつ起動
+          stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
