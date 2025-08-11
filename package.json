@@ -10,7 +10,8 @@
     "migrate:dev": "dotenv -e .env.development -- turbo run migrate:run --filter=@iba-cast-gallery/db-migrator",
     "migrate:create": "dotenv -e .env.development -- turbo run migration:create --filter=@iba-cast-gallery/dao",
     "migrate:generate": "dotenv -e .env.development -- turbo run migration:generate --filter=@iba-cast-gallery/dao",
-    "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator"
+    "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator",
+    "db:reset": "./dbreset.sh"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
