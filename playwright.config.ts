@@ -10,7 +10,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    trace: 'on',
+    trace: process.env.CI ? 'on-first-retry' : 'on',
   },
 
   timeout: 5 * 60 * 1000, // 5m
