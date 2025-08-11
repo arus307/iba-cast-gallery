@@ -43,13 +43,26 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
 
-      - name: Start production servers
+      - name: Start production server - gallery
+        run: |
+          # ログ出力の遅延を0に
+          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
+          # yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
+        env:
+          E2E_TESTING: "true"
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_DATABASE: ibacastgallery
+          AUTH_URL: http://localhost:3000
+      
+      - name: Start production server - admin
         run: |
           # ログ出力の遅延を0に
           stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
-          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
           # yarn workspace tweet-tagger start > tweet-tagger-server.log &
-          # yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -61,6 +74,8 @@ jobs:
           DB_DATABASE: ibacastgallery
           AUTH_GITHUB_ID: "dummy"
           AUTH_GITHUB_SECRET: "dummy"
+          AUTH_URL: http://localhost:3001
+          AUTH_TRUST_HOST: true
 
       - name: Wait for servers to be ready
         run: |
