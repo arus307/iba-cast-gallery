@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 // このAPIルートは開発環境またはテスト環境でのみ動作させる
-export async function POST(request: Request) {
+export async function POST() {
     // 本番環境ではこのAPIを無効化する
     if (process.env.NODE_ENV === 'production') {
         return NextResponse.json({ error: 'Not found' }, { status: 404 });
