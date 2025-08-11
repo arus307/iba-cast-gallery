@@ -81,6 +81,7 @@
         "AUTH_DISCORD_ID",
         "AUTH_DISCORD_SECRET",
         "ADMIN_EMAIL",
-        "AUTH_URL"
+        "AUTH_URL",
+        "E2E_TESTING"
     ]
 }
