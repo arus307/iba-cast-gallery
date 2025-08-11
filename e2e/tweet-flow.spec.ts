@@ -10,51 +10,77 @@ async function login(page: any) {
 }
 
 test.describe('Tweet Tagger and Gallery Flow', () => {
-
-    // Use a unique tweet ID for each test run to avoid conflicts.
-    const tweetId = `1798803393961955328`; // A known valid tweet ID
+    // 登録するツイートID
+    const tweetId = `1954740195934474563`;
     const tweetUrl = `http://x.com/i/status/${tweetId}`;
 
-    test('should create a tweet in tagger and see it in the gallery', async ({ page }) => {
-        // Log in as admin
+    test.beforeEach(async ({page})=>{
         await login(page);
+    })
 
-        // Navigate to the tweet tagger home page
+    test('管理画面から登録したポストがギャラリーに表示されること', async ({ page }) => {
+
+        // 管理画面を開く
         await page.goto('http://localhost:3001/');
 
         await expect(page.getByText('登録画面')).toBeVisible();
 
-        return;
+        //  キャスト候補の読み込み待機
+        await page.waitForRequest('http://localhost:3001/api/casts');
 
-        // TODO中身修正する
-        
-        // Fill in the tweet URL
-        await page.getByLabel('TweetのURL').fill(tweetUrl);
+        await page.getByTestId('tweet-id-input').fill(tweetId);
 
-        // Click the "ツイート情報取得" (Fetch Tweet Info) button
-        await page.getByRole('button', { name: 'ツイート情報取得' }).click();
 
-        // Wait for the tweet to be loaded and displayed
-        await expect(page.frameLocator('iframe[data-testid="tweet-iframe-0"]').getByText('IbaMichi')).toBeVisible();
+        // 読み込まれる
+        await expect(page.getByTestId(`tweet-container-${tweetId}`)).toBeVisible();
 
-        // Select a cast member (tag)
-        // This assumes there's a chip with the text "伊波杏樹".
-        // We might need to adjust the selector based on the actual UI.
-        await page.getByRole('button', { name: '伊波杏樹' }).click();
+        await page.getByTestId('cast-autocomplete').click();
+        const listbox = page.locator('#cast-autocomplete-listbox');
+        await listbox.getByText('メノウ').click();
 
-        // Click the "登録" (Register) button
-        await page.getByRole('button', { name: '登録', exact: true }).click();
+        await page.getByTestId('cast-autocomplete').click();
+        await listbox.getByText('リシア').click();
 
-        // Wait for the success message or navigation
-        // For now, let's just wait for a moment. A better way would be to wait for a specific element.
-        await page.waitForTimeout(2000);
+        await page.getByTestId('cast-autocomplete').click();
+        await listbox.getByText('ベリル').click();
 
-        // --- Verification in tweet-tagger ---
-        // Navigate to the registered posts list
+        await page.getByTestId('cast-autocomplete').click();
+        await listbox.getByText('シトリン').click();
+
+        await page.getByTestId('add-tag-button').click();
+
+        const tags = await page.locator('[data-testid^="cast-tag-"]');
+        await expect(tags).toHaveCount(4);
+
+        await expect(page.getByTestId('cast-tag-1')).toHaveText('1 メノウ');
+        await expect(page.getByTestId('cast-tag-2')).toHaveText('2 リシア');
+        await expect(page.getByTestId('cast-tag-3')).toHaveText('3 ベリル');
+        await expect(page.getByTestId('cast-tag-4')).toHaveText('4 シトリン');
+
+        await page.getByTestId('tweet-register-button').click();
+
+        await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
+
         await page.goto('http://localhost:3001/posts');
 
-        // Verify the new tweet is in the list
-        await expect(page.getByText(tweetUrl)).toBeVisible();
+        // await page.getByText('登録済みポスト一覧').click();
+        // await expect(page).toHaveURL('http://localhost:3001/posts');
+
+        const tweetListItem1 = page.getByTestId('tweet-list-item-1');
+        await expect(tweetListItem1).toBeVisible();
+
+        const tweetContainer= tweetListItem1.getByTestId(`tweet-container-${tweetId}`);
+        await expect(tweetContainer).toBeVisible();
+
+        await expect(tweetContainer.getByTestId('cast-tag-1')).toHaveText('メノウ');
+        await expect(tweetContainer.getByTestId('cast-tag-2')).toHaveText('リシア');
+        await expect(tweetContainer.getByTestId('cast-tag-3')).toHaveText('ベリル');
+        await expect(tweetContainer.getByTestId('cast-tag-4')).toHaveText('シトリン');
+
+        return;
+
+        // TODO ギャラリー側を追加する
+        
 
         // --- Verification in iba-cast-gallery ---
         // Navigate to the gallery
