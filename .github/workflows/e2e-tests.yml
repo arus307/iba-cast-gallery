@@ -45,8 +45,8 @@ jobs:
 
       - name: Start production servers
         run: |
-          yarn workspace tweet-tagger start &
-          yarn workspace iba-cast-gallery start &
+          yarn workspace tweet-tagger start > tweet-tagger-server.log &
+          yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -73,3 +73,11 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      
+      - name: Display server logs on failure
+        if: failure()
+        run: |
+          echo "Tweet Tagger Server Logs:"
+          cat tweet-tagger-server.log
+          echo "IBA Cast Gallery Server Logs:"
+          cat iba-cast-gallery-server.log
