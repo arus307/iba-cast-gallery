@@ -59,6 +59,11 @@ jobs:
           AUTH_GITHUB_ID: "dummy"
           AUTH_GITHUB_SECRET: "dummy"
 
+      - name: Wait for servers to be ready
+        run: |
+          npm install -g wait-on
+          wait-on http://localhost:3000 http://localhost:3001
+
       - name: Run Playwright tests
         run: yarn playwright test
         env:
