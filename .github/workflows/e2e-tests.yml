@@ -45,8 +45,11 @@ jobs:
 
       - name: Start production servers
         run: |
-          yarn workspace tweet-tagger start > tweet-tagger-server.log &
-          yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
+          # ログ出力の遅延を0に
+          stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
+          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
+          # yarn workspace tweet-tagger start > tweet-tagger-server.log &
+          # yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
