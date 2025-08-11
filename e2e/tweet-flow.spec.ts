@@ -21,12 +21,15 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
     test('管理画面から登録したポストがギャラリーに表示されること', async ({ page }) => {
 
         // 管理画面を開く
-        await page.goto('http://localhost:3001/');
+
+        await Promise.all([
+            page.goto('http://localhost:3001/'),
+            page.waitForRequest('http://localhost:3001/api/casts'),
+        ]);
 
         await expect(page.getByText('登録画面')).toBeVisible();
 
         //  キャスト候補の読み込み待機
-        await page.waitForRequest('http://localhost:3001/api/casts');
 
         await page.getByTestId('tweet-id-input').fill(tweetId);
 
@@ -57,14 +60,15 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         await expect(page.getByTestId('cast-tag-3')).toHaveText('3 ベリル');
         await expect(page.getByTestId('cast-tag-4')).toHaveText('4 シトリン');
 
-        await page.getByTestId('tweet-register-button').click();
+        // 登録ボタンを押して登録のPOSTリクエストを待機
+        Promise.all([
+            page.getByTestId('tweet-register-button').click(),
+            page.waitForRequest(request => request.url() === 'http://localhost:3001/api/posts' && request.method() === 'POST')
+        ]);
 
         await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
 
         await page.goto('http://localhost:3001/posts');
-
-        // await page.getByText('登録済みポスト一覧').click();
-        // await expect(page).toHaveURL('http://localhost:3001/posts');
 
         const tweetListItem1 = page.getByTestId('tweet-list-item-1');
         await expect(tweetListItem1).toBeVisible();
