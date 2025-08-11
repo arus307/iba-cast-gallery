@@ -45,9 +45,7 @@ jobs:
 
       - name: Start production server - gallery
         run: |
-          # ログ出力の遅延を0に
-          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
-          # yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
+          yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log &
         env:
           E2E_TESTING: "true"
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
@@ -60,9 +58,7 @@ jobs:
       
       - name: Start production server - admin
         run: |
-          # ログ出力の遅延を0に
-          stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
-          # yarn workspace tweet-tagger start > tweet-tagger-server.log &
+          yarn workspace tweet-tagger start > tweet-tagger-server.log &
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
@@ -80,7 +76,6 @@ jobs:
       - name: Wait for servers to be ready
         run: |
           npm install -g wait-on
-          tail -F tweet-tagger-server.log iba-cast-gallery-server.log &
           wait-on http://localhost:3000
 
       - name: Run Playwright tests
