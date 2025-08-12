@@ -55,7 +55,8 @@
         "@iba-cast-gallery/db-migrator#migrate:run": {
             "dependsOn": [
                 "build"
-            ]
+            ],
+            "cache": false
         },
         "@iba-cast-gallery/types#build": {
             "dependsOn": [
