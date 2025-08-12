@@ -81,18 +81,41 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         await expect(tweetContainer.getByTestId('cast-tag-3')).toHaveText('ベリル');
         await expect(tweetContainer.getByTestId('cast-tag-4')).toHaveText('シトリン');
 
-        return;
 
-        // TODO ギャラリー側を追加する
-        
+        // ギャラリー側でも表示されていることを検証する
+        await page.goto('http://localhost:3000');
+        const tweetContainerInGallery = page.getByTestId(`tweet-container-${tweetId}`);
+        await expect(tweetContainerInGallery).toBeVisible();
 
-        // --- Verification in iba-cast-gallery ---
-        // Navigate to the gallery
-        await page.goto('http://localhost:3000/');
-
-        // Verify the tweet is displayed in the gallery
-        // The tweet might be identified by its content or author.
-        // Let's look for the author's name as a starting point.
-        await expect(page.frameLocator('iframe[data-testid="tweet-iframe-0"]').getByText('IbaMichi')).toBeVisible();
+        await expect(tweetContainerInGallery.getByTestId('cast-tag-1')).toHaveText('メノウ');
+        await expect(tweetContainerInGallery.getByTestId('cast-tag-2')).toHaveText('リシア');
+        await expect(tweetContainerInGallery.getByTestId('cast-tag-3')).toHaveText('ベリル');
+        await expect(tweetContainerInGallery.getByTestId('cast-tag-4')).toHaveText('シトリン');
     });
+
+
+    // TODO 個人ページ表示はメニューから遷移する形のほうが良さそう
+    // const casts:{
+    //     name:string;
+    //     enName:string;
+    // }[] = [
+    //     {
+    //         name:'メノウ',
+    //         enName:'menou',
+    //     },
+    //     {
+    //         name:'スズ',
+    //         enName:'suzu',
+    //     }
+    // ]
+
+    // for(const {name,enName} of casts ){
+
+    //     test(`個人ページが表示可能なこと - ${enName}`, async({page})=>{
+    //         await page.goto(`http://localhost:3000/casts/${enName}`);
+    //         await expect(page.getByText(name)).toBeVisible();
+    //     });
+
+    // }
+
 });

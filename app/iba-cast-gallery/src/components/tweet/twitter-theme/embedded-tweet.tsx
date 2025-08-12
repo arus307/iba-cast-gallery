@@ -95,7 +95,7 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   };
 
   return (
-    <TweetContainer>
+    <TweetContainer dataTestId={tweet.id_str}>
       {displayTweet && <TweetHeader tweet={tweet} components={components} />}
       {displayTweet && tweet.in_reply_to_status_id_str && <TweetInReplyTo tweet={tweet} />}
       {displayTweet && <TweetBody tweet={tweet} />}
@@ -110,7 +110,7 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
         <Grid2 size='grow'>
           <Stack direction='row' spacing={0.5} alignItems={'center'} useFlexGap sx={{width: '100%', flexWrap: 'wrap'}}>
             {taggedCasts.sort((a, b) => a.order - b.order).map((a) => (
-              <CastChip key={a.cast.id} cast={a.cast} />
+              <CastChip key={a.cast.id} cast={a.cast} dataTestId={`cast-tag-${a.order}`} />
             ))}
           </Stack>
         </Grid2>
