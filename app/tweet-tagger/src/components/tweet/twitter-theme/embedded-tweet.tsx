@@ -26,7 +26,7 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
   const tweet = useMemo(() => enrichTweet(t), [t])
   const [displayTweet, setDisplayTweet] = useState<boolean>(false);
   return (
-    <TweetContainer>
+    <TweetContainer dataTestId={`tweet-container-${tweet.id_str}`}>
       {displayTweet && <TweetHeader tweet={tweet} components={components} />}
       {displayTweet && tweet.in_reply_to_status_id_str && <TweetInReplyTo tweet={tweet} />}
       {displayTweet && <TweetBody tweet={tweet} />}
@@ -40,8 +40,8 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
       <Grid2 container alignItems="center">
         <Grid2 size='grow'>
           <Stack direction='row' spacing={0.5} alignItems={'center'} useFlexGap sx={{ width: '100%', flexWrap: 'wrap' }}>
-            {taggedCasts.map((cast) => (
-              <CastChip key={cast.id} cast={cast} />
+            {taggedCasts.map((cast, index) => (
+              <CastChip key={cast.id} cast={cast} dataTestId={`cast-tag-${index+1}`}/>
             ))}
           </Stack>
         </Grid2>

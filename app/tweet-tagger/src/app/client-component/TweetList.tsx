@@ -46,8 +46,8 @@ const TweetList = () => {
             <CircularProgress />
           </Grid2>
         ) : (
-          posts.map((post) => (
-            <Grid2 key={post.id} size={{ xs: 12, md: 6, lg: 4, xl: 3 }}>
+          posts.map((post, index) => (
+            <Grid2 key={post.id} size={{ xs: 12, md: 6, lg: 4, xl: 3 }} data-testid={`tweet-list-item-${index+1}`}>
               <div className="border p-4 rounded">
                 {
                   post.isDeleted ? (

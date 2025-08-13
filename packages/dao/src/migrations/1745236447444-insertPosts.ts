@@ -8,6 +8,8 @@ import { MigrationInterface, QueryRunner } from "typeorm";
 export class InsertPosts1745236447444 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         const casts: Cast[] = await queryRunner.manager.find("casts");
 
         // id指定になっているcastをインスタンスに設定
@@ -15,27 +17,34 @@ export class InsertPosts1745236447444 implements MigrationInterface {
             const post = new Post();
             post.id = basePost.id;
             post.postedAt = basePost.postedAt;
-            post.taggedCasts = basePost.taggedCastIds.map(castId => {
+            post.isDeleted = false;
+            post.castTags = basePost.taggedCastIds.map((castId, index) => {
                 const cast = casts.find(c => c.id === castId);
                 if (!cast) {
                     throw new Error(`Cast with id ${castId} not found`);
                 }
-                return cast;
+                const postCastTag = new (require("../entities/PostCastTag").PostCastTag);
+                postCastTag.cast = cast;
+                postCastTag.order = index;
+                return postCastTag;
             });
-            post.isDeleted = false;
             return post;
         });
 
         await queryRunner.manager.save(posts);
+        */
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
+        // Obsolete: consolidated into 1800000000000-consolidatePostSeedData.ts
+        /*
         const idsToDelete = basePosts.map(p => p.id);
         await queryRunner.manager.createQueryBuilder()
             .delete()
             .from(Post)
             .where("id IN (:...ids)", { ids: idsToDelete })
             .execute();
+        */
     }
 }
 

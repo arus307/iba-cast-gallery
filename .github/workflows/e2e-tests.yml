@@ -1,0 +1,114 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  e2e-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn playwright install --with-deps
+
+      - name: Start PostgreSQL database
+        run: sudo docker compose up -d
+
+      - name: Run database migrations
+        run: yarn migrate:dev
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_DATABASE: ibacastgallery
+
+      - name: Build applications
+        run: yarn turbo build
+        env:
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+
+      - name: Start production server - gallery
+        run: |
+          # ログ出力のバッファリングを0にしつつ起動
+          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
+        env:
+          E2E_TESTING: "true"
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_DATABASE: ibacastgallery
+          AUTH_URL: http://localhost:3000
+      
+      - name: Start production server - admin
+        run: |
+          # ログ出力のバッファリングを0にしつつ起動
+          stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
+        env:
+          E2E_TESTING: "true"
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_DATABASE: ibacastgallery
+          AUTH_GITHUB_ID: "dummy"
+          AUTH_GITHUB_SECRET: "dummy"
+          AUTH_URL: http://localhost:3001
+          AUTH_TRUST_HOST: true
+
+      - name: Wait for servers to be ready
+        run: |
+          npm install -g wait-on
+          wait-on http://localhost:3000
+
+      - name: Run Playwright tests
+        run: yarn playwright test
+        env:
+          E2E_TESTING: "true"
+          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+      
+      - name: Display server logs on failure
+        if: failure()
+        run: |
+          echo "Tweet Tagger Server Logs:"
+          cat tweet-tagger-server.log
+          echo "IBA Cast Gallery Server Logs:"
+          cat iba-cast-gallery-server.log

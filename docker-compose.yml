@@ -12,6 +12,11 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-p", "5432", "-U", "${DB_USERNAME:-postgres}"]
+      interval: 10s # チェックの間隔
+      timeout: 5s   # タイムアウト
+      retries: 5    # リトライ回数
 
 # ボリューム定義
 volumes:
