@@ -33,7 +33,7 @@ const casts: Cast[] = [
     {
         id: 1,
         name: 'メノウ',
-        enName: 'agate',
+        enName: 'menou',
         introduceTweetId: '1878744119239209193',
         type: CastType.REAL,
         isActive: true,
@@ -42,7 +42,7 @@ const casts: Cast[] = [
     {
         id: 2,
         name: 'クジャク',
-        enName: 'melachite',
+        enName: 'kujaku',
         introduceTweetId: '1879091090134864220',
         type: CastType.REAL,
         isActive: true,
@@ -51,7 +51,7 @@ const casts: Cast[] = [
     {
         id: 3,
         name: 'ルリ',
-        enName: 'lapis-lazuli',
+        enName: 'ruri',
         introduceTweetId: '1879453474661777549',
         type: CastType.REAL,
         isActive: true,
@@ -60,7 +60,7 @@ const casts: Cast[] = [
     {
         id: 4,
         name: 'スズ',
-        enName: 'tin',
+        enName: 'suzu',
         introduceTweetId: '1879815861902647388',
         type: CastType.REAL,
         isActive: true,
@@ -69,7 +69,7 @@ const casts: Cast[] = [
     {
         id: 5,
         name: 'シンジュ',
-        enName: 'pearl',
+        enName: 'shinju',
         introduceTweetId: '1880193349136838830',
         type: CastType.REAL,
         isActive: true,
@@ -78,7 +78,7 @@ const casts: Cast[] = [
     {
         id: 6,
         name: 'コハク',
-        enName: 'amber',
+        enName: 'kohaku',
         introduceTweetId: '1880540647691587684',
         type: CastType.REAL,
         isActive: true,
@@ -87,7 +87,7 @@ const casts: Cast[] = [
     {
         id: 7,
         name: "ユウレン",
-        enName: "zoisite",
+        enName: "yuren",
         introduceTweetId: "1880903030205517885",
         type: CastType.REAL,
         isActive: true,
@@ -96,7 +96,7 @@ const casts: Cast[] = [
     {
         id: 8,
         name: 'ヒスイ',
-        enName: 'jade',
+        enName: 'hisui',
         introduceTweetId: '1881265418603786573',
         type: CastType.REAL,
         isActive: true,
@@ -105,7 +105,7 @@ const casts: Cast[] = [
     {
         id: 9,
         name: 'ホタル',
-        enName: 'florite',
+        enName: 'hotaru',
         introduceTweetId: '1881627800299565408',
         type: CastType.REAL,
         isActive: false,
@@ -114,7 +114,7 @@ const casts: Cast[] = [
     {
         id: 10,
         name: 'ザクロ',
-        enName: 'garnet',
+        enName: 'zakuro',
         introduceTweetId: '1881990198072062114',
         type: CastType.REAL,
         isActive: true,
@@ -330,7 +330,7 @@ const casts: Cast[] = [
     {
         id: 34,
         name: 'アラレ',
-        enName: 'aragonite',
+        enName: 'arare',
         introduceTweetId: '1912830902922580054',
         type: CastType.REAL,
         isActive: true,
@@ -339,7 +339,7 @@ const casts: Cast[] = [
     {
         id: 35,
         name: 'サンゴ',
-        enName: 'coral',
+        enName: 'sango',
         introduceTweetId: '1911721093628567673',
         type: CastType.REAL,
         isActive: true,
@@ -348,7 +348,7 @@ const casts: Cast[] = [
     {
         id: 36,
         name: 'ラン',
-        enName: 'vivianite',
+        enName: 'ran',
         introduceTweetId: '1912083488758792543',
         type: CastType.REAL,
         isActive: true,
@@ -357,7 +357,7 @@ const casts: Cast[] = [
     {
         id: 37,
         name: 'ソウ',
-        enName: 'bismuhinite',
+        enName: 'sou',
         introduceTweetId: '1912445864242757802',
         type: CastType.REAL,
         isActive: true,
