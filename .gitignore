@@ -21,3 +21,6 @@
 # Playwright test results
 /playwright-report/
 /test-results/
+
+# Playwright test temp data
+**/.test-data/**
