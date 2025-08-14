@@ -9,6 +9,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  globalSetup: require.resolve('./e2e/global-setup.ts'),
   use: {
     trace: process.env.CI ? 'on-first-retry' : 'on',
   },

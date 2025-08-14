@@ -8,7 +8,7 @@ type Props = {
 }
 
 export const TweetNotFound = (_props: Props) => (
-  <TweetContainer>
+  <TweetContainer data-testid="tweet-not-found">
     <div className={styles.root}>
       <h3>Tweet not found</h3>
       <p>The embedded tweet could not be found…</p>
