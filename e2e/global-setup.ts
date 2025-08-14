@@ -27,7 +27,8 @@ async function globalSetup() {
     } catch (error) {
         console.error('!!! Global setup failed:', error);
         // セットアップに失敗した場合は、テストが失敗するようにプロセスを終了させる
-        process.exit(1);
+        // セットアップに失敗した場合は、エラーを投げてPlaywrightに処理を任せる
+        throw error;
     }
 }
 
