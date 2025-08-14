@@ -24,20 +24,20 @@ export default async function Page(
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
+      <Typography variant="h4" component="h1" sx={{ mb: 2 }} data-testid="cast-name">
         {cast.name} ({cast.enName})
       </Typography>
 
       {
         cast.introduceTweetId && (
-          <Accordion defaultExpanded sx={{ mb: 2 }}>
+          <Accordion defaultExpanded sx={{ mb: 2 }} data-testid="introduce-tweet-accordion">
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
             >
               <Typography variant="h5" component="h2">紹介ポスト</Typography>
             </AccordionSummary>
             <AccordionDetails sx={{ p: 0 }}>
-              <Box sx={{ mb: 2, justifyContent: "center", display: "flex" }}>
+              <Box sx={{ mb: 2, justifyContent: "center", display: "flex" }} data-testid="introduce-tweet">
                 <Tweet id={cast.introduceTweetId} taggedCasts={[]} />
               </Box>
             </AccordionDetails>

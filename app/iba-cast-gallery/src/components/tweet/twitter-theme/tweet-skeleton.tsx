@@ -3,7 +3,7 @@ import { Skeleton } from './skeleton'
 import styles from './tweet-skeleton.module.css'
 
 export const TweetSkeleton = () => (
-  <TweetContainer className={styles.root}>
+  <TweetContainer className={styles.root} data-testid="tweet-skeleton">
     <Skeleton style={{ height: '3rem', marginBottom: '0.75rem' }} />
     <Skeleton style={{ height: '6rem', margin: '0.5rem 0' }} />
     <div style={{ borderTop: 'var(--tweet-border)', margin: '0.5rem 0' }} />
