@@ -2,12 +2,14 @@ import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
 import { PostCastTag, Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
-import logger from "../logger";
+import { Logger } from '@iba-cast-gallery/logger';
 
 /**
  * ポスト情報を全件取得する
  */
-export async function getAllPosts(): Promise<Post[]> {
+export async function getAllPosts(logger: Logger): Promise<Post[]> {
+    const childLogger = logger.child({service: 'postService', function: 'getAllPosts'});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
 
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
@@ -16,7 +18,7 @@ export async function getAllPosts(): Promise<Post[]> {
             postedAt: "DESC",
         },
     });
-
+    childLogger.info({ count: posts.length }, 'サービス呼び出し終了');
     return posts;
 }
 
@@ -26,7 +28,10 @@ export async function getAllPosts(): Promise<Post[]> {
  * @param request 登録するポスト情報
  * @return 登録されたポスト情報
  */
-export async function registerPost(post: Post): Promise<void> {
+export async function registerPost(logger: Logger, post: Post): Promise<void> {
+    const childLogger = logger.child({service: 'postService', function: 'registerPost', postId: post.id});
+    childLogger.info('サービス呼び出し開始');
+
     await initializeDatabase();
 
     await appDataSource.transaction(async (transactionalEntityManager) => {
@@ -38,15 +43,18 @@ export async function registerPost(post: Post): Promise<void> {
         });
 
         if(isExists) {
+            childLogger.info({ post: post.id }, '既存ポスト更新');
             postRepository.update(post.id, post);
-            logger.info({post},`ポスト更新完了`);
+            childLogger.info({ post: post.id },`ポスト更新完了`);
         } else {
+            childLogger.info({ post: post.id }, '新規ポスト登録');
             postRepository.insert(post);
-            logger.info({post},`ポスト登録完了`);
+            childLogger.info({ post: post.id },`ポスト登録完了`);
         }
 
+        childLogger.info({ postId: post.id }, '既存キャストタグ削除');
         await postCastTagRepository.delete({ postId: post.id }); // 既存のキャストタグを削除
-        logger.info({post}, `既存のキャストタグ削除完了 (postId: ${post.id})`);
+        childLogger.info({ postId: post.id }, `既存のキャストタグ削除完了`);
 
         const postCastTags = post.castTags.map((castTag) => ({
                 postId: post.id,
@@ -54,23 +62,28 @@ export async function registerPost(post: Post): Promise<void> {
                 order: castTag.order,
             }));
 
-        await postCastTagRepository.insert(postCastTags);
-
-        logger.info({postCastTags}, `タグ登録完了 (postId: ${post.id})`);
+        if (postCastTags.length > 0) {
+            childLogger.info({ count: postCastTags.length }, '新規キャストタグ登録');
+            await postCastTagRepository.insert(postCastTags);
+            childLogger.info({ count: postCastTags.length }, `タグ登録完了`);
+        }
     });
+    childLogger.info('サービス呼び出し終了');
 }
 
 /**
  * 指定のポストIDのポストを取得する
  * @param postId ポストID
  */
-export async function getPostById(postId: string): Promise<Post | null> {
+export async function getPostById(logger: Logger, postId: string): Promise<Post | null> {
+    const childLogger = logger.child({service: 'postService', function: 'getPostById', postId});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const post = await postRepository.findOne({
         where: { id: postId },
     });
-
+    childLogger.info({ found: !!post }, 'サービス呼び出し終了');
     return post;
 }
 
@@ -78,10 +91,13 @@ export async function getPostById(postId: string): Promise<Post | null> {
  * 指定のポストIDのポストを削除する(物理削除)
  * @param postId ポストID
  */
-export async function deletePostById(postId: string): Promise<boolean> {
+export async function deletePostById(logger: Logger, postId: string): Promise<boolean> {
+    const childLogger = logger.child({service: 'postService', function: 'deletePostById', postId});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const result = await postRepository.delete(postId);
-
-    return result.affected !== 0;
+    const success = result.affected !== 0;
+    childLogger.info({ success }, 'サービス呼び出し終了');
+    return success;
 }
