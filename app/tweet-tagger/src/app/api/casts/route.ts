@@ -1,18 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
+import { Logger, withLogging } from "@iba-cast-gallery/logger";
 
-export async function GET() {
+export const GET = withLogging(async (_: NextRequest, context: { params: {} }, logger: Logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-        const casts = await getAllCasts();
-        return NextResponse.json(casts, { status: 200 });
-    } catch (error) {
-        console.error("Error fetching casts:", error);
-        return NextResponse.json({ error: "Failed to fetch casts" }, { status: 500 });
-    }
-}
+    const casts = await getAllCasts(logger);
+    return NextResponse.json(casts, { status: 200 });
+});

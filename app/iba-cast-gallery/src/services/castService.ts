@@ -5,11 +5,14 @@ import { Repository } from "@iba-cast-gallery/dao";
 import { Cast } from "@iba-cast-gallery/dao";
 import { CastDto, PostDto } from '@iba-cast-gallery/types';
 import { notFound } from "next/navigation";
+import { Logger } from "@iba-cast-gallery/logger";
 
 /**
  * 有効なキャスト情報を全件取得する (idの昇順で返却)
  */
-export async function getActiveCasts(): Promise<CastDto[]> {
+export async function getActiveCasts(logger: Logger): Promise<CastDto[]> {
+    const childLogger = logger.child({service: 'castService', function: 'getActiveCasts'});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
@@ -22,6 +25,7 @@ export async function getActiveCasts(): Promise<CastDto[]> {
         }
     });
 
+    childLogger.info({ count: casts.length }, 'サービス呼び出し終了');
     return casts.map((cast) => ({
         id: cast.id,
         name: cast.name,
@@ -44,7 +48,9 @@ export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "i
  * 指定のキャストの英名からキャスト情報(タグ付けされたポストも含む)を取得
  * @param castEnName キャストの英名
  */
-export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
+export async function getCastDetail(logger: Logger, castEnName:string): Promise<CastDetailDto> {
+    const childLogger = logger.child({service: 'castService', function: 'getCastDetail', castEnName});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
@@ -77,9 +83,11 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
     });
 
     if (!cast) {
+        childLogger.warn('キャストが見つかりません。notFound()をスローします。');
         notFound();
     }
 
+    childLogger.info({ found: !!cast }, 'サービス呼び出し終了');
     return {
         id: cast.id,
         name: cast.name,

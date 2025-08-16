@@ -534,6 +534,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@iba-cast-gallery/logger@workspace:*, @iba-cast-gallery/logger@workspace:packages/logger":
+  version: 0.0.0-use.local
+  resolution: "@iba-cast-gallery/logger@workspace:packages/logger"
+  dependencies:
+    pino: "npm:^9.7.0"
+  languageName: unknown
+  linkType: soft
+
 "@iba-cast-gallery/types@workspace:*, @iba-cast-gallery/types@workspace:packages/types":
   version: 0.0.0-use.local
   resolution: "@iba-cast-gallery/types@workspace:packages/types"
@@ -3444,6 +3452,7 @@ __metadata:
     "@emotion/styled": "npm:^11.14.0"
     "@eslint/eslintrc": "npm:^3"
     "@iba-cast-gallery/dao": "workspace:*"
+    "@iba-cast-gallery/logger": "workspace:*"
     "@iba-cast-gallery/types": "workspace:*"
     "@mui/icons-material": "npm:^6.4.11"
     "@mui/material": "npm:^6.4.7"
@@ -5969,6 +5978,7 @@ __metadata:
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
     "@iba-cast-gallery/dao": "workspace:*"
+    "@iba-cast-gallery/logger": "workspace:*"
     "@iba-cast-gallery/types": "workspace:*"
     "@mui/material": "npm:^6.4.7"
     "@mui/material-nextjs": "npm:^6.4.3"
