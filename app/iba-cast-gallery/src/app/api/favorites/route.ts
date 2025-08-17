@@ -1,10 +1,11 @@
 import {auth} from "auth";
 import { getUserByDiscordId,getFavoritePosts } from "services/userService";
-import { Logger, withLogging } from "@iba-cast-gallery/logger";
-import { NextRequest, NextResponse } from "next/server";
+import { createWithLogging } from "@iba-cast-gallery/logger";
+import { NextResponse } from "next/server";
 
+const withLogging = createWithLogging({ auth });
 
-export const GET = withLogging(async (_: NextRequest, context: { params: {} }, logger: Logger) => {
+export const GET = withLogging(async (_, __, logger) => {
     const session = await auth();
 
     if(!session || session.user?.discordId === undefined){

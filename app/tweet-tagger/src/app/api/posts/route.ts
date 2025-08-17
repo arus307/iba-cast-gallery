@@ -3,12 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { registerPost, getAllPosts } from "services/postService";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
-import { Logger, withLogging } from "@iba-cast-gallery/logger";
+import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
+
+const withLogging = createWithLogging({ auth });
 
 /**
  * ポスト情報を登録する
  */
-export const POST = withLogging(async (request: NextRequest, context: { params: {} }, logger: Logger) => {
+export const POST = withLogging(async (request, context, logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -36,7 +38,7 @@ export const POST = withLogging(async (request: NextRequest, context: { params: 
 /**
  * ポスト情報を全件取得する
  */
-export const GET = withLogging(async (_: NextRequest, context: { params: {} }, logger: Logger) => {
+export const GET = withLogging(async (_, __, logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

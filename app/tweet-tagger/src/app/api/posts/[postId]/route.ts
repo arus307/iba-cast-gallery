@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPostById, deletePostById } from "services/postService";
 import { auth } from "auth";
-import { Logger, withLogging } from "@iba-cast-gallery/logger";
+import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
+
+const withLogging = createWithLogging({ auth });
 
 type Context = {
     params: { postId: string }

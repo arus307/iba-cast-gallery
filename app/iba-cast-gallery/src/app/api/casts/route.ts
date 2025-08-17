@@ -1,8 +1,11 @@
 import { getActiveCasts } from "services/castService";
-import { NextRequest, NextResponse } from 'next/server';
-import { Logger, withLogging } from "@iba-cast-gallery/logger";
+import { NextResponse } from 'next/server';
+import { createWithLogging } from "@iba-cast-gallery/logger";
+import { auth } from 'auth';
 
-export const GET = withLogging(async (_: NextRequest, context: { params: {} }, logger: Logger) => {
+const withLogging = createWithLogging({ auth });
+
+export const GET = withLogging(async (_, __, logger) => {
   const casts = await getActiveCasts(logger);
   return NextResponse.json(casts);
 });

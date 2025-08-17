@@ -1,7 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
 import logger, { Logger } from './index';
-import { auth } from 'auth'; // Assuming auth is aliased in tsconfig
+import type { Session } from 'next-auth';
+
+type AuthFunction = () => Promise<Session | null>;
+
+interface WithLoggingConfig {
+  auth: AuthFunction;
+}
 
 type ApiHandler<T = unknown> = (
   req: NextRequest,
@@ -9,71 +15,75 @@ type ApiHandler<T = unknown> = (
   logger: Logger
 ) => Promise<NextResponse> | Promise<Response> | Response;
 
-export function withLogging<T = unknown>(handler: ApiHandler<T>) {
-  return async (req: NextRequest, context: { params: T } = { params: {} as T }): Promise<NextResponse | Response> => {
-    const requestId = randomUUID();
-    const startTime = Date.now();
+export function createWithLogging(config: WithLoggingConfig) {
+  const { auth } = config;
 
-    const session = await auth();
-    const userId = session?.user?.id ?? 'anonymous';
+  return function withLogging<T = unknown>(handler: ApiHandler<T>) {
+    return async (req: NextRequest, context: { params: T } = { params: {} as T }): Promise<NextResponse | Response> => {
+      const requestId = randomUUID();
+      const startTime = Date.now();
 
-    const requestLogger = logger.child({
-      requestId,
-      userId,
-      path: req.nextUrl.pathname,
-      method: req.method,
-    });
+      const session = await auth();
+      const userId = session?.user?.id ?? 'anonymous';
 
-    requestLogger.info(
-      {
-        ip: req.ip,
-        userAgent: req.headers.get('user-agent'),
-      },
-      'リクエスト受信'
-    );
+      const requestLogger = logger.child({
+        requestId,
+        userId,
+        path: req.nextUrl.pathname,
+        method: req.method,
+      });
 
-    try {
-      const response = await handler(req, context, requestLogger);
-
-      const duration = Date.now() - startTime;
       requestLogger.info(
         {
-          status: response.status,
-          duration,
+          ip: req.ip,
+          userAgent: req.headers.get('user-agent'),
         },
-        'リクエスト処理完了'
+        'リクエスト受信'
       );
 
-      return response;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      const errorDetails =
-        error instanceof Error
-          ? {
-              error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-              },
-            }
-          : { error: '不明なエラーが発生しました' };
+      try {
+        const response = await handler(req, context, requestLogger);
 
-      requestLogger.error(
-        {
-          status: 500,
-          duration,
-          ...errorDetails,
-        },
-        'リクエスト処理失敗'
-      );
+        const duration = Date.now() - startTime;
+        requestLogger.info(
+          {
+            status: response.status,
+            duration,
+          },
+          'リクエスト処理完了'
+        );
 
-      return NextResponse.json(
-        {
-          error: 'Internal Server Error',
-          requestId,
-        },
-        { status: 500 }
-      );
-    }
-  };
+        return response;
+      } catch (error) {
+        const duration = Date.now() - startTime;
+        const errorDetails =
+          error instanceof Error
+            ? {
+                error: {
+                  name: error.name,
+                  message: error.message,
+                  stack: error.stack,
+                },
+              }
+            : { error: '不明なエラーが発生しました' };
+
+        requestLogger.error(
+          {
+            status: 500,
+            duration,
+            ...errorDetails,
+          },
+          'リクエスト処理失敗'
+        );
+
+        return NextResponse.json(
+          {
+            error: 'Internal Server Error',
+            requestId,
+          },
+          { status: 500 }
+        );
+      }
+    };
+  }
 }
