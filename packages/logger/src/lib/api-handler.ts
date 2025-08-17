@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import logger, { Logger } from './index';
+import logger, { Logger } from '../index';
 import type { Session } from 'next-auth';
 
 type AuthFunction = () => Promise<Session | null>;
@@ -9,11 +9,11 @@ interface WithLoggingConfig {
   auth: AuthFunction;
 }
 
-type ApiHandler<T = unknown> = (
+export type ApiHandler<T = unknown> = (
   req: NextRequest,
   context: { params: T },
   logger: Logger
-) => Promise<NextResponse> | Promise<Response> | Response;
+) => Promise<NextResponse | Response> | Response;
 
 export function createWithLogging(config: WithLoggingConfig) {
   const { auth } = config;
@@ -35,7 +35,7 @@ export function createWithLogging(config: WithLoggingConfig) {
 
       requestLogger.info(
         {
-          ip: req.ip,
+          ip: req.headers.get('x-forwarded-for') || '127.0.0.1',
           userAgent: req.headers.get('user-agent'),
         },
         'リクエスト受信'

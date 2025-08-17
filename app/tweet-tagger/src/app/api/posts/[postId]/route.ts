@@ -16,7 +16,7 @@ type Context = {
  * @returns ポスト情報、存在しない場合は404を返却する
  */
 export const GET = withLogging(async (
-    _: NextRequest,
+    _req: NextRequest,
     { params }: Context,
     logger: Logger
 ) => {
@@ -40,7 +40,7 @@ export const GET = withLogging(async (
  * @returns  成功時は200, 失敗時は500を返却する, 指定のポストが存在しない場合は404を返却する
  */
 export const DELETE = withLogging(async (
-    _: NextRequest,
+    _req: NextRequest,
     { params }: Context,
     logger: Logger
 ) => {

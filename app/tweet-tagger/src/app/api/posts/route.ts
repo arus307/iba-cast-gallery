@@ -1,16 +1,17 @@
 import { Post } from "@iba-cast-gallery/dao";
-import { NextRequest, NextResponse } from "next/server";
+import { Post } from "@iba-cast-gallery/dao";
+import { NextResponse } from "next/server";
 import { registerPost, getAllPosts } from "services/postService";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
-import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
+import { createWithLogging } from "@iba-cast-gallery/logger";
 
 const withLogging = createWithLogging({ auth });
 
 /**
  * ポスト情報を登録する
  */
-export const POST = withLogging(async (request, context, logger) => {
+export const POST = withLogging(async (request: NextRequest, _context: { params: {} }, logger: Logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -38,7 +39,7 @@ export const POST = withLogging(async (request, context, logger) => {
 /**
  * ポスト情報を全件取得する
  */
-export const GET = withLogging(async (_, __, logger) => {
+export const GET = withLogging(async (_req: NextRequest, _ctx: { params: {} }, logger: Logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

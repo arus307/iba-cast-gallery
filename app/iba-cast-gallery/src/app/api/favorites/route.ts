@@ -1,19 +1,19 @@
-import {auth} from "auth";
-import { getUserByDiscordId,getFavoritePosts } from "services/userService";
-import { createWithLogging } from "@iba-cast-gallery/logger";
-import { NextResponse } from "next/server";
+import { auth } from "auth";
+import { getUserByDiscordId, getFavoritePosts } from "services/userService";
+import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
+import { NextRequest, NextResponse } from "next/server";
 
 const withLogging = createWithLogging({ auth });
 
-export const GET = withLogging(async (_, __, logger) => {
+export const GET = withLogging(async (_req: NextRequest, _ctx: { params: {} }, logger: Logger) => {
     const session = await auth();
 
-    if(!session || session.user?.discordId === undefined){
+    if(!session || !session.user || !session.user.id){
         // ユーザーが認証されていない場合、401 Unauthorizedを返す
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await getUserByDiscordId(logger, session.user.discordId)
+    const user = await getUserByDiscordId(logger, session.user.id)
     if (!user) {
         return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

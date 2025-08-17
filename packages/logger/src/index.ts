@@ -12,4 +12,4 @@ const logger: Logger = pino({
 
 export default logger;
 export type { Logger };
-export { createWithLogging } from './api-handler';
+export { createWithLogging } from './lib/api-handler';
