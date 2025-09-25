@@ -1,10 +1,9 @@
 import { Post } from "@iba-cast-gallery/dao";
-import { Post } from "@iba-cast-gallery/dao";
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 import { registerPost, getAllPosts } from "services/postService";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
-import { createWithLogging } from "@iba-cast-gallery/logger";
+import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
 
 const withLogging = createWithLogging({ auth });
 

@@ -1,15 +1,17 @@
 import pino, { Logger } from 'pino';
 
-const logger: Logger = pino({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-  formatters: {
-    level: (label) => {
-      return { level: label };
+const createLogger: () => Logger = () => {
+  return pino({
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    formatters: {
+      level: (label) => {
+        return { level: label };
+      },
     },
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
-});
+    timestamp: pino.stdTimeFunctions.isoTime,
+  });
+}
 
-export default logger;
+export default createLogger;
 export type { Logger };
-export { createWithLogging } from './lib/api-handler';
+export { default as createWithLogging } from './api-handler';

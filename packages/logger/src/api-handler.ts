@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { randomUUID } from 'crypto';
-import logger, { Logger } from '../index';
+import { Logger } from './index';
 import type { Session } from 'next-auth';
 
 type AuthFunction = () => Promise<Session | null>;
@@ -15,7 +15,7 @@ export type ApiHandler<T = unknown> = (
   logger: Logger
 ) => Promise<NextResponse | Response> | Response;
 
-export function createWithLogging(config: WithLoggingConfig) {
+export default function createWithLogging(config: WithLoggingConfig, logger: Logger) {
   const { auth } = config;
 
   return function withLogging<T = unknown>(handler: ApiHandler<T>) {
