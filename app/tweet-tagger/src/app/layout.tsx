@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "いばぎゃらりー管理画面",
-  description: "いばぎゃらりーの管理画面です",
+  title: "いばぎゃらりぃ管理画面",
+  description: "いばぎゃらりぃの管理画面です",
 };
 
 export default function RootLayout({
