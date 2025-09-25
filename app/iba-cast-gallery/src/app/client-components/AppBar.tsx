@@ -34,7 +34,7 @@ const AppBar = () => {
                             py: 2,
                             px: 1,
                         }}>
-                            IBAぎゃらりー
+                            IBAぎゃらりぃ
                         </Typography>
                     </Link>
                 </Toolbar>
