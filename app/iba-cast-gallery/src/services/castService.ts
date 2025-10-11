@@ -35,7 +35,10 @@ export async function getActiveCasts(): Promise<CastDto[]> {
 // TODO ここに書くのが適切か検討したい
 export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "introduceTweetId"> & {
     taggedPosts: Array<Pick<PostDto, "id" | "postedAt"> & {
-        taggedCasts: Pick<CastDto, "id" |"name"|"enName">[];
+        taggedCasts: {
+            order: number;
+            cast: Pick<CastDto, "id" | "name" | "enName">
+         }[];
     }>;
 };
 
@@ -44,7 +47,7 @@ export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "i
  * 指定のキャストの英名からキャスト情報(タグ付けされたポストも含む)を取得
  * @param castEnName キャストの英名
  */
-export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
+export async function getCastDetail(castEnName: string): Promise<CastDetailDto> {
     await initializeDatabase();
 
     const castRepository: Repository<Cast> = appDataSource.getRepository(Cast);
@@ -60,7 +63,7 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
 
         },
         order: {
-            postCastTags:{
+            postCastTags: {
                 post: {
                     postedAt: "DESC",
                 },
@@ -70,7 +73,7 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
         relations: {
             postCastTags: {
                 post: {
-                    castTags:true,
+                    castTags: true,
                 },
             },
         }
@@ -91,11 +94,16 @@ export async function getCastDetail(castEnName:string): Promise<CastDetailDto> {
             return {
                 id: post.id,
                 postedAt: post.postedAt,
-                taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => ({
-                    id: castTag.cast.id,
-                    name: castTag.cast.name,
-                    enName: castTag.cast.enName,
-                })),
+                taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => (
+                    {
+                        order: castTag.order,
+                        cast: {
+                            id: castTag.cast.id,
+                            name: castTag.cast.name,
+                            enName: castTag.cast.enName,
+                        }
+                    }
+                )),
             };
         }),
     };
