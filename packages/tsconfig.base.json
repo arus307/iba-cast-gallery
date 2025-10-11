@@ -8,7 +8,6 @@
     "noEmit": false,
     "esModuleInterop": true,
     "module": "CommonJS",
-    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -19,8 +18,9 @@
     "paths": {
       "@/*": ["./src/*"],
     },
+    "declaration": true,
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "dist"]
 }
   

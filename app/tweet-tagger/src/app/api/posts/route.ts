@@ -1,58 +1,49 @@
 import { Post } from "@iba-cast-gallery/dao";
-import { NextResponse } from "next/server";
+import { NextRequest,NextResponse } from "next/server";
 import { registerPost, getAllPosts } from "services/postService";
 import { getAllCasts } from "services/castService";
 import { auth } from "auth";
-import logger from "logger";
+import { createWithLogging, Logger } from "@iba-cast-gallery/logger";
 
+const withLogging = createWithLogging({ auth });
 
 /**
  * ポスト情報を登録する
  */
-export async function POST(request: Request) {
+export const POST = withLogging(async (request: NextRequest, _context: { params: {} }, logger: Logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-        const body = await request.json();
-        const post: Post = body.post;
+    const body = await request.json();
+    const post: Post = body.post;
 
-        logger.info({body}, `ポスト登録リクエスト受信`);
+    logger.info({ body }, `ポスト登録リクエスト受信`);
 
-        // キャストの存在チェック
-        const casts = await getAllCasts();
-        const containNotExistCast = post.castTags.some((castTag) => {
-            return casts.findIndex((c) => c.id === castTag.castid) === -1;
-        });
-        if (containNotExistCast) {
-            return NextResponse.json({ error: "キャストが存在しません" }, { status: 400 });
-        }
-
-        registerPost(post);
-
-        return NextResponse.json(post, { status: 201 });
-    } catch (error) {
-        console.error("Error registering post:", error);
-        return NextResponse.json({ error: "Failed to register post" }, { status: 500 });
+    // キャストの存在チェック
+    const casts = await getAllCasts(logger);
+    const containNotExistCast = post.castTags.some((castTag) => {
+        return casts.findIndex((c) => c.id === castTag.castid) === -1;
+    });
+    if (containNotExistCast) {
+        return NextResponse.json({ error: "キャストが存在しません" }, { status: 400 });
     }
-}
+
+    await registerPost(logger, post);
+
+    return NextResponse.json(post, { status: 201 });
+});
 
 /**
  * ポスト情報を全件取得する
  */
-export async function GET() {
+export const GET = withLogging(async (_req: NextRequest, _ctx: { params: {} }, logger: Logger) => {
     const session = await auth();
     if (session?.user?.email !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    try {
-        const posts = await getAllPosts();
-        return NextResponse.json(posts, { status: 200 });
-    } catch (error) {
-        console.error("Error fetching posts:", error);
-        return NextResponse.json({ error: "Failed to fetch posts" }, { status: 500 });
-    }
-}
+    const posts = await getAllPosts(logger);
+    return NextResponse.json(posts, { status: 200 });
+});

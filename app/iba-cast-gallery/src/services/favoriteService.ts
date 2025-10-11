@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "data-source";
 import { Repository } from '@iba-cast-gallery/dao';
 import { Favorite } from '@iba-cast-gallery/dao';
+import { Logger } from '@iba-cast-gallery/logger';
 
 /**
  * お気に入りに投稿を追加する
@@ -10,7 +11,9 @@ import { Favorite } from '@iba-cast-gallery/dao';
  * @param postId お気に入りに追加するポストのID
  * @returns void
  */
-export async function addFavoritePost(userId:number, postId : string): Promise<void>{
+export async function addFavoritePost(logger: Logger, userId:number, postId : string): Promise<void>{
+    const childLogger = logger.child({service: 'favoriteService', function: 'addFavoritePost', userId, postId});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
 
     const favoriteRepository: Repository<Favorite> = appDataSource.getRepository(Favorite);
@@ -21,7 +24,7 @@ export async function addFavoritePost(userId:number, postId : string): Promise<v
     });
 
     if (existingFavorite) {
-        console.log("この投稿はすでにお気に入りに登録されています。");
+        childLogger.warn("この投稿はすでにお気に入りに登録されています。");
         return;
     }
 
@@ -29,7 +32,7 @@ export async function addFavoritePost(userId:number, postId : string): Promise<v
     const newFavorite = favoriteRepository.create({ userId, postId });
     await favoriteRepository.insert(newFavorite);
     
-    console.log("お気に入り投稿を追加しました:", newFavorite);
+    childLogger.info("お気に入り投稿を追加しました。");
 }
 
 /**
@@ -39,7 +42,9 @@ export async function addFavoritePost(userId:number, postId : string): Promise<v
  * @param postId お気に入りから削除するポストのID
  * @returns void
  */
-export async function deleteFavoritePost(userId:number, postId: string): Promise<void> {
+export async function deleteFavoritePost(logger: Logger, userId:number, postId: string): Promise<void> {
+    const childLogger = logger.child({service: 'favoriteService', function: 'deleteFavoritePost', userId, postId});
+    childLogger.info('サービス呼び出し開始');
     await initializeDatabase();
 
     const favoriteRepository: Repository<Favorite> = appDataSource.getRepository(Favorite);
@@ -48,8 +53,8 @@ export async function deleteFavoritePost(userId:number, postId: string): Promise
     const result = await favoriteRepository.delete({ postId, userId });
 
     if (result.affected === 0) {
-        console.log("指定された投稿はお気に入りに登録されていません。");
+        childLogger.warn("指定された投稿はお気に入りに登録されていません。");
     } else {
-        console.log("お気に入り投稿を削除しました:", postId);
+        childLogger.info("お気に入り投稿を削除しました。");
     }
 }

@@ -1,0 +1,24 @@
+{
+  "name": "@iba-cast-gallery/logger",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist tsconfig.tsbuildinfo",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "pino": "^9.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "next": "15.2.4",
+    "next-auth": "^5.0.0-beta.27",
+    "rimraf": "^5.0.7",
+    "typescript": "^5"
+  }
+}
