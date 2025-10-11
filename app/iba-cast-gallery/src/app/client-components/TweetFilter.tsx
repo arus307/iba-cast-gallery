@@ -12,7 +12,7 @@ export default function TweetFilter ({posts, casts}:{posts:JoinedPost[], casts:C
     const [selectedCast, setSelectedCast] = useState<CastDto | null>(null);
     const displayPosts = posts.filter((post) => {
         if (selectedCast) {
-            return post.taggedCasts.includes(selectedCast);
+            return post.taggedCasts.some((cast) => cast.cast.id === selectedCast.id);
         } else {
             return true;
         }

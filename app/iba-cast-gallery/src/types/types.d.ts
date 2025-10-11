@@ -2,7 +2,10 @@ declare global {
     interface JoinedPost {
         id: string;
         postedAt: string;
-        taggedCasts: CastDto[];
+        taggedCasts: {
+            order:number;
+            cast:CastDto;
+        }[]
     }
 }
 
