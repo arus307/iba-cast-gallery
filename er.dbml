@@ -1,0 +1,72 @@
+
+Enum "casts_type_enum" {
+  "1"
+  "2"
+}
+
+Table "casts" {
+  "id" integer [pk, not null]
+  "name" "character varying(30)" [not null]
+  "en_name" "character varying(30)" [not null]
+  "introduce_tweet_id" "character varying(100)" [not null]
+  "type" casts_type_enum [not null]
+  "is_active" boolean [not null, default: true]
+}
+
+Table "favorites" {
+  "id" integer [pk, not null]
+  "user_id" integer [not null]
+  "post_id" "character varying(30)" [not null]
+  "created_at" timestamp [not null, default: `now()`]
+
+  Indexes {
+    (user_id, post_id) [type: btree, unique, name: "IDX_9ba72c63a55d5b8f7deee76b1c"]
+  }
+}
+
+Table "migrations" {
+  "id" integer [pk, not null]
+  "timestamp" bigint [not null]
+  "name" "character varying" [not null]
+}
+
+Table "post_cast_tags" {
+  "post_id" "character varying(30)" [not null]
+  "cast_id" integer [not null]
+  "order" integer [not null, default: 0]
+
+  Indexes {
+    (post_id, cast_id) [pk, name: "PK_17fa77740414b39f9b223b001d6"]
+  }
+}
+
+Table "posts" {
+  "id" "character varying(30)" [pk, not null]
+  "posted_at" timestamp [not null]
+  "is_deleted" boolean [not null]
+}
+
+Table "user_accounts" {
+  "user_id" integer [not null]
+  "provider" "character varying(30)" [not null]
+  "provider_account_id" "character varying(100)" [not null]
+
+  Indexes {
+    (provider, provider_account_id) [pk, name: "PK_1f539a69d5a5e1b28d3af061ad4"]
+    (user_id, provider) [type: btree, unique, name: "IDX_0f6a300df892fd1f6267fdd7c9"]
+  }
+}
+
+Table "users" {
+  "id" integer [pk, not null]
+}
+
+Ref "FK_0be5be648c69c6b654efde5181d":"posts"."id" < "favorites"."post_id" [delete: cascade]
+
+Ref "FK_35a6b05ee3b624d0de01ee50593":"users"."id" < "favorites"."user_id" [delete: cascade]
+
+Ref "FK_40b22c3bbf7283b1a6adb2df3e9":"posts"."id" < "post_cast_tags"."post_id" [delete: cascade]
+
+Ref "FK_6711686e2dc4fcf9c7c83b83735":"users"."id" < "user_accounts"."user_id" [delete: cascade]
+
+Ref "FK_b96305a7d9fd0c3a5c99adde730":"casts"."id" < "post_cast_tags"."cast_id" [delete: cascade]
