@@ -27,7 +27,7 @@
   },
 
   "forwardPorts": [3000, 3001, 5432],
-  "postCreateCommand": "yarn install && npx playwright install --with-deps",
+  "postCreateCommand": "yarn install && npx playwright install --with-deps && docker-compose up -d && yarn run migrate:dev",
   "postStartCommand": "docker-compose up -d",
 
   "remoteUser": "node"
