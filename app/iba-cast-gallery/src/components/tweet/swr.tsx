@@ -9,7 +9,7 @@ import {
 } from './twitter-theme/components'
 import { type TweetCoreProps } from './utils'
 import { useTweet } from './hooks'
-import { CastDto } from '@iba-cast-gallery/types'
+import type { CastDto } from '@iba-cast-gallery/types'
 
 export type TweetProps = Omit<TweetCoreProps, 'id'> & {
   fallback?: ReactNode
