@@ -11,7 +11,7 @@ import { TweetReplies } from "./tweet-replies";
 import { QuotedTweet } from "./quoted-tweet/index";
 import { enrichTweet } from "../utils";
 import { useMemo, useState } from "react";
-import { Button, Stack, Grid2 } from "@mui/material";
+import { Button, Stack, Grid } from "@mui/material";
 import CastChip from "components/CastChip";
 import type { CastDto } from "@iba-cast-gallery/types";
 import FavoriteButton from "components/tweet/twitter-theme/favorite-button";
@@ -46,8 +46,8 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
       <TweetInfo tweet={tweet} />
       {displayTweet && <TweetActions tweet={tweet} />}
       {displayTweet && <TweetReplies tweet={tweet} />}
-      <Grid2 container alignItems="center">
-        <Grid2 size="grow">
+      <Grid container alignItems="center">
+        <Grid size="grow">
           <Stack
             direction="row"
             spacing={0.5}
@@ -65,11 +65,11 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
                 />
               ))}
           </Stack>
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <FavoriteButton tweetId={tweet.id_str} />
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Button
             size="small"
             variant="outlined"
@@ -77,8 +77,8 @@ export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {
           >
             {displayTweet ? "画像のみ表示" : "詳細表示"}
           </Button>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </TweetContainer>
   );
 };
