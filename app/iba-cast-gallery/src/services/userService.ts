@@ -106,6 +106,7 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
                 enName: castTag.cast.enName,
                 introduceTweetId: castTag.cast.introduceTweetId,
                 type: castTag.cast.type,
+                oshiMark: castTag.cast.oshiMark,
                 taggedPosts: []
             },
         })) || []
