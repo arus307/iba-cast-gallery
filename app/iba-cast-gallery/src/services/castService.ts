@@ -28,13 +28,13 @@ export async function getActiveCasts(): Promise<CastDto[]> {
         enName: cast.enName,
         type: cast.type,
         introduceTweetId: cast.introduceTweetId,
-        oshiMark: cast.oshiMark,
+        fanMark: cast.fanMark,
         taggedPosts: [],
     }));
 }
 
 // TODO ここに書くのが適切か検討したい
-export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "introduceTweetId" | "oshiMark"> & {
+export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "introduceTweetId" | "fanMark"> & {
     taggedPosts: Array<Pick<PostDto, "id" | "postedAt"> & {
         taggedCasts: {
             order: number;
@@ -90,7 +90,7 @@ export async function getCastDetail(castEnName: string): Promise<CastDetailDto> 
         enName: cast.enName,
         type: cast.type,
         introduceTweetId: cast.introduceTweetId,
-        oshiMark: cast.oshiMark,
+        fanMark: cast.fanMark,
         taggedPosts: cast.postCastTags.map(postCastTag => {
             const post = postCastTag.post;
             return {

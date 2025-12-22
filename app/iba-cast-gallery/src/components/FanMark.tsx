@@ -1,19 +1,19 @@
 import { Box, Link, Typography, Tooltip } from "@mui/material";
 
-interface OshiMarkProps {
-  oshiMark: string;
+interface FanMarkProps {
+  fanMark: string;
   dataTestId?: string;
 }
 
 /**
  * キャストの推しマーク(ファンマーク)を表示するコンポーネント
  * 
- * @param oshiMark - 推しマーク（絵文字）
+ * @param fanMark - 推しマーク（絵文字）
  * @param dataTestId - テスト用のdata-testid属性
  */
-const OshiMark: React.FC<OshiMarkProps> = ({ oshiMark, dataTestId }) => {
+const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
   // '-' の場合は何も表示しない
-  if (oshiMark === '-') {
+  if (fanMark === '-') {
     return null;
   }
 
@@ -41,7 +41,7 @@ const OshiMark: React.FC<OshiMarkProps> = ({ oshiMark, dataTestId }) => {
             component="span" 
             sx={{ fontSize: '1.2em', lineHeight: 1 }}
           >
-            {oshiMark}
+            {fanMark}
           </Typography>
         </Link>
       </Tooltip>
@@ -49,4 +49,4 @@ const OshiMark: React.FC<OshiMarkProps> = ({ oshiMark, dataTestId }) => {
   );
 };
 
-export default OshiMark;
+export default FanMark;

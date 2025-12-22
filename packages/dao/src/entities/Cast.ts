@@ -47,12 +47,12 @@ export class Cast {
     isActive: boolean;
 
     @Column({
-        name: "oshi_mark",
+        name: "fan_mark",
         type: "varchar",
         length: 20,
         default: "-"
     })
-    oshiMark: string;
+    fanMark: string;
 
     @OneToMany(() => PostCastTag, (postCastTag) => postCastTag.cast, { onDelete: "CASCADE" })
     postCastTags: PostCastTag[];
