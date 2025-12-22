@@ -10,5 +10,6 @@ export interface CastDto {
     enName:string;
     introduceTweetId:string;
     type: CastType;
+    oshiMark: string;
     taggedPosts: number[];
 }

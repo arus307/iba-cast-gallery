@@ -5,6 +5,7 @@ import { getCastDetail } from "services/castService";
 import Tweets from "../../../components/Tweets";
 import { Tweet } from 'components/tweet/swr';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import OshiMark from "../../../components/OshiMark";
 import dayjs from "dayjs";
 
 export default async function Page(
@@ -25,7 +26,7 @@ export default async function Page(
   return (
     <Box>
       <Typography variant="h4" component="h1" sx={{ mb: 2 }} data-testid="cast-name">
-        {cast.name} ({cast.enName})
+        {cast.name} ({cast.enName}) <OshiMark oshiMark={cast.oshiMark} dataTestId="oshi-mark" />
       </Typography>
 
       {
