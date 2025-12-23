@@ -22,7 +22,7 @@ export class ConsolidatePostSeedData1754797829269 implements MigrationInterface 
                     throw new Error(`Cast with id ${castId} not found`);
                 }
                 const postCastTag = new (require("../entities/PostCastTag").PostCastTag);
-                postCastTag.castId = castId;
+                postCastTag.castid = castId;
                 postCastTag.postId = basePost.id;
                 postCastTag.order = index;
                 return postCastTag;
