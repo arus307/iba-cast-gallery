@@ -28,6 +28,7 @@ export const Primary: Story = {
           type: 1,
           introduceTweetId: "",
           enName: "enCastName",
+          fanMark: "-",
           taggedPosts: [],
         },
       },
