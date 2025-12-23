@@ -2,7 +2,6 @@
 // (エンティティの変更によってエラーが出るようになったので、ts-nocheckを追加しています)
 
 import { Post } from "../entities/Post";
-import { Cast } from "../entities/Cast";
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class InsertPosts1744807288406 implements MigrationInterface {
