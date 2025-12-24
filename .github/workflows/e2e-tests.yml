@@ -46,6 +46,7 @@ jobs:
           DB_USERNAME: postgres
           DB_PASSWORD: password
           DB_DATABASE: ibacastgallery
+          E2E_TESTING: "true"
 
       - name: Build applications
         run: yarn turbo build
