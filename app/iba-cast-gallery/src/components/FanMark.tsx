@@ -18,6 +18,7 @@ interface FanMarkProps {
  */
 const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
   const [showCopyAlert, setShowCopyAlert] = useState(false);
+  const [copyError, setCopyError] = useState(false);
 
   // '-' の場合は何も表示しない
   if (fanMark === '-') {
@@ -31,9 +32,12 @@ const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
   const handleCopyFanMark = async () => {
     try {
       await navigator.clipboard.writeText(fanMark);
+      setCopyError(false);
       setShowCopyAlert(true);
     } catch (err) {
       console.error('クリップボードへのコピーに失敗しました:', err);
+      setCopyError(true);
+      setShowCopyAlert(true);
     }
   };
 
@@ -91,10 +95,10 @@ const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
       >
         <Alert 
           onClose={() => setShowCopyAlert(false)} 
-          severity="success"
+          severity={copyError ? "error" : "success"}
           sx={{ width: '100%' }}
         >
-          ファンマークをコピーしました
+          {copyError ? 'クリップボードへのコピーに失敗しました' : 'ファンマークをコピーしました'}
         </Alert>
       </Snackbar>
     </Box>
