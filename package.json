@@ -13,6 +13,9 @@
     "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator",
     "db:reset": "./dbreset.sh"
   },
+  "dependencies": {
+    "pg": "^8.14.1"
+  },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.54.2",

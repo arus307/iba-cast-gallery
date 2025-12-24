@@ -1,0 +1,52 @@
+name: Preview DB Cleanup
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [ main ]
+
+jobs:
+  cleanup-preview-schema:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Delete preview schema
+        run: node scripts/delete-preview-schema.js
+        env:
+          DB_HOST: ${{ secrets.PREVIEW_DB_HOST }}
+          DB_PORT: ${{ secrets.PREVIEW_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PREVIEW_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PREVIEW_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PREVIEW_DB_DATABASE }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Comment on PR about cleanup
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const schemaName = `preview_pr_${prNumber}`;
+            
+            const comment = `🧹 Preview環境のDBスキーマが削除されました。
+            
+            **削除されたスキーマ:** \`${schemaName}\``;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });
