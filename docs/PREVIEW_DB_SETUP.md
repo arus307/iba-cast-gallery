@@ -18,10 +18,26 @@ PRが作成されると、自動的に専用のデータベーススキーマが
 
 リポジトリの Settings → Secrets and variables → Actions で以下のSecretsを設定してください:
 
-- `PREVIEW_DB_HOST`: Preview環境用のデータベースホスト (例: `your-db-host.supabase.co`)
+### Supabaseを使用する場合
+
+1. Supabaseダッシュボード → **Project Settings** → **Database** を開く
+2. **Connection Info** または **Connection String** セクションから情報を取得
+3. 以下のSecretsを設定:
+
+- `PREVIEW_DB_HOST`: Supabaseのホスト (例: `db.xxxxxxxxxxxxx.supabase.co`)
+- `PREVIEW_DB_PORT`: `5432` (Direct Connectionを使用)
+- `PREVIEW_DB_USERNAME`: `postgres`
+- `PREVIEW_DB_PASSWORD`: Supabaseプロジェクト作成時に設定したパスワード
+- `PREVIEW_DB_DATABASE`: `postgres`
+
+**注意**: ポート `5432` (Direct Connection) を使用してください。ポート `6543` (Connection Pooling) ではスキーマ作成ができません。
+
+### その他のPostgreSQLサービスを使用する場合
+
+- `PREVIEW_DB_HOST`: データベースホスト
 - `PREVIEW_DB_PORT`: データベースポート (通常は `5432`)
-- `PREVIEW_DB_USERNAME`: データベースユーザー名
-- `PREVIEW_DB_PASSWORD`: データベースパスワード
+- `PREVIEW_DB_USERNAME`: スキーマ作成権限を持つユーザー名
+- `PREVIEW_DB_PASSWORD`: パスワード
 - `PREVIEW_DB_DATABASE`: データベース名
 
 ## Netlify Deploy Previewの設定

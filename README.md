@@ -21,7 +21,11 @@
 
 PRごとに独立したデータベーススキーマを使用する仕組みが導入されています。
 
-詳細は [docs/PREVIEW_DB_SETUP.md](docs/PREVIEW_DB_SETUP.md) を参照してください。
+**Supabase PostgreSQL対応**: このソリューションはSupabase PostgreSQLで完全に動作します。
+
+詳細は以下のドキュメントを参照してください:
+- [セットアップガイド](docs/PREVIEW_DB_SETUP.md)
+- [Supabase実現可能性調査](docs/SUPABASE_FEASIBILITY.md)
 
 **概要:**
 - PR作成時に `preview_pr_{PR番号}` という名前のスキーマが自動生成されます
