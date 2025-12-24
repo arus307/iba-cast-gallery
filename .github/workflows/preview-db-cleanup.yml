@@ -5,6 +5,10 @@ on:
     types: [closed]
     branches: [ main ]
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   cleanup-preview-schema:
     runs-on: ubuntu-latest
