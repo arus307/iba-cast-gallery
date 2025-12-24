@@ -17,8 +17,7 @@ interface FanMarkProps {
  * @param dataTestId - テスト用のdata-testid属性
  */
 const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
-  const [showCopyAlert, setShowCopyAlert] = useState(false);
-  const [copyError, setCopyError] = useState(false);
+  const [alertState, setAlertState] = useState<'idle' | 'success' | 'error'>('idle');
 
   // '-' の場合は何も表示しない
   if (fanMark === '-') {
@@ -30,14 +29,19 @@ const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
 
   // ファンマークをクリップボードにコピー
   const handleCopyFanMark = async () => {
+    // クリップボードAPIが利用可能かチェック
+    if (!navigator.clipboard) {
+      console.error('クリップボードAPIが利用できません');
+      setAlertState('error');
+      return;
+    }
+
     try {
       await navigator.clipboard.writeText(fanMark);
-      setCopyError(false);
-      setShowCopyAlert(true);
+      setAlertState('success');
     } catch (err) {
       console.error('クリップボードへのコピーに失敗しました:', err);
-      setCopyError(true);
-      setShowCopyAlert(true);
+      setAlertState('error');
     }
   };
 
@@ -88,17 +92,17 @@ const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
       </Link>
 
       <Snackbar
-        open={showCopyAlert}
+        open={alertState !== 'idle'}
         autoHideDuration={3000}
-        onClose={() => setShowCopyAlert(false)}
+        onClose={() => setAlertState('idle')}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert 
-          onClose={() => setShowCopyAlert(false)} 
-          severity={copyError ? "error" : "success"}
+          onClose={() => setAlertState('idle')} 
+          severity={alertState === 'error' ? "error" : "success"}
           sx={{ width: '100%' }}
         >
-          {copyError ? 'クリップボードへのコピーに失敗しました' : 'ファンマークをコピーしました'}
+          {alertState === 'error' ? 'クリップボードへのコピーに失敗しました' : 'ファンマークをコピーしました'}
         </Alert>
       </Snackbar>
     </Box>
