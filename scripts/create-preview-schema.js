@@ -39,11 +39,11 @@ async function createPreviewSchema() {
 
     if (checkResult.rows.length > 0) {
       console.log(`Schema ${schemaName} already exists. Dropping and recreating...`);
-      await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+      await client.query(`DROP SCHEMA "${schemaName}" CASCADE`);
     }
 
     // スキーマを作成
-    await client.query(`CREATE SCHEMA IF NOT EXISTS "${schemaName}"`);
+    await client.query(`CREATE SCHEMA "${schemaName}"`);
     console.log(`Schema ${schemaName} created successfully`);
 
     await client.end();

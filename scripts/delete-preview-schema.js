@@ -43,7 +43,7 @@ async function deletePreviewSchema() {
     }
 
     // スキーマを削除（CASCADE オプションで関連オブジェクトも削除）
-    await client.query(`DROP SCHEMA IF EXISTS "${schemaName}" CASCADE`);
+    await client.query(`DROP SCHEMA "${schemaName}" CASCADE`);
     console.log(`Schema ${schemaName} deleted successfully`);
 
     await client.end();
