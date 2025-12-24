@@ -41,25 +41,25 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const schemaName = `preview_pr_${prNumber}`;
-            
+
             const comment = `✅ Preview環境のDBスキーマが準備されました！
-            
+
             **スキーマ名:** \`${schemaName}\`
-            
+
             Preview環境では自動的にこのスキーマが使用されます。`;
-            
+
             // 既存のコメントを検索
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
             });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('Preview環境のDBスキーマが準備されました')
             );
-            
+
             if (botComment) {
               // 既存のコメントを更新
               await github.rest.issues.updateComment({

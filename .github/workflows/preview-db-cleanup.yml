@@ -39,11 +39,11 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const schemaName = `preview_pr_${prNumber}`;
-            
+
             const comment = `🧹 Preview環境のDBスキーマが削除されました。
-            
+
             **削除されたスキーマ:** \`${schemaName}\``;
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
