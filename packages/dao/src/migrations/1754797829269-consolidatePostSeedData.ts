@@ -1,14 +1,15 @@
 // @ts-nocheck
 // This is a new migration to consolidate all the previous post seeding migrations.
 
-import { Cast } from "../entities/Cast";
 import { Post } from "../entities/Post";
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class ConsolidatePostSeedData1754797829269 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        const casts: Cast[] = await queryRunner.manager.find("casts");
+        // Query casts directly from the database without using the Cast entity
+        const castsResult = await queryRunner.query(`SELECT id FROM casts`);
+        const castIds = new Set(castsResult.map((c: any) => c.id));
 
         // Consolidate posts from all previous migrations
         const posts: Post[] = basePosts.map((basePost) => {
@@ -17,12 +18,12 @@ export class ConsolidatePostSeedData1754797829269 implements MigrationInterface 
             post.postedAt = basePost.postedAt;
             post.isDeleted = false; // Default to not deleted
             post.castTags = basePost.taggedCastIds.map((castId, index) => {
-                const cast = casts.find(c => c.id === castId);
-                if (!cast) {
+                if (!castIds.has(castId)) {
                     throw new Error(`Cast with id ${castId} not found`);
                 }
                 const postCastTag = new (require("../entities/PostCastTag").PostCastTag);
-                postCastTag.cast = cast;
+                postCastTag.castid = castId;
+                postCastTag.postId = basePost.id;
                 postCastTag.order = index;
                 return postCastTag;
             });

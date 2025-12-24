@@ -11,6 +11,7 @@ Table "casts" {
   "introduce_tweet_id" "character varying(100)" [not null]
   "type" casts_type_enum [not null]
   "is_active" boolean [not null, default: true]
+  "fan_mark" "character varying(20)" [not null, default: '-']
 }
 
 Table "favorites" {

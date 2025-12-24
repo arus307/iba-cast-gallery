@@ -21,6 +21,7 @@ export const Diamond: Story = {
       type: 1,
       introduceTweetId: "",
       enName: "diamond",
+      fanMark: "-",
       taggedPosts: [],
     },
   },
