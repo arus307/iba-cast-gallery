@@ -35,22 +35,45 @@ if (casts.length === 0) {
                         // 3. ファンマークのテキストが正しいことを確認
                         await expect(fanMarkElement, `ファンマークのテキストが「${expectedFanMark}」であること`).toContainText(expectedFanMark);
 
-                        // 4. ファンマークがリンクであることを確認
-                        const fanMarkLink = fanMarkElement.locator('a');
-                        await expect(fanMarkLink, 'ファンマークがリンクであること').toBeVisible();
+                        // 4. コピーボタンが表示されていることを確認
+                        const copyButton = page.getByTestId('fan-mark-copy-button');
+                        await expect(copyButton, 'コピーボタンが表示されていること').toBeVisible();
 
-                        // 5. リンク先が公式ツイートであることを確認
-                        const href = await fanMarkLink.getAttribute('href');
+                        // 5. コピーアイコンが表示されていることを確認
+                        const copyIcon = copyButton.locator('svg[data-testid="ContentCopyIcon"]');
+                        await expect(copyIcon, 'ContentCopyアイコンが表示されていること').toBeVisible();
+
+                        // 6. コピーボタンをクリックしてクリップボードにコピー
+                        await copyButton.click();
+
+                        // 7. コピー成功のアラートが表示されることを確認
+                        const successAlert = page.getByText('ファンマークをコピーしました');
+                        await expect(successAlert, 'コピー成功のアラートが表示されること').toBeVisible();
+
+                        // 8. クリップボードの内容を確認
+                        const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+                        expect(clipboardText, 'クリップボードにファンマークがコピーされていること').toBe(expectedFanMark);
+
+                        // 9. 公式ツイートへのリンクが表示されていることを確認
+                        const officialLink = page.getByTestId('fan-mark-official-link');
+                        await expect(officialLink, '公式ツイートへのリンクが表示されていること').toBeVisible();
+
+                        // 10. リンク先が公式ツイートであることを確認
+                        const href = await officialLink.getAttribute('href');
                         expect(href, 'リンク先が公式の推しマーク一覧ツイートであること').toBe('https://x.com/iba_diary/status/1980613318734938476');
 
-                        // 6. リンクが新しいタブで開くことを確認
-                        const target = await fanMarkLink.getAttribute('target');
+                        // 11. リンクが新しいタブで開くことを確認
+                        const target = await officialLink.getAttribute('target');
                         expect(target, 'リンクが新しいタブで開くこと').toBe('_blank');
 
-                        // 7. セキュリティ属性が設定されていることを確認
-                        const rel = await fanMarkLink.getAttribute('rel');
+                        // 12. セキュリティ属性が設定されていることを確認
+                        const rel = await officialLink.getAttribute('rel');
                         expect(rel, 'rel属性にnoopener noreferrerが設定されていること').toContain('noopener');
                         expect(rel, 'rel属性にnoopener noreferrerが設定されていること').toContain('noreferrer');
+
+                        // 13. Launchアイコンが表示されていることを確認
+                        const launchIcon = officialLink.locator('svg[data-testid="LaunchIcon"]');
+                        await expect(launchIcon, 'Launchアイコンが表示されていること').toBeVisible();
                     });
                 }
             }

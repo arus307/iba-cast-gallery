@@ -1,4 +1,9 @@
-import { Box, Link, Typography, Tooltip } from "@mui/material";
+"use client";
+
+import { useState } from "react";
+import { Box, Link, Typography, Tooltip, Alert, Snackbar, IconButton } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import LaunchIcon from "@mui/icons-material/Launch";
 
 interface FanMarkProps {
   fanMark: string;
@@ -12,6 +17,8 @@ interface FanMarkProps {
  * @param dataTestId - テスト用のdata-testid属性
  */
 const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
+  const [showCopyAlert, setShowCopyAlert] = useState(false);
+
   // '-' の場合は何も表示しない
   if (fanMark === '-') {
     return null;
@@ -20,31 +27,76 @@ const FanMark: React.FC<FanMarkProps> = ({ fanMark, dataTestId }) => {
   // 公式の推しマーク一覧ツイートURL
   const officialTweetUrl = "https://x.com/iba_diary/status/1980613318734938476";
 
+  // ファンマークをクリップボードにコピー
+  const handleCopyFanMark = async () => {
+    try {
+      await navigator.clipboard.writeText(fanMark);
+      setShowCopyAlert(true);
+    } catch (err) {
+      console.error('クリップボードへのコピーに失敗しました:', err);
+    }
+  };
+
   return (
     <Box 
       component="span" 
       sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
       data-testid={dataTestId}
     >
-      <Tooltip title="公式の推しマーク一覧を見る">
-        <Link
-          href={officialTweetUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+      <Tooltip title="ファンマークをコピー">
+        <IconButton
+          onClick={handleCopyFanMark}
+          size="small"
           sx={{ 
-            textDecoration: 'none',
+            padding: 0.5,
             '&:hover': { opacity: 0.7 }
           }}
-          aria-label="公式の推しマーク一覧ツイートを新しいタブで開く"
+          aria-label="ファンマークをクリップボードにコピー"
+          data-testid={dataTestId ? `${dataTestId}-copy-button` : undefined}
         >
           <Typography 
             component="span" 
-            sx={{ fontSize: '1.2em', lineHeight: 1 }}
+            sx={{ fontSize: '1.2em', lineHeight: 1, marginRight: 0.5 }}
           >
             {fanMark}
           </Typography>
-        </Link>
+          <ContentCopyIcon sx={{ fontSize: '0.8em' }} />
+        </IconButton>
       </Tooltip>
+
+      <Link
+        href={officialTweetUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{ 
+          textDecoration: 'none',
+          fontSize: '0.8em',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 0.25,
+          '&:hover': { opacity: 0.7 }
+        }}
+        aria-label="公式の推しマーク一覧ツイートを新しいタブで開く"
+        data-testid={dataTestId ? `${dataTestId}-official-link` : undefined}
+      >
+        公式
+        <LaunchIcon sx={{ fontSize: '1em' }} />
+      </Link>
+
+      <Snackbar
+        open={showCopyAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowCopyAlert(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert 
+          onClose={() => setShowCopyAlert(false)} 
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          ファンマークをコピーしました
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
