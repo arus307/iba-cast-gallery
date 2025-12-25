@@ -40,7 +40,7 @@ if (casts.length === 0) {
                         await expect(copyButton, 'コピーボタンが表示されていること').toBeVisible();
 
                         // 5. コピーアイコンが表示されていることを確認
-                        const copyIcon = copyButton.locator('svg[data-testid="ContentCopyIcon"]');
+                        const copyIcon = copyButton.getByTestId('ContentCopyIcon');
                         await expect(copyIcon, 'ContentCopyアイコンが表示されていること').toBeVisible();
 
                         // 6. コピーボタンをクリックしてクリップボードにコピー
