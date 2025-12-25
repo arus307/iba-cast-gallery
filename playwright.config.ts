@@ -12,6 +12,7 @@ export default defineConfig({
   globalSetup: require.resolve('./e2e/global-setup.ts'),
   use: {
     trace: process.env.CI ? 'on-first-retry' : 'on',
+    permissions: ['clipboard-read', 'clipboard-write'],
   },
 
   timeout: 5 * 60 * 1000, // 5m
