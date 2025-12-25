@@ -22,10 +22,12 @@
 PRごとに独立したデータベーススキーマを使用する仕組みが導入されています。
 
 **Supabase PostgreSQL対応**: このソリューションはSupabase PostgreSQLで完全に動作します。
+**Vercel & Netlify対応**: Vercel、Netlify両方のPreview Deploymentsに対応しています。
 
 詳細は以下のドキュメントを参照してください:
-- [セットアップガイド](docs/PREVIEW_DB_SETUP.md)
-- [Supabase実現可能性調査](docs/SUPABASE_FEASIBILITY.md)
+- [セットアップガイド](docs/PREVIEW_DB_SETUP.md) - 全体の設定方法
+- [Vercel設定ガイド](docs/VERCEL_SETUP.md) - Vercel特化の詳細ガイド
+- [Supabase実現可能性調査](docs/SUPABASE_FEASIBILITY.md) - Supabase互換性情報
 
 **概要:**
 - PR作成時に `preview_pr_{PR番号}` という名前のスキーマが自動生成されます

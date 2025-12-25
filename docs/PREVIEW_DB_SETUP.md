@@ -40,9 +40,62 @@ PRが作成されると、自動的に専用のデータベーススキーマが
 - `PREVIEW_DB_PASSWORD`: パスワード
 - `PREVIEW_DB_DATABASE`: データベース名
 
-## Netlify Deploy Previewの設定
+## Deploy Preview環境の設定
 
-### 環境変数の設定
+### Vercel での設定
+
+#### 環境変数の設定手順
+
+1. Vercelプロジェクト → **Settings** → **Environment Variables** を開く
+2. 以下の環境変数を追加します
+
+#### Preview環境用の環境変数 (Environment: Preview)
+
+**DB接続設定**:
+- `DB_HOST`: Supabaseのホスト (例: `db.xxxxxxxxxxxxx.supabase.co`)
+- `DB_PORT`: `5432`
+- `DB_USERNAME`: `postgres`
+- `DB_PASSWORD`: Supabaseのパスワード
+- `DB_DATABASE`: `postgres`
+- `DB_MIGRATION_USER_USERNAME`: `postgres`
+- `DB_MIGRATION_USER_PASSWORD`: Supabaseのパスワード
+
+**スキーマ設定** (重要):
+- `DB_SCHEMA`: `preview_pr_$VERCEL_GIT_PULL_REQUEST_ID`
+
+**認証関連**:
+- `AUTH_SECRET`: 認証シークレット
+- `AUTH_DISCORD_ID`: Discord OAuth App ID
+- `AUTH_DISCORD_SECRET`: Discord OAuth App Secret
+- `ADMIN_EMAIL`: 管理者メールアドレス
+- その他必要な環境変数
+
+#### Production環境用の環境変数 (Environment: Production)
+
+同じDB接続設定に加えて:
+- `DB_SCHEMA`: `public`
+
+#### 設定例
+
+```bash
+# Production環境 (Environment: Production)
+DB_SCHEMA=public
+
+# Preview環境 (Environment: Preview)
+DB_SCHEMA=preview_pr_$VERCEL_GIT_PULL_REQUEST_ID
+```
+
+Vercelでは `VERCEL_GIT_PULL_REQUEST_ID` という環境変数がPreview Deploymentで自動的に設定され、PR番号が入ります。これにより、各Preview環境が自動的に対応するスキーマを使用します。
+
+#### Vercelの環境変数について
+
+- `VERCEL_GIT_PULL_REQUEST_ID`: PR番号（Preview Deploymentでのみ利用可能）
+- `VERCEL_ENV`: デプロイ環境 ("production", "preview", "development")
+- Preview環境でのみ `VERCEL_GIT_PULL_REQUEST_ID` が利用可能なため、Production環境では別途 `DB_SCHEMA=public` を設定する必要があります
+
+### Netlify での設定（参考）
+
+#### 環境変数の設定手順
 
 Netlify の Site settings → Build & deploy → Environment で、Deploy Previews用の環境変数を設定します:
 
@@ -66,9 +119,8 @@ Netlify の Site settings → Build & deploy → Environment で、Deploy Previe
    - `DB_SCHEMA`: `preview_pr_$REVIEW_ID`
    
    Netlify では `$REVIEW_ID` という環境変数がDeploy Previewで自動的に設定され、PR番号が入ります。
-   これにより、各Preview環境が自動的に対応するスキーマを使用します。
 
-### 設定例
+#### 設定例
 
 ```bash
 # Production環境 (productionブランチ用)
@@ -79,6 +131,24 @@ DB_SCHEMA=preview_pr_$REVIEW_ID
 ```
 
 ## 動作確認
+
+### Vercel の場合
+
+1. 新しいPRを作成します
+2. GitHub Actionsで `Preview DB Setup` ワークフローが実行されることを確認します
+3. PRにコメントが追加され、スキーマ名が表示されることを確認します
+4. Vercel Preview Deploymentがデプロイされ、正常に動作することを確認します
+5. PRをクローズします
+6. GitHub Actionsで `Preview DB Cleanup` ワークフローが実行され、スキーマが削除されることを確認します
+
+**デバッグ方法**: Vercel Deployment Logs で以下の環境変数を確認できます:
+```
+VERCEL_ENV=preview
+VERCEL_GIT_PULL_REQUEST_ID=123
+DB_SCHEMA=preview_pr_123
+```
+
+### Netlify の場合
 
 1. 新しいPRを作成します
 2. GitHub Actionsで `Preview DB Setup` ワークフローが実行されることを確認します
@@ -96,6 +166,13 @@ DB_SCHEMA=preview_pr_$REVIEW_ID
 
 ### Preview環境で接続エラーが発生する
 
+**Vercelの場合**:
+- Vercelの環境変数が正しく設定されているか確認してください
+- 特に `DB_SCHEMA=preview_pr_$VERCEL_GIT_PULL_REQUEST_ID` が Preview環境用に設定されているか確認してください
+- Vercel Deployment Logsで `VERCEL_GIT_PULL_REQUEST_ID` が存在することを確認してください
+- Production環境では `DB_SCHEMA=public` が設定されているか確認してください
+
+**Netlifyの場合**:
 - Netlifyの環境変数が正しく設定されているか確認してください
 - 特に `DB_SCHEMA=preview_pr_$REVIEW_ID` が Deploy Previews用に設定されているか確認してください
 

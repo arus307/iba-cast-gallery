@@ -74,9 +74,11 @@ GitHub Actions (preview-db-setup.yml)
     ↓
 PRにコメント通知
     ↓
-Netlify Deploy Preview
+Vercel/Netlify Preview Deployment
     ↓
-環境変数 DB_SCHEMA=preview_pr_$REVIEW_ID
+環境変数 DB_SCHEMA=preview_pr_{PR番号}
+  - Vercel: DB_SCHEMA=preview_pr_$VERCEL_GIT_PULL_REQUEST_ID
+  - Netlify: DB_SCHEMA=preview_pr_$REVIEW_ID
     ↓
 対応するスキーマに接続
     ↓
@@ -105,7 +107,36 @@ PREVIEW_DB_PASSWORD: データベースパスワード
 PREVIEW_DB_DATABASE: データベース名
 ```
 
-### 2. Netlify 環境変数の設定
+### 2. Vercel/Netlify 環境変数の設定
+
+#### Vercel の場合
+
+Settings → Environment Variables で Preview環境用に設定:
+
+**DB接続設定** (Environment: Preview):
+- `DB_HOST`: Supabaseのホスト
+- `DB_PORT`: `5432`
+- `DB_USERNAME`: `postgres`
+- `DB_PASSWORD`: Supabaseのパスワード
+- `DB_DATABASE`: `postgres`
+- `DB_MIGRATION_USER_USERNAME`: `postgres`
+- `DB_MIGRATION_USER_PASSWORD`: Supabaseのパスワード
+
+**スキーマ設定** (Environment: Preview):
+```
+DB_SCHEMA=preview_pr_$VERCEL_GIT_PULL_REQUEST_ID
+```
+
+**Production環境** (Environment: Production):
+```
+DB_SCHEMA=public
+```
+
+その他認証関連の環境変数も設定が必要です。
+
+詳細: `docs/VERCEL_SETUP.md`
+
+#### Netlify の場合
 
 Site settings → Build & deploy → Environment で Deploy Previews用に設定:
 
@@ -123,8 +154,6 @@ Site settings → Build & deploy → Environment で Deploy Previews用に設定
 - `DB_PASSWORD`: GitHubシークレットと同じ値
 - `DB_DATABASE`: GitHubシークレットと同じ値
 - `DB_MIGRATION_USER_USERNAME`: `DB_USERNAME` と同じ値
-- `DB_MIGRATION_USER_PASSWORD`: `DB_PASSWORD` と同じ値
-
 **スキーマ設定** (重要):
 ```
 DB_SCHEMA=preview_pr_$REVIEW_ID
