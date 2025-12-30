@@ -21,7 +21,7 @@
     "@mui/material-nextjs": "^7.3.6",
     "@next/third-parties": "^15.5.7",
     "dayjs": "^1.11.13",
-    "next": "^15.5.7",
+    "next": "^15.5.9",
     "next-auth": "^5.0.0-beta.27",
     "nextjs-toploader": "^3.8.16",
     "pino": "^9.7.0",
