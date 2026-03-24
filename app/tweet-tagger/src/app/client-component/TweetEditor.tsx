@@ -56,6 +56,8 @@ const TweetEditor = ({ initialId }: {
       id: tweetId,
       postedAt: tweetDateTime?.toISOString(),
       isDeleted: isDeleted,
+      showInGallery: true,
+      shiftSource: null,
       castTags: castTags,
       taggedCasts: [],
       favorites: [],
