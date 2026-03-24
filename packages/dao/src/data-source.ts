@@ -6,6 +6,7 @@ import { PostCastTag } from './entities/PostCastTag';
 import { User } from './entities/User';
 import { UserAccount } from './entities/UserAccount';
 import { Favorite } from './entities/Favorite';
+import { Shift } from './entities/Shift';
 import path from 'path';
 
 /**
@@ -24,6 +25,7 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
     User,
     UserAccount,
     Favorite,
+    Shift,
   ],
   migrations: [
     path.join(__dirname, 'migrations/**/*.js'),
