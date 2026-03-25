@@ -16,3 +16,11 @@ export interface ShiftDto {
     castId: number;
     sourcePostId: string | null;
 }
+
+export interface ShiftGroup {
+    date: string;
+    dayOfWeek: string;
+    shift: ShiftSlot;
+    casts: { id: number; name: string; type: string }[];
+    sourcePostId: string | null;
+}

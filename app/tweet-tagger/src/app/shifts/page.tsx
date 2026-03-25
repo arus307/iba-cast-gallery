@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import NotAdmin from "app/client-component/NotAdmin";
-import ShiftEditor from "app/client-component/ShiftEditor";
+import ShiftPageContent from "app/client-component/ShiftPageContent";
 
 export default async function ShiftsPage() {
     const session = await auth();
@@ -25,7 +25,7 @@ export default async function ShiftsPage() {
                 <Typography variant="body2" color="primary">shifts.csv をダウンロード</Typography>
             </Link>
             <Typography variant="h6">シフト登録</Typography>
-            <ShiftEditor />
+            <ShiftPageContent />
         </>
     );
 }

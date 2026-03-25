@@ -27,7 +27,7 @@ const SHIFT_LABELS: Record<ShiftSlot, string> = {
     [ShiftSlot.NIGHT]: "夜",
 };
 
-const ShiftEditor = () => {
+const ShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
     const [casts, setCasts] = useState<Cast[]>([]);
     const [tweetInput, setTweetInput] = useState("");
     const [tweetId, setTweetId] = useState("");
@@ -104,6 +104,7 @@ const ShiftEditor = () => {
             });
             if (!res.ok) throw new Error();
             setSnackbar({ open: true, message: "保存しました！", severity: "success" });
+            onSaved?.();
         } catch {
             setSnackbar({ open: true, message: "保存に失敗しました", severity: "error" });
         } finally {
@@ -136,6 +137,7 @@ const ShiftEditor = () => {
                     onChange={(v) => v && setDate(v)}
                     fullWidth
                     size="small"
+                    slotProps={{ textField: { inputProps: { "data-testid": "shift-date-input" } } }}
                 />
             </LocalizationProvider>
 
@@ -209,6 +211,7 @@ const ShiftEditor = () => {
                 variant="contained"
                 onClick={save}
                 disabled={saving || !date?.isValid()}
+                data-testid="shift-save-button"
             >
                 {saving ? "保存中..." : "保存する"}
             </Button>

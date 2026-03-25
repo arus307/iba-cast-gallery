@@ -2,7 +2,7 @@ import "server-only";
 import "reflect-metadata";
 import { initializeDatabase, appDataSource } from "../data-source";
 import { Post, Repository, Shift } from "@iba-cast-gallery/dao";
-import { ShiftSlot, ShiftSourceStatus, CastType } from "@iba-cast-gallery/types";
+import { ShiftSlot, ShiftSourceStatus, CastType, ShiftGroup } from "@iba-cast-gallery/types";
 import logger from "../logger";
 
 const SHIFT_LABEL: Record<ShiftSlot, string> = {
@@ -90,6 +90,42 @@ export async function saveShifts(
             logger.info({ date, slot, castIds }, "シフト登録完了");
         }
     });
+}
+
+/**
+ * 全シフトデータを一覧表示用に取得する（date+shift でグループ化、日付降順）
+ */
+export async function getShiftList(): Promise<ShiftGroup[]> {
+    await initializeDatabase();
+
+    const shiftRepository: Repository<Shift> = appDataSource.getRepository(Shift);
+    const records = await shiftRepository.find({
+        relations: ["cast"],
+        order: { date: "DESC", shift: "ASC", castId: "ASC" },
+    });
+
+    const groupMap = new Map<string, ShiftGroup>();
+    for (const r of records) {
+        const key = `${r.date}__${r.shift}`;
+        if (!groupMap.has(key)) {
+            const d = new Date(r.date);
+            const dayEn = d.toLocaleDateString("en-US", { weekday: "short", timeZone: "Asia/Tokyo" });
+            groupMap.set(key, {
+                date: r.date,
+                dayOfWeek: DAY_LABEL[dayEn] ?? dayEn,
+                shift: r.shift,
+                casts: [],
+                sourcePostId: r.sourcePostId ?? null,
+            });
+        }
+        groupMap.get(key)!.casts.push({
+            id: r.castId,
+            name: r.cast.name,
+            type: r.cast.type === CastType.REAL ? "RC" : "IC",
+        });
+    }
+
+    return Array.from(groupMap.values());
 }
 
 /**
