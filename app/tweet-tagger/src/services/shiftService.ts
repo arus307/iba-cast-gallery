@@ -93,6 +93,20 @@ export async function saveShifts(
 }
 
 /**
+ * 指定日・シフトの source_post_id を更新する
+ */
+export async function updateShiftSource(
+    date: string,
+    slot: ShiftSlot,
+    sourcePostId: string,
+): Promise<void> {
+    await initializeDatabase();
+    const shiftRepository: Repository<Shift> = appDataSource.getRepository(Shift);
+    await shiftRepository.update({ date, shift: slot }, { sourcePostId });
+    logger.info({ date, slot, sourcePostId }, "シフトソース更新");
+}
+
+/**
  * 全シフトデータを一覧表示用に取得する（date+shift でグループ化、日付降順）
  */
 export async function getShiftList(): Promise<ShiftGroup[]> {
