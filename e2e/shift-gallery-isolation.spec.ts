@@ -21,8 +21,9 @@ const testCast = casts[0] ?? null;
 // テスト専用のツイートID（他テストと衝突しない未来日付と合わせて使用）
 // ランの紹介ツイート ID - posts テーブルには存在しないが実在するツイート
 const SHIFT_ONLY_TWEET_ID = '1912083488758792543';
-// tweet-flow.spec.ts でギャラリー登録済みのツイート ID
-const GALLERY_TWEET_ID = '1954740195934474563';
+// shift-flow.spec.ts の tweetId と衝突しないよう、このテスト専用のフェイク ID を使用
+// ギャラリーは showInGallery=true であれば実在しない ID でも表示する
+const GALLERY_TWEET_ID = '1900000000000000099';
 
 if (!testCast) {
     test.describe.skip('シフト・ギャラリー分離テスト（キャストデータが読み込めません）', () => {

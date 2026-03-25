@@ -16,13 +16,21 @@ if (!testCast) {
     test.describe('シフト登録と一覧表示フロー', () => {
         test.beforeEach(async ({ page }) => {
             await login(page);
+            // テスト間の状態干渉を防ぐため、今日の夜シフトを事前にクリア
+            const today = new Date().toISOString().slice(0, 10);
+            await page.request.post('http://localhost:3001/api/shifts', {
+                data: { date: today, shift: 'night', castIds: [] },
+            });
         });
 
         test('シフトを登録すると一覧に表示されること', async ({ page }) => {
-            // シフト登録ページへ移動（キャスト一覧の読み込みを待機）
+            const today = new Date().toISOString().slice(0, 10);
+
+            // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
             await Promise.all([
                 page.goto('http://localhost:3001/shifts'),
-                page.waitForRequest('http://localhost:3001/api/casts'),
+                page.waitForResponse((res: any) => res.url().includes('/api/casts')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
 
             // キャストの Chip が表示されていることを確認
@@ -32,11 +40,14 @@ if (!testCast) {
             // キャストを選択
             await castChip.click();
 
-            // 保存ボタンをクリックして POST /api/shifts を待機
+            // 保存ボタンをクリックして POST /api/shifts のレスポンスを待機
             await Promise.all([
                 page.getByTestId('shift-save-button').click(),
-                page.waitForRequest((req) =>
-                    req.url().includes('/api/shifts') && req.method() === 'POST'
+                page.waitForResponse((resp: any) =>
+                    resp.url().includes('/api/shifts') &&
+                    !resp.url().includes('/api/shifts?') &&
+                    !resp.url().includes('/api/shifts/') &&
+                    resp.request().method() === 'POST'
                 ),
             ]);
 
@@ -46,21 +57,22 @@ if (!testCast) {
             // 一覧テーブルが表示されること
             await expect(page.getByTestId('shift-list')).toBeVisible();
 
-            // 夜シフト・選択したキャストを含む行が存在すること
-            const matchingRow = page
-                .locator('[data-testid^="shift-list-row-"]')
-                .filter({ hasText: '夜' })
-                .filter({ hasText: testCast.name });
-            await expect(matchingRow.first()).toBeVisible();
+            // 今日の夜シフト・選択したキャストの行が存在すること
+            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
+            await expect(matchingRow).toBeVisible();
         });
 
         test('ソースツイートを登録するとリンクが表示され、クリックでダイアログにツイートが表示されること', async ({ page }) => {
             const tweetId = '1954740195934474563';
+            const today = new Date().toISOString().slice(0, 10);
 
-            // シフト登録ページへ移動
+            // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
+            // fetchExisting のレスポンスまで待つことで、ツイート入力フィールドが
+            // fetchExisting によってクリアされるレース条件を回避する
             await Promise.all([
                 page.goto('http://localhost:3001/shifts'),
-                page.waitForRequest('http://localhost:3001/api/casts'),
+                page.waitForResponse((res: any) => res.url().includes('/api/casts')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
 
             // ツイート URL を入力してプレビューが出るのを待つ
@@ -74,17 +86,17 @@ if (!testCast) {
             // 保存
             await Promise.all([
                 page.getByTestId('shift-save-button').click(),
-                page.waitForRequest((req) =>
-                    req.url().includes('/api/shifts') && req.method() === 'POST'
+                page.waitForResponse((resp: any) =>
+                    resp.url().includes('/api/shifts') &&
+                    !resp.url().includes('/api/shifts?') &&
+                    !resp.url().includes('/api/shifts/') &&
+                    resp.request().method() === 'POST'
                 ),
             ]);
             await expect(page.getByText('保存しました！')).toBeVisible();
 
             // 登録した行に「ツイートを確認」リンクが表示されること
-            const matchingRow = page
-                .locator('[data-testid^="shift-list-row-"]')
-                .filter({ hasText: '夜' })
-                .filter({ hasText: testCast.name });
+            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
             const sourceLink = matchingRow.getByRole('button', { name: 'ツイートを確認' });
             await expect(sourceLink).toBeVisible();
 
@@ -105,11 +117,13 @@ if (!testCast) {
 
         test('ソースなしの行に「追加」からツイートを登録できること', async ({ page }) => {
             const tweetId = '1954740195934474563';
+            const today = new Date().toISOString().slice(0, 10);
 
-            // シフト登録ページへ移動
+            // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
             await Promise.all([
                 page.goto('http://localhost:3001/shifts'),
-                page.waitForRequest('http://localhost:3001/api/casts'),
+                page.waitForResponse((res: any) => res.url().includes('/api/casts')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
 
             // ソースなしでシフトを保存（ツイートURLを入力しない）
@@ -118,17 +132,17 @@ if (!testCast) {
             await castChip.click();
             await Promise.all([
                 page.getByTestId('shift-save-button').click(),
-                page.waitForRequest((req) =>
-                    req.url().includes('/api/shifts') && req.method() === 'POST'
+                page.waitForResponse((resp: any) =>
+                    resp.url().includes('/api/shifts') &&
+                    !resp.url().includes('/api/shifts?') &&
+                    !resp.url().includes('/api/shifts/') &&
+                    resp.request().method() === 'POST'
                 ),
             ]);
             await expect(page.getByText('保存しました！')).toBeVisible();
 
             // 登録した行に「追加」リンクが表示されること
-            const matchingRow = page
-                .locator('[data-testid^="shift-list-row-"]')
-                .filter({ hasText: '夜' })
-                .filter({ hasText: testCast.name });
+            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
             const addSourceLink = matchingRow.getByRole('button', { name: '追加' });
             await expect(addSourceLink).toBeVisible();
 
@@ -143,11 +157,11 @@ if (!testCast) {
                 addDialog.getByTestId(`tweet-container-${tweetId}`)
             ).toBeVisible({ timeout: 15000 });
 
-            // 「保存する」をクリックして PATCH /api/shifts/source を待機
+            // 「保存する」をクリックして PATCH /api/shifts/source のレスポンスを待機
             await Promise.all([
                 addDialog.getByTestId('add-source-save-button').click(),
-                page.waitForRequest((req) =>
-                    req.url().includes('/api/shifts/source') && req.method() === 'PATCH'
+                page.waitForResponse((resp: any) =>
+                    resp.url().includes('/api/shifts/source') && resp.request().method() === 'PATCH'
                 ),
             ]);
 
