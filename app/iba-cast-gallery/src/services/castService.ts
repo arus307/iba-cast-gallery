@@ -59,6 +59,7 @@ export async function getCastDetail(castEnName: string): Promise<CastDetailDto> 
             postCastTags: {
                 post: {
                     isDeleted: false,
+                    showInGallery: true,
                 }
             }
 

@@ -89,6 +89,7 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
         .leftJoinAndSelect("post.castTags", "castTag")
         .leftJoinAndSelect("castTag.cast", "cast")
         .where("post.id IN (:...postIds)", { postIds })
+        .andWhere("post.show_in_gallery = true")
         .getMany();
 
     // お気に入り登録順になるように再マップ

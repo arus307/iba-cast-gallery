@@ -14,6 +14,7 @@ export async function getExistsPosts(): Promise<PostDto[]> {
     const posts = await postRepository.find({
         where: {
             isDeleted: false,
+            showInGallery: true,
         },
         order: {
             postedAt: "DESC",
