@@ -94,6 +94,9 @@ export async function saveShifts(
 
 /**
  * 指定日・シフトの source_post_id を更新する
+ *
+ * posts テーブルに対象ポストが存在しない場合は先に新規登録し、
+ * 外部キー制約違反を防ぐ。
  */
 export async function updateShiftSource(
     date: string,
@@ -101,9 +104,33 @@ export async function updateShiftSource(
     sourcePostId: string,
 ): Promise<void> {
     await initializeDatabase();
-    const shiftRepository: Repository<Shift> = appDataSource.getRepository(Shift);
-    await shiftRepository.update({ date, shift: slot }, { sourcePostId });
-    logger.info({ date, slot, sourcePostId }, "シフトソース更新");
+
+    await appDataSource.transaction(async (em) => {
+        // ① source post の upsert（saveShifts と同じロジック）
+        const postRepository: Repository<Post> = em.getRepository(Post);
+        const existing = await postRepository.findOne({ where: { id: sourcePostId } });
+
+        if (!existing) {
+            await postRepository.insert({
+                id: sourcePostId,
+                postedAt: new Date().toISOString(),
+                isDeleted: false,
+                showInGallery: false,
+                shiftSource: ShiftSourceStatus.PENDING,
+            });
+            logger.info({ sourcePostId }, "シフト元ポスト新規登録（ソース後付け）");
+        } else if (existing.shiftSource !== ShiftSourceStatus.DONE) {
+            await postRepository.update(sourcePostId, {
+                shiftSource: ShiftSourceStatus.PENDING,
+            });
+            logger.info({ sourcePostId }, "シフト元ポスト shift_source=pending に更新（ソース後付け）");
+        }
+
+        // ② shifts の source_post_id を更新
+        const shiftRepository: Repository<Shift> = em.getRepository(Shift);
+        await shiftRepository.update({ date, shift: slot }, { sourcePostId });
+        logger.info({ date, slot, sourcePostId }, "シフトソース更新");
+    });
 }
 
 /**
