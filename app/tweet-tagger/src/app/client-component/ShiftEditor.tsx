@@ -125,6 +125,7 @@ const ShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
                 onChange={(e) => setTweetInput(e.target.value)}
                 size="small"
                 placeholder="https://x.com/.../status/..."
+                inputProps={{ "data-testid": "shift-tweet-url-input" }}
             />
             {tweetId && <Tweet id={tweetId} taggedCasts={[]} />}
 
