@@ -9,7 +9,8 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo",
     "migrate:run": "yarn typeorm migration:run -d dist/data-source.js",
     "migrate:revert": "yarn typeorm migration:revert -d dist/data-source.js",
-    "migrate:show": "yarn typeorm migration:show -d dist/data-source.js"
+    "migrate:show": "yarn typeorm migration:show -d dist/data-source.js",
+    "schema:drop": "yarn typeorm schema:drop -d dist/data-source.js"
   },
   "dependencies": {
     "@iba-cast-gallery/dao": "workspace:*",
