@@ -16,7 +16,7 @@ async function login(page: any) {
 }
 
 const casts = getTestCasts();
-const testCast = casts.find((c) => c.isActive) ?? null;
+const testCast = casts[0] ?? null;
 
 // テスト専用のツイートID（他テストと衝突しない未来日付と合わせて使用）
 // ランの紹介ツイート ID - posts テーブルには存在しないが実在するツイート
@@ -25,7 +25,9 @@ const SHIFT_ONLY_TWEET_ID = '1912083488758792543';
 const GALLERY_TWEET_ID = '1954740195934474563';
 
 if (!testCast) {
-    test.describe.skip('シフト・ギャラリー分離テスト（キャストデータが読み込めません）', () => {});
+    test.describe.skip('シフト・ギャラリー分離テスト（キャストデータが読み込めません）', () => {
+        test('スキップ: キャストデータが読み込めません', () => {});
+    });
 } else {
     test.describe('シフト・ギャラリー分離テスト', () => {
         test.beforeEach(async ({ page }) => {

@@ -6,10 +6,12 @@ async function login(page: any) {
 }
 
 const casts = getTestCasts();
-const testCast = casts.find((c) => c.isActive) ?? null;
+const testCast = casts[0] ?? null;
 
 if (!testCast) {
-    test.describe.skip('シフト登録と一覧表示フロー（キャストデータが読み込めません）', () => {});
+    test.describe.skip('シフト登録と一覧表示フロー（キャストデータが読み込めません）', () => {
+        test('スキップ: キャストデータが読み込めません', () => {});
+    });
 } else {
     test.describe('シフト登録と一覧表示フロー', () => {
         test.beforeEach(async ({ page }) => {

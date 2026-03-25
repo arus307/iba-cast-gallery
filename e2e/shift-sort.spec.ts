@@ -28,10 +28,12 @@ const DATE_OLD = '2099-12-01';
 const DATE_NEW = '2099-12-02'; // DATE_OLD より新しい
 
 const casts = getTestCasts();
-const testCast = casts.find((c) => c.isActive) ?? null;
+const testCast = casts[0] ?? null;
 
 if (!testCast) {
-    test.describe.skip('シフト一覧ソート順（キャストデータが読み込めません）', () => {});
+    test.describe.skip('シフト一覧ソート順（キャストデータが読み込めません）', () => {
+        test('スキップ: キャストデータが読み込めません', () => {});
+    });
 } else {
     test.describe('シフト一覧のソート順', () => {
         test.beforeEach(async ({ page }) => {
