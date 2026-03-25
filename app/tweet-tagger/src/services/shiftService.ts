@@ -134,7 +134,8 @@ export async function updateShiftSource(
 }
 
 /**
- * 全シフトデータを一覧表示用に取得する（date+shift でグループ化、日付降順）
+ * 全シフトデータを一覧表示用に取得する（date+shift でグループ化）
+ * ソート順: 日付降順 → 同日内は夜→夕方→オープン → キャストID昇順
  */
 export async function getShiftList(): Promise<ShiftGroup[]> {
     await initializeDatabase();
@@ -142,7 +143,21 @@ export async function getShiftList(): Promise<ShiftGroup[]> {
     const shiftRepository: Repository<Shift> = appDataSource.getRepository(Shift);
     const records = await shiftRepository.find({
         relations: ["cast"],
-        order: { date: "DESC", shift: "ASC", castId: "ASC" },
+        order: { date: "DESC", castId: "ASC" },
+    });
+
+    // 同じ日付内でのシフト表示順: 夜(1) → 夕方(2) → オープン(3)
+    const SHIFT_ORDER: Record<ShiftSlot, number> = {
+        [ShiftSlot.NIGHT]: 1,
+        [ShiftSlot.EVENING]: 2,
+        [ShiftSlot.OPEN]: 3,
+    };
+
+    records.sort((a, b) => {
+        if (a.date > b.date) return -1;
+        if (a.date < b.date) return 1;
+        return SHIFT_ORDER[a.shift] - SHIFT_ORDER[b.shift];
+        // castId は find() の order: { castId: "ASC" } で保証済み（安定ソート）
     });
 
     const groupMap = new Map<string, ShiftGroup>();
