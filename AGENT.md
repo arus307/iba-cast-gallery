@@ -100,6 +100,28 @@ npx playwright test --ui
 
 ---
 
+## マイグレーションの注意事項
+
+マイグレーションファイル内ではエンティティクラスを使った ORM 操作を行わないこと。
+
+```typescript
+// ❌ NG: エンティティの ORM 操作
+import { Post } from "../entities/Post";
+await queryRunner.manager.save(posts);
+await queryRunner.manager.createQueryBuilder().update(Post)...
+
+// ✅ OK: 操作するカラムを明示した raw SQL
+await queryRunner.query(
+    `INSERT INTO posts (id, posted_at, is_deleted) VALUES ($1, $2, $3)`,
+    [id, postedAt, false]
+);
+```
+
+**理由:** エンティティは常に最新の状態を反映する。古いマイグレーション内でエンティティを使うと、
+将来カラムが追加された際に「そのカラムはまだ存在しない」という矛盾が生じ、マイグレーションが失敗する。
+
+---
+
 ## よくあるミス
 
 - `"use client"` と `"use server"` の付け忘れ
