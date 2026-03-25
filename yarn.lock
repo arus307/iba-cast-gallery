@@ -5132,6 +5132,7 @@ __metadata:
     "@types/node": "npm:^20"
     dotenv-cli: "npm:^8.0.0"
     eslint: "npm:^9"
+    pg: "npm:^8.14.1"
     turbo: "npm:^2.5.2"
     typescript: "npm:^5"
   languageName: unknown
