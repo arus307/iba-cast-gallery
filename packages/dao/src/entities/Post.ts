@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
+import { ShiftSourceStatus } from "@iba-cast-gallery/types";
 import { Cast } from "./Cast";
 import { PostCastTag } from "./PostCastTag";
 import { Favorite } from "./Favorite";
@@ -20,6 +21,22 @@ export class Post {
     type: "boolean"
   })
   isDeleted: boolean;
+
+  @Column({
+    name: "show_in_gallery",
+    type: "boolean",
+    default: true,
+  })
+  showInGallery: boolean;
+
+  @Column({
+    name: "shift_source",
+    type: "enum",
+    enum: ShiftSourceStatus,
+    nullable: true,
+    default: null,
+  })
+  shiftSource: ShiftSourceStatus | null;
 
   /**
    * キャストのタグ付情報

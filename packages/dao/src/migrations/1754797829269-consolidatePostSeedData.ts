@@ -1,7 +1,7 @@
-// @ts-nocheck
 // This is a new migration to consolidate all the previous post seeding migrations.
+// 注意: エンティティクラスを直接使用するとマイグレーション後に追加されたカラムを
+// TypeORM が INSERT/UPDATE に含めようとしてエラーになるため、raw SQL で実装しています。
 
-import { Post } from "../entities/Post";
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class ConsolidatePostSeedData1754797829269 implements MigrationInterface {
@@ -9,44 +9,43 @@ export class ConsolidatePostSeedData1754797829269 implements MigrationInterface 
     public async up(queryRunner: QueryRunner): Promise<void> {
         // Query casts directly from the database without using the Cast entity
         const castsResult = await queryRunner.query(`SELECT id FROM casts`);
-        const castIds = new Set(castsResult.map((c: any) => c.id));
+        const castIds = new Set(castsResult.map((c: any) => Number(c.id)));
 
-        // Consolidate posts from all previous migrations
-        const posts: Post[] = basePosts.map((basePost) => {
-            const post = new Post();
-            post.id = basePost.id;
-            post.postedAt = basePost.postedAt;
-            post.isDeleted = false; // Default to not deleted
-            post.castTags = basePost.taggedCastIds.map((castId, index) => {
+        for (const basePost of basePosts) {
+            for (const castId of basePost.taggedCastIds) {
                 if (!castIds.has(castId)) {
                     throw new Error(`Cast with id ${castId} not found`);
                 }
-                const postCastTag = new (require("../entities/PostCastTag").PostCastTag);
-                postCastTag.castid = castId;
-                postCastTag.postId = basePost.id;
-                postCastTag.order = index;
-                return postCastTag;
-            });
-            return post;
-        });
+            }
 
-        await queryRunner.manager.save(posts);
+            await queryRunner.query(
+                `INSERT INTO posts (id, posted_at, is_deleted) VALUES ($1, $2, false) ON CONFLICT DO NOTHING`,
+                [basePost.id, basePost.postedAt]
+            );
+
+            for (let index = 0; index < basePost.taggedCastIds.length; index++) {
+                await queryRunner.query(
+                    `INSERT INTO post_cast_tags (post_id, cast_id, "order") VALUES ($1, $2, $3) ON CONFLICT DO NOTHING`,
+                    [basePost.id, basePost.taggedCastIds[index], index]
+                );
+            }
+        }
 
         // Update posts that should be marked as deleted
-        await queryRunner.manager.createQueryBuilder()
-            .update(Post)
-            .set({ isDeleted: true })
-            .where("id IN (:...ids)", { ids: deletedPostIds })
-            .execute();
+        const placeholders = deletedPostIds.map((_, i) => `$${i + 1}`).join(', ');
+        await queryRunner.query(
+            `UPDATE posts SET is_deleted = true WHERE id IN (${placeholders})`,
+            deletedPostIds
+        );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
         const idsToDelete = basePosts.map(p => p.id);
-        await queryRunner.manager.createQueryBuilder()
-            .delete()
-            .from(Post)
-            .where("id IN (:...ids)", { ids: idsToDelete })
-            .execute();
+        const placeholders = idsToDelete.map((_, i) => `$${i + 1}`).join(', ');
+        await queryRunner.query(
+            `DELETE FROM posts WHERE id IN (${placeholders})`,
+            idsToDelete
+        );
     }
 }
 
