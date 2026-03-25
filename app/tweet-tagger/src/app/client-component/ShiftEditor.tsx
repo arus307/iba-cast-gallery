@@ -70,7 +70,11 @@ const ShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
             if (!res.ok) return;
             const data: { castIds: number[]; sourcePostId: string | null } = await res.json();
             setSelectedCastIds(new Set(data.castIds));
-            if (data.sourcePostId) setTweetInput(data.sourcePostId);
+            if (data.sourcePostId) {
+                setTweetInput(data.sourcePostId);
+            } else {
+                setTweetInput("");
+            }
         } catch (e) {
             console.error(e);
         }
