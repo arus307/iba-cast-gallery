@@ -39,12 +39,14 @@ jobs:
         run: sudo docker compose up -d
 
       - name: Run database migrations
-        run: yarn migrate:dev
+        run: yarn migrate
         env:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USERNAME: postgres
           DB_PASSWORD: password
+          DB_MIGRATION_USER_USERNAME: postgres
+          DB_MIGRATION_USER_PASSWORD: password
           DB_DATABASE: ibacastgallery
           E2E_TESTING: "true"
 
