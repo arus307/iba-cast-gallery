@@ -34,7 +34,7 @@ const SHIFT_LABELS: Record<ShiftSlot, string> = {
 const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
     const [groups, setGroups] = useState<ShiftGroup[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [previewTweetId, setPreviewTweetId] = useState<string | null>(null);
+    const [previewGroup, setPreviewGroup] = useState<ShiftGroup | null>(null);
 
     // ソース追加ダイアログ用の状態
     const [addSourceTarget, setAddSourceTarget] = useState<{ date: string; shift: ShiftSlot } | null>(null);
@@ -135,7 +135,7 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                                         <Link
                                             component="button"
                                             variant="body2"
-                                            onClick={() => setPreviewTweetId(g.sourcePostId)}
+                                            onClick={() => setPreviewGroup(g)}
                                             data-testid={`shift-source-link-${g.date}-${g.shift}`}
                                         >
                                             ツイートを確認
@@ -159,21 +159,31 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
 
             {/* ソースプレビューダイアログ */}
             <Dialog
-                open={previewTweetId !== null}
-                onClose={() => setPreviewTweetId(null)}
+                open={previewGroup !== null}
+                onClose={() => setPreviewGroup(null)}
                 maxWidth="sm"
                 fullWidth
                 data-testid="shift-source-dialog"
             >
                 <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     シフト情報源ツイート
-                    <IconButton onClick={() => setPreviewTweetId(null)} size="small" aria-label="閉じる">
+                    <IconButton onClick={() => setPreviewGroup(null)} size="small" aria-label="閉じる">
                         ✕
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    {previewTweetId && (
-                        <Tweet id={previewTweetId} taggedCasts={[]} />
+                    {previewGroup && (
+                        <>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 2 }}
+                                data-testid="shift-source-dialog-shift-info"
+                            >
+                                {`${previewGroup.date} (${previewGroup.dayOfWeek}) ${SHIFT_LABELS[previewGroup.shift]} — ${previewGroup.casts.map((c) => c.name).join("、")}`}
+                            </Typography>
+                            {previewGroup.sourcePostId && <Tweet id={previewGroup.sourcePostId} taggedCasts={[]} />}
+                        </>
                     )}
                 </DialogContent>
             </Dialog>
