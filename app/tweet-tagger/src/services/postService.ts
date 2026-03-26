@@ -38,7 +38,12 @@ export async function registerPost(post: Post): Promise<void> {
         });
 
         if(isExists) {
-            await postRepository.update(post.id, post);
+            await postRepository.update(post.id, {
+                postedAt: post.postedAt,
+                isDeleted: post.isDeleted,
+                showInGallery: post.showInGallery,
+                shiftSource: post.shiftSource,
+            });
             logger.info({post},`ポスト更新完了`);
         } else {
             await postRepository.insert(post);

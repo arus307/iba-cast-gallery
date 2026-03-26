@@ -1,8 +1,31 @@
 import { test, expect } from '@playwright/test';
 import { getTestCasts } from './lib/test-data';
 
+const ADMIN_URL = 'http://localhost:3001';
+
+// 運用データや他テストと衝突しない遠い未来の固定日付
+const TEST_DATE = '2099-11-01';
+
 async function login(page: any) {
-    await page.request.post('http://localhost:3001/api/auth/e2e-login');
+    await page.request.post(`${ADMIN_URL}/api/auth/e2e-login`);
+}
+
+/**
+ * ShiftEditor の DateField に固定日付を入力し、fetchExisting の完了を待つ。
+ * MUI DateField はセグメント単位のキーボード入力で日付を受け付けるため、
+ * YYYYMMDD を連続入力することで自動的に各セグメントへ振り分けられる。
+ */
+async function setShiftDate(page: any, date: string) {
+    const digits = date.replace(/-/g, ''); // 'YYYY-MM-DD' → 'YYYYMMDD'
+    const dateInput = page.getByTestId('shift-date-input');
+    await dateInput.click();
+    await page.keyboard.press('Control+a');
+    // レスポンス受信の監視を先に登録してからキー入力する
+    const dateLoadedPromise = page.waitForResponse((res: any) =>
+        res.url().includes(`/api/shifts?date=${date}`)
+    );
+    await page.keyboard.type(digits);
+    await dateLoadedPromise;
 }
 
 const casts = getTestCasts();
@@ -16,22 +39,22 @@ if (!testCast) {
     test.describe('シフト登録と一覧表示フロー', () => {
         test.beforeEach(async ({ page }) => {
             await login(page);
-            // テスト間の状態干渉を防ぐため、今日の夜シフトを事前にクリア
-            const today = new Date().toISOString().slice(0, 10);
-            await page.request.post('http://localhost:3001/api/shifts', {
-                data: { date: today, shift: 'night', castIds: [] },
+            // テスト間の状態干渉を防ぐため、テスト固定日付の夜シフトを事前にクリア
+            await page.request.post(`${ADMIN_URL}/api/shifts`, {
+                data: { date: TEST_DATE, shift: 'night', castIds: [] },
             });
         });
 
         test('シフトを登録すると一覧に表示されること', async ({ page }) => {
-            const today = new Date().toISOString().slice(0, 10);
-
             // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
             await Promise.all([
-                page.goto('http://localhost:3001/shifts'),
+                page.goto(`${ADMIN_URL}/shifts`),
                 page.waitForResponse((res: any) => res.url().includes('/api/casts')),
                 page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
+
+            // 固定テスト日付を DateField に入力
+            await setShiftDate(page, TEST_DATE);
 
             // キャストの Chip が表示されていることを確認
             const castChip = page.getByRole('button', { name: testCast.name }).first();
@@ -57,23 +80,25 @@ if (!testCast) {
             // 一覧テーブルが表示されること
             await expect(page.getByTestId('shift-list')).toBeVisible();
 
-            // 今日の夜シフト・選択したキャストの行が存在すること
-            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
+            // 固定テスト日付の夜シフト・選択したキャストの行が存在すること
+            const matchingRow = page.getByTestId(`shift-list-row-${TEST_DATE}-night-${testCast.id}`);
             await expect(matchingRow).toBeVisible();
         });
 
         test('ソースツイートを登録するとリンクが表示され、クリックでダイアログにツイートが表示されること', async ({ page }) => {
             const tweetId = '1954740195934474563';
-            const today = new Date().toISOString().slice(0, 10);
 
             // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
             // fetchExisting のレスポンスまで待つことで、ツイート入力フィールドが
             // fetchExisting によってクリアされるレース条件を回避する
             await Promise.all([
-                page.goto('http://localhost:3001/shifts'),
+                page.goto(`${ADMIN_URL}/shifts`),
                 page.waitForResponse((res: any) => res.url().includes('/api/casts')),
                 page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
+
+            // 固定テスト日付を DateField に入力
+            await setShiftDate(page, TEST_DATE);
 
             // ツイート URL を入力してプレビューが出るのを待つ
             await page.getByTestId('shift-tweet-url-input').fill(tweetId);
@@ -96,7 +121,7 @@ if (!testCast) {
             await expect(page.getByText('保存しました！')).toBeVisible();
 
             // 登録した行に「ツイートを確認」リンクが表示されること
-            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
+            const matchingRow = page.getByTestId(`shift-list-row-${TEST_DATE}-night-${testCast.id}`);
             const sourceLink = matchingRow.getByRole('button', { name: 'ツイートを確認' });
             await expect(sourceLink).toBeVisible();
 
@@ -117,14 +142,16 @@ if (!testCast) {
 
         test('ソースなしの行に「追加」からツイートを登録できること', async ({ page }) => {
             const tweetId = '1954740195934474563';
-            const today = new Date().toISOString().slice(0, 10);
 
             // シフト登録ページへ移動（キャスト一覧と既存データの読み込みを待機）
             await Promise.all([
-                page.goto('http://localhost:3001/shifts'),
+                page.goto(`${ADMIN_URL}/shifts`),
                 page.waitForResponse((res: any) => res.url().includes('/api/casts')),
                 page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
             ]);
+
+            // 固定テスト日付を DateField に入力
+            await setShiftDate(page, TEST_DATE);
 
             // ソースなしでシフトを保存（ツイートURLを入力しない）
             const castChip = page.getByRole('button', { name: testCast.name }).first();
@@ -142,7 +169,7 @@ if (!testCast) {
             await expect(page.getByText('保存しました！')).toBeVisible();
 
             // 登録した行に「追加」リンクが表示されること
-            const matchingRow = page.getByTestId(`shift-list-row-${today}-night-${testCast.id}`);
+            const matchingRow = page.getByTestId(`shift-list-row-${TEST_DATE}-night-${testCast.id}`);
             const addSourceLink = matchingRow.getByRole('button', { name: '追加' });
             await expect(addSourceLink).toBeVisible();
 

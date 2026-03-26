@@ -62,11 +62,11 @@ if (!testCast) {
             ]);
             await expect(page.getByTestId('shift-list')).toBeVisible();
 
-            const rows = page.locator('[data-testid^="shift-list-row-"]');
-            // 登録した行が全て現れるまで待機
-            await expect(rows.filter({ hasText: DATE_NEW })).toBeVisible();
-            await expect(rows.filter({ hasText: DATE_OLD })).toBeVisible();
+            // 登録した行が全て現れるまで待機（data-testid で一意に特定）
+            await expect(page.getByTestId(`shift-list-row-${DATE_NEW}-night-${testCast!.id}`)).toBeVisible();
+            await expect(page.getByTestId(`shift-list-row-${DATE_OLD}-night-${testCast!.id}`)).toBeVisible();
 
+            const rows = page.locator('[data-testid^="shift-list-row-"]');
             const allTexts = await rows.allTextContents();
 
             const dateNewFirstIdx = allTexts.findIndex((t) => t.includes(DATE_NEW));
@@ -85,12 +85,12 @@ if (!testCast) {
             ]);
             await expect(page.getByTestId('shift-list')).toBeVisible();
 
-            const rows = page.locator('[data-testid^="shift-list-row-"]');
-            // 3 種類のシフトが全て表示されるまで待機
-            await expect(rows.filter({ hasText: DATE_OLD }).filter({ hasText: '夜' })).toBeVisible();
-            await expect(rows.filter({ hasText: DATE_OLD }).filter({ hasText: '夕方' })).toBeVisible();
-            await expect(rows.filter({ hasText: DATE_OLD }).filter({ hasText: 'オープン' })).toBeVisible();
+            // 3 種類のシフトが全て表示されるまで待機（data-testid で一意に特定してstrict違反を回避）
+            await expect(page.getByTestId(`shift-list-row-${DATE_OLD}-night-${testCast!.id}`)).toBeVisible();
+            await expect(page.getByTestId(`shift-list-row-${DATE_OLD}-evening-${testCast!.id}`)).toBeVisible();
+            await expect(page.getByTestId(`shift-list-row-${DATE_OLD}-open-${testCast!.id}`)).toBeVisible();
 
+            const rows = page.locator('[data-testid^="shift-list-row-"]');
             const allTexts = await rows.allTextContents();
 
             const nightIdx   = allTexts.findIndex((t) => t.includes(DATE_OLD) && t.includes('夜'));
