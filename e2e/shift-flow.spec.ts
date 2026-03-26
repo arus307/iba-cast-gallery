@@ -129,8 +129,14 @@ if (!testCast) {
             await sourceLink.click();
             await expect(page.getByTestId('shift-source-dialog')).toBeVisible();
 
-            // ダイアログ内にツイートが表示されること
+            // ダイアログ内にシフト情報が表示されること
             const dialog = page.getByTestId('shift-source-dialog');
+            const shiftInfo = dialog.getByTestId('shift-source-dialog-shift-info');
+            await expect(shiftInfo).toContainText(TEST_DATE);
+            await expect(shiftInfo).toContainText('夜');
+            await expect(shiftInfo).toContainText(testCast.name);
+
+            // ダイアログ内にツイートが表示されること
             await expect(
                 dialog.getByTestId(`tweet-container-${tweetId}`)
             ).toBeVisible({ timeout: 15000 });
@@ -177,6 +183,12 @@ if (!testCast) {
             await addSourceLink.click();
             const addDialog = page.getByTestId('shift-add-source-dialog');
             await expect(addDialog).toBeVisible();
+
+            // ダイアログにシフト情報が表示されること
+            const addDialogShiftInfo = addDialog.getByTestId('shift-add-source-dialog-shift-info');
+            await expect(addDialogShiftInfo).toContainText(TEST_DATE);
+            await expect(addDialogShiftInfo).toContainText('夜');
+            await expect(addDialogShiftInfo).toContainText(testCast.name);
 
             // ダイアログにツイートIDを入力するとプレビューが表示されること
             await addDialog.getByTestId('add-source-tweet-input').fill(tweetId);
