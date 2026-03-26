@@ -184,6 +184,12 @@ if (!testCast) {
             const addDialog = page.getByTestId('shift-add-source-dialog');
             await expect(addDialog).toBeVisible();
 
+            // ダイアログにシフト情報が表示されること
+            const addDialogShiftInfo = addDialog.getByTestId('shift-add-source-dialog-shift-info');
+            await expect(addDialogShiftInfo).toContainText(TEST_DATE);
+            await expect(addDialogShiftInfo).toContainText('夜');
+            await expect(addDialogShiftInfo).toContainText(testCast.name);
+
             // ダイアログにツイートIDを入力するとプレビューが表示されること
             await addDialog.getByTestId('add-source-tweet-input').fill(tweetId);
             await expect(

@@ -37,7 +37,7 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
     const [previewGroup, setPreviewGroup] = useState<ShiftGroup | null>(null);
 
     // ソース追加ダイアログ用の状態
-    const [addSourceTarget, setAddSourceTarget] = useState<{ date: string; shift: ShiftSlot } | null>(null);
+    const [addSourceTarget, setAddSourceTarget] = useState<ShiftGroup | null>(null);
     const [sourceInput, setSourceInput] = useState("");
     const [sourceTweetId, setSourceTweetId] = useState("");
     const [savingSource, setSavingSource] = useState(false);
@@ -60,8 +60,8 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
         else setSourceTweetId("");
     }, [sourceInput]);
 
-    const openAddSource = (date: string, shift: ShiftSlot) => {
-        setAddSourceTarget({ date, shift });
+    const openAddSource = (group: ShiftGroup) => {
+        setAddSourceTarget(group);
         setSourceInput("");
         setSourceTweetId("");
     };
@@ -144,7 +144,7 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                                         <Link
                                             component="button"
                                             variant="body2"
-                                            onClick={() => openAddSource(g.date, g.shift)}
+                                            onClick={() => openAddSource(g)}
                                             data-testid={`shift-add-source-${g.date}-${g.shift}`}
                                         >
                                             追加
@@ -204,6 +204,15 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                 </DialogTitle>
                 <DialogContent>
                     <Stack spacing={2} sx={{ mt: 1 }}>
+                        {addSourceTarget && (
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                data-testid="shift-add-source-dialog-shift-info"
+                            >
+                                {`${addSourceTarget.date} (${addSourceTarget.dayOfWeek}) ${SHIFT_LABELS[addSourceTarget.shift]} — ${addSourceTarget.casts.map((c) => c.name).join("、")}`}
+                            </Typography>
+                        )}
                         <TextField
                             fullWidth
                             label="ツイートURL または ID"
