@@ -124,8 +124,8 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {groups.map((g, i) => (
-                            <TableRow key={`${g.date}-${g.shift}`} data-testid={`shift-list-row-${i + 1}`}>
+                        {groups.map((g) => (
+                            <TableRow key={`${g.date}-${g.shift}`} data-testid={`shift-list-row-${g.date}-${g.shift}-${g.casts.map((c) => c.id).join('-')}`}>
                                 <TableCell>{g.date}</TableCell>
                                 <TableCell>{g.dayOfWeek}</TableCell>
                                 <TableCell>{SHIFT_LABELS[g.shift]}</TableCell>
@@ -136,7 +136,7 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                                             component="button"
                                             variant="body2"
                                             onClick={() => setPreviewTweetId(g.sourcePostId)}
-                                            data-testid={`shift-source-link-${i + 1}`}
+                                            data-testid={`shift-source-link-${g.date}-${g.shift}`}
                                         >
                                             ツイートを確認
                                         </Link>
@@ -145,7 +145,7 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                                             component="button"
                                             variant="body2"
                                             onClick={() => openAddSource(g.date, g.shift)}
-                                            data-testid={`shift-add-source-${i + 1}`}
+                                            data-testid={`shift-add-source-${g.date}-${g.shift}`}
                                         >
                                             追加
                                         </Link>

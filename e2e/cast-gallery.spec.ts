@@ -5,7 +5,9 @@ import { getTestCasts } from './lib/test-data';
 const casts = getTestCasts();
 
 if (casts.length === 0) {
-    test.describe.skip('ギャラリーのキャスト個人ページ(キャストデータが読み込めません)', ()=>{});
+    test.describe.skip('ギャラリーのキャスト個人ページ(キャストデータが読み込めません)', () => {
+        test('スキップ: キャストデータが読み込めません', () => {});
+    });
 } else {
     test.describe('ギャラリーのキャスト個人ページ', () => {
         // 取得したキャストリストに基づいて動的にテストを生成

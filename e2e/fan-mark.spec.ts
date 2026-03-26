@@ -13,7 +13,9 @@ const castsWithFanMarks = new Map([
 ]);
 
 if (casts.length === 0) {
-    test.describe.skip('ファンマーク表示機能(キャストデータが読み込めません)', () => {});
+    test.describe.skip('ファンマーク表示機能(キャストデータが読み込めません)', () => {
+        test('スキップ: キャストデータが読み込めません', () => {});
+    });
 } else {
     test.describe('ファンマーク表示機能', () => {
         test.describe('ファンマークが設定されているキャスト', () => {

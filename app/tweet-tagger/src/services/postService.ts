@@ -38,10 +38,15 @@ export async function registerPost(post: Post): Promise<void> {
         });
 
         if(isExists) {
-            postRepository.update(post.id, post);
+            await postRepository.update(post.id, {
+                postedAt: post.postedAt,
+                isDeleted: post.isDeleted,
+                showInGallery: post.showInGallery,
+                shiftSource: post.shiftSource,
+            });
             logger.info({post},`ポスト更新完了`);
         } else {
-            postRepository.insert(post);
+            await postRepository.insert(post);
             logger.info({post},`ポスト登録完了`);
         }
 
@@ -54,7 +59,10 @@ export async function registerPost(post: Post): Promise<void> {
                 order: castTag.order,
             }));
 
-        await postCastTagRepository.insert(postCastTags);
+        // 空配列の insert は TypeORM エラーになるためガードする
+        if (postCastTags.length > 0) {
+            await postCastTagRepository.insert(postCastTags);
+        }
 
         logger.info({postCastTags}, `タグ登録完了 (postId: ${post.id})`);
     });

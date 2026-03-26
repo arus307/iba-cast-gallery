@@ -58,6 +58,12 @@
             ],
             "cache": false
         },
+        "@iba-cast-gallery/db-migrator#schema:drop": {
+            "dependsOn": [
+                "build"
+            ],
+            "cache": false
+        },
         "@iba-cast-gallery/types#build": {
             "dependsOn": [
                 "clean"

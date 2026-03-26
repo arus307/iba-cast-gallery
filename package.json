@@ -11,7 +11,10 @@
     "migrate:create": "dotenv -e .env.development -- turbo run migration:create --filter=@iba-cast-gallery/dao",
     "migrate:generate": "dotenv -e .env.development -- turbo run migration:generate --filter=@iba-cast-gallery/dao",
     "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator",
-    "db:reset": "./dbreset.sh"
+    "migrate:fresh": "dotenv -e .env.development -- turbo run schema:drop --filter=@iba-cast-gallery/db-migrator && yarn migrate:dev",
+    "db:reset": "./dbreset.sh",
+    "test:e2e:fresh": "yarn migrate:fresh && npx playwright test",
+    "test:e2e": "npx playwright test"
   },
   "dependencies": {
     "pg": "^8.14.1"

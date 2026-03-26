@@ -30,7 +30,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "キャストが存在しません" }, { status: 400 });
         }
 
-        registerPost(post);
+        await registerPost(post);
 
         return NextResponse.json(post, { status: 201 });
     } catch (error) {
