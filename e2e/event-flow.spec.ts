@@ -108,7 +108,7 @@ if (!testCast) {
             // 事前にAPIでイベントを登録（IDを取得）
             const createRes = await page.request.post(`${ADMIN_URL}/api/events`, {
                 data: {
-                    eventType: 'cast_event',
+                    eventType: 'cast_event_shop',
                     title: TEST_TITLE,
                     dateStart: '2099-11-01',
                     dateEnd: '2099-11-01',
@@ -160,7 +160,7 @@ if (!testCast) {
             // 事前にAPIでイベントを登録（IDを取得）
             const createRes = await page.request.post(`${ADMIN_URL}/api/events`, {
                 data: {
-                    eventType: 'cast_event',
+                    eventType: 'cast_event_shop',
                     title: TEST_TITLE,
                     dateStart: '2099-11-01',
                     dateEnd: '2099-11-01',
@@ -198,6 +198,37 @@ if (!testCast) {
 
             // 一覧から行が消えていること
             await expect(row).not.toBeVisible();
+        });
+
+        test('イベント種別ラベルが正しく表示されること', async ({ page }) => {
+            // cast_event_shop と cast_event_live をそれぞれ登録して一覧ラベルを確認
+            const shopRes = await page.request.post(`${ADMIN_URL}/api/events`, {
+                data: { eventType: 'cast_event_shop', title: '【E2Eテスト】店舗イベント', dateStart: '2099-11-01', dateEnd: '2099-11-01', castIds: [] },
+            });
+            expect(shopRes.status()).toBe(201);
+            const { id: shopId } = await shopRes.json();
+
+            const liveRes = await page.request.post(`${ADMIN_URL}/api/events`, {
+                data: { eventType: 'cast_event_live', title: '【E2Eテスト】ライブイベント', dateStart: '2099-11-02', dateEnd: '2099-11-02', castIds: [] },
+            });
+            expect(liveRes.status()).toBe(201);
+            const { id: liveId } = await liveRes.json();
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/events`),
+                page.waitForResponse((res: any) => res.url().includes('/api/events')),
+                page.waitForResponse((res: any) => res.url().includes('/api/casts')),
+            ]);
+
+            // cast_event_shop の行に「キャストイベント（店舗）」チップが表示されること
+            const shopRow = page.getByTestId(`event-list-row-${shopId}`);
+            await expect(shopRow).toBeVisible();
+            await expect(shopRow.getByText('キャストイベント（店舗）')).toBeVisible();
+
+            // cast_event_live の行に「キャストイベント（ライブ）」チップが表示されること
+            const liveRow = page.getByTestId(`event-list-row-${liveId}`);
+            await expect(liveRow).toBeVisible();
+            await expect(liveRow.getByText('キャストイベント（ライブ）')).toBeVisible();
         });
 
         test('開始日・終了日が異なる場合は期間形式で表示されること', async ({ page }) => {

@@ -24,9 +24,10 @@ import { CastType, EventType, EventDto } from "@iba-cast-gallery/types";
 import { Tweet } from "../../components/tweet/swr";
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
-    [EventType.CAST_EVENT]: "キャストイベント",
-    [EventType.KAMITSUBAKI]: "カミツバキ",
-    [EventType.COLLAB]: "コラボ",
+    [EventType.CAST_EVENT_SHOP]: "キャストイベント（店舗）",
+    [EventType.CAST_EVENT_LIVE]: "キャストイベント（ライブ）",
+    [EventType.KAMITSUBAKI]:     "カミツバキ",
+    [EventType.COLLAB]:          "コラボ",
 };
 
 const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
@@ -35,7 +36,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
     onCancelEdit?: () => void;
 }) => {
     const [casts, setCasts] = useState<Cast[]>([]);
-    const [eventType, setEventType] = useState<EventType>(EventType.CAST_EVENT);
+    const [eventType, setEventType] = useState<EventType>(EventType.CAST_EVENT_SHOP);
     const [title, setTitle] = useState("");
     const [dateStart, setDateStart] = useState<Dayjs>(dayjs());
     const [dateEnd, setDateEnd] = useState<Dayjs>(dayjs());
@@ -84,7 +85,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
     }, [tweetInput]);
 
     const resetForm = () => {
-        setEventType(EventType.CAST_EVENT);
+        setEventType(EventType.CAST_EVENT_SHOP);
         setTitle("");
         setDateStart(dayjs());
         setDateEnd(dayjs());

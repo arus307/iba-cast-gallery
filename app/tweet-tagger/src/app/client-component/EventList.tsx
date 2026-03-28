@@ -20,9 +20,10 @@ import {
 import { EventDto, EventType } from "@iba-cast-gallery/types";
 
 const EVENT_TYPE_LABELS: Record<EventType, string> = {
-    [EventType.CAST_EVENT]: "キャストイベント",
-    [EventType.KAMITSUBAKI]: "カミツバキ",
-    [EventType.COLLAB]: "コラボ",
+    [EventType.CAST_EVENT_SHOP]: "キャストイベント（店舗）",
+    [EventType.CAST_EVENT_LIVE]: "キャストイベント（ライブ）",
+    [EventType.KAMITSUBAKI]:     "カミツバキ",
+    [EventType.COLLAB]:          "コラボ",
 };
 
 const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event: EventDto) => void }) => {
@@ -84,7 +85,7 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
                                     <Chip
                                         label={EVENT_TYPE_LABELS[ev.eventType]}
                                         size="small"
-                                        color={ev.eventType === EventType.CAST_EVENT ? "primary" : "default"}
+                                        color={ev.eventType === EventType.CAST_EVENT_SHOP || ev.eventType === EventType.CAST_EVENT_LIVE ? "primary" : "default"}
                                         variant="outlined"
                                     />
                                 </TableCell>
