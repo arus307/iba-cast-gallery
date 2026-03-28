@@ -2,7 +2,7 @@ import "server-only";
 import "reflect-metadata";
 import { initializeDatabase, appDataSource } from "../data-source";
 import { Event, EventCastTag, Post, Repository } from "@iba-cast-gallery/dao";
-import { EventDto, EventType, ShiftSourceStatus } from "@iba-cast-gallery/types";
+import { EventDto, EventType } from "@iba-cast-gallery/types";
 
 function toDto(event: Event): EventDto {
     return {
@@ -129,7 +129,8 @@ export async function updateEvent(
                     postedAt: new Date().toISOString(),
                     isDeleted: false,
                     showInGallery: false,
-                    shiftSource: ShiftSourceStatus.PENDING,
+                    // イベント由来ポストはシフト入力元ではないため shiftSource は null のままにする
+                    shiftSource: null,
                 });
             }
         }
