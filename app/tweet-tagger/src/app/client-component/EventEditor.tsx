@@ -168,6 +168,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                 onChange={(e) => setTitle(e.target.value)}
                 size="small"
                 placeholder="〇〇生誕祭"
+                inputProps={{ "data-testid": "event-title-input" }}
             />
 
             {/* 日付 */}
@@ -185,6 +186,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                         }}
                         fullWidth
                         size="small"
+                        slotProps={{ textField: { inputProps: { "data-testid": "event-date-start-input" } } }}
                     />
                     <DateField
                         label="終了日"
@@ -193,6 +195,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                         onChange={(v) => v && setDateEnd(v)}
                         fullWidth
                         size="small"
+                        slotProps={{ textField: { inputProps: { "data-testid": "event-date-end-input" } } }}
                     />
                 </Stack>
             </LocalizationProvider>
@@ -205,6 +208,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                 onChange={(e) => setTimeNote(e.target.value)}
                 size="small"
                 placeholder="14:00〜、終日 など"
+                inputProps={{ "data-testid": "event-time-note-input" }}
             />
 
             {/* ソースツイート */}
@@ -215,6 +219,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                 onChange={(e) => setTweetInput(e.target.value)}
                 size="small"
                 placeholder="https://x.com/.../status/..."
+                inputProps={{ "data-testid": "event-tweet-url-input" }}
             />
             {tweetId && <Tweet id={tweetId} taggedCasts={[]} />}
 
@@ -227,6 +232,7 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                 size="small"
                 multiline
                 rows={2}
+                inputProps={{ "data-testid": "event-notes-input" }}
             />
 
             {/* RC キャスト */}
@@ -281,11 +287,12 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                     variant="contained"
                     onClick={save}
                     disabled={saving || !dateStart?.isValid() || !dateEnd?.isValid() || !title.trim()}
+                    data-testid="event-save-button"
                 >
                     {saving ? "保存中..." : isEditing ? "更新する" : "登録する"}
                 </Button>
                 {isEditing && (
-                    <Button variant="outlined" onClick={onCancelEdit}>
+                    <Button variant="outlined" onClick={onCancelEdit} data-testid="event-cancel-button">
                         キャンセル
                     </Button>
                 )}

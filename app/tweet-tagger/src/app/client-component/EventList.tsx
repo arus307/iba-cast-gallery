@@ -65,7 +65,7 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
 
     return (
         <>
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} data-testid="event-list">
                 <Table size="small">
                     <TableHead>
                         <TableRow>
@@ -79,7 +79,7 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
                     </TableHead>
                     <TableBody>
                         {events.map((ev) => (
-                            <TableRow key={ev.id}>
+                            <TableRow key={ev.id} data-testid={`event-list-row-${ev.id}`}>
                                 <TableCell>
                                     <Chip
                                         label={EVENT_TYPE_LABELS[ev.eventType]}
