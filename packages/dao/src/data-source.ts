@@ -7,6 +7,8 @@ import { User } from './entities/User';
 import { UserAccount } from './entities/UserAccount';
 import { Favorite } from './entities/Favorite';
 import { Shift } from './entities/Shift';
+import { Event } from './entities/Event';
+import { EventCastTag } from './entities/EventCastTag';
 import path from 'path';
 
 /**
@@ -26,6 +28,8 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
     UserAccount,
     Favorite,
     Shift,
+    Event,
+    EventCastTag,
   ],
   migrations: [
     path.join(__dirname, 'migrations/**/*.js'),

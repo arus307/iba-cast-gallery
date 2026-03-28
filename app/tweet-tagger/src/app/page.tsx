@@ -28,6 +28,9 @@ export default async function Home() {
       <Link href="/shifts">
         <Typography variant="body2" color="primary">シフト登録</Typography>
       </Link>
+      <Link href="/events">
+        <Typography variant="body2" color="primary">イベント登録</Typography>
+      </Link>
       <Typography>登録画面</Typography>
       <TweetEditor initialId="" />
     </>
