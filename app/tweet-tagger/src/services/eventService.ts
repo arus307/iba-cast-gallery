@@ -66,7 +66,8 @@ export async function createEvent(params: {
                     postedAt: new Date().toISOString(),
                     isDeleted: false,
                     showInGallery: false,
-                    shiftSource: ShiftSourceStatus.PENDING,
+                    // イベント由来ポストはシフト入力元ではないため shiftSource は null のままにする
+                    shiftSource: null,
                 });
             }
         }
