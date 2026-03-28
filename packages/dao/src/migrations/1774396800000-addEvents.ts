@@ -17,7 +17,7 @@ export class AddEvents1774396800000 implements MigrationInterface {
                 time_note VARCHAR(50) DEFAULT NULL,
                 notes TEXT DEFAULT NULL,
                 source_post_id VARCHAR(30) DEFAULT NULL,
-                CONSTRAINT fk_events_source_post FOREIGN KEY (source_post_id) REFERENCES posts(id)
+                CONSTRAINT fk_events_source_post FOREIGN KEY (source_post_id) REFERENCES posts(id) ON DELETE SET NULL
             )
         `);
 
