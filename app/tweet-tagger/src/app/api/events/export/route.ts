@@ -17,11 +17,12 @@ export async function GET() {
         const rows = await getAllEventsForExport();
 
         // RFC 4180: フィールド内にカンマ・ダブルクォート・改行が含まれる場合はダブルクォートで囲む
-        const escapeField = (value: string): string => {
-            if (/[",\n\r]/.test(value)) {
-                return `"${value.replace(/"/g, '""')}"`;
+        const escapeField = (value: string | null | undefined): string => {
+            const str = value ?? "";
+            if (/[",\n\r]/.test(str)) {
+                return `"${str.replace(/"/g, '""')}"`;
             }
-            return value;
+            return str;
         };
 
         const header = "event_type,title,date_start,date_end,related_cast,notes";
