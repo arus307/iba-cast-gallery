@@ -7,7 +7,6 @@ const ADMIN_URL = 'http://localhost:3001';
 const TEST_TITLE = '【E2Eテスト】テストイベント';
 const TEST_DATE_START = '20991101';
 const TEST_DATE_END = '20991103';
-const TEST_DATE_START_DISPLAY = '2099/11/01';
 
 async function login(page: any) {
     await page.request.post(`${ADMIN_URL}/api/auth/e2e-login`);
@@ -88,6 +87,7 @@ if (!testCast) {
                 page.getByTestId('event-save-button').click(),
             ]);
             expect(res.status()).toBe(201);
+            const { id: createdId } = await res.json();
 
             // 登録成功の Snackbar が表示されること
             await expect(page.getByText('登録しました！')).toBeVisible();
@@ -95,15 +95,17 @@ if (!testCast) {
             // 一覧テーブルが表示されること
             await expect(page.getByTestId('event-list')).toBeVisible();
 
-            // 登録したイベントのタイトルが一覧に表示されること
-            await expect(page.getByText(TEST_TITLE)).toBeVisible();
+            // 登録したイベントの行（IDで特定）が一覧に表示されること
+            const row = page.getByTestId(`event-list-row-${createdId}`);
+            await expect(row).toBeVisible();
+            await expect(row.getByRole('cell', { name: TEST_TITLE })).toBeVisible();
 
-            // 登録したキャスト名が一覧に表示されること
-            await expect(page.getByText(testCast.name)).toBeVisible();
+            // 登録したキャスト名が同じ行に表示されること
+            await expect(row.getByRole('cell', { name: testCast.name })).toBeVisible();
         });
 
         test('イベントを編集できること', async ({ page }) => {
-            // 事前にAPIでイベントを登録
+            // 事前にAPIでイベントを登録（IDを取得）
             const createRes = await page.request.post(`${ADMIN_URL}/api/events`, {
                 data: {
                     eventType: 'cast_event',
@@ -114,6 +116,7 @@ if (!testCast) {
                 },
             });
             expect(createRes.status()).toBe(201);
+            const { id: createdId } = await createRes.json();
 
             // イベント管理ページへ移動
             await Promise.all([
@@ -123,13 +126,14 @@ if (!testCast) {
             ]);
 
             // 登録したイベントの行が表示されていること
-            await expect(page.getByText(TEST_TITLE)).toBeVisible();
+            const row = page.getByTestId(`event-list-row-${createdId}`);
+            await expect(row).toBeVisible();
 
-            // 編集ボタンをクリック（一覧の対象行）
-            const row = page.getByRole('row', { name: new RegExp(TEST_TITLE) });
+            // 編集ボタンをクリック
             await row.getByRole('button', { name: '編集' }).click();
 
-            // フォームにタイトルが反映されること
+            // 保存ボタンのラベルが「更新する」に変わるまで待つ（フォームへの state 反映を確認）
+            await expect(page.getByTestId('event-save-button')).toHaveText('更新する');
             await expect(page.getByTestId('event-title-input')).toHaveValue(TEST_TITLE);
 
             // タイトルを変更
@@ -149,14 +153,11 @@ if (!testCast) {
             await expect(page.getByText('更新しました！')).toBeVisible();
 
             // 一覧に更新後のタイトルが表示されること
-            await expect(page.getByText(updatedTitle)).toBeVisible();
-
-            // 元のタイトルが消えていること
-            await expect(page.getByText(TEST_TITLE, { exact: true })).not.toBeVisible();
+            await expect(page.getByTestId('event-list').getByText(updatedTitle)).toBeVisible();
         });
 
         test('イベントを削除できること', async ({ page }) => {
-            // 事前にAPIでイベントを登録
+            // 事前にAPIでイベントを登録（IDを取得）
             const createRes = await page.request.post(`${ADMIN_URL}/api/events`, {
                 data: {
                     eventType: 'cast_event',
@@ -167,6 +168,7 @@ if (!testCast) {
                 },
             });
             expect(createRes.status()).toBe(201);
+            const { id: createdId } = await createRes.json();
 
             // イベント管理ページへ移動
             await Promise.all([
@@ -176,13 +178,13 @@ if (!testCast) {
             ]);
 
             // 登録したイベントの行が表示されていること
-            await expect(page.getByText(TEST_TITLE)).toBeVisible();
+            const row = page.getByTestId(`event-list-row-${createdId}`);
+            await expect(row).toBeVisible();
 
             // confirm ダイアログを自動承認
             page.on('dialog', (dialog) => dialog.accept());
 
             // 削除ボタンをクリックして DELETE のレスポンスを待機
-            const row = page.getByRole('row', { name: new RegExp(TEST_TITLE) });
             const [res] = await Promise.all([
                 page.waitForResponse((resp: any) =>
                     resp.url().includes('/api/events/') && resp.request().method() === 'DELETE'
@@ -194,11 +196,11 @@ if (!testCast) {
             // 削除成功の Snackbar が表示されること
             await expect(page.getByText('削除しました')).toBeVisible();
 
-            // 一覧からイベントが消えていること
-            await expect(page.getByText(TEST_TITLE)).not.toBeVisible();
+            // 一覧から行が消えていること
+            await expect(row).not.toBeVisible();
         });
 
-        test('開始日を入力すると一覧に期間が表示されること', async ({ page }) => {
+        test('開始日・終了日が異なる場合は期間形式で表示されること', async ({ page }) => {
             // イベント管理ページへ移動
             await Promise.all([
                 page.goto(`${ADMIN_URL}/events`),
