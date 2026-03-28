@@ -63,6 +63,7 @@ yarn db:reset
 ② app/tweet-tagger/src/app/api/ に API Route を追加
 ③ app/tweet-tagger/src/app/client-component/ に Client Component を追加
 ④ app/tweet-tagger/src/app/ にページを追加
+⑤ e2e/ に E2E テストを追加（必須 → 下記参照）
 ```
 
 ### 3. iba-cast-gallery に機能追加する場合
@@ -71,6 +72,7 @@ yarn db:reset
 ① app/iba-cast-gallery/src/services/ に Service を追加
 ② app/iba-cast-gallery/src/app/api/ に API Route を追加
 ③ コンポーネントを追加
+④ e2e/ に E2E テストを追加（必須 → 下記参照）
 ```
 
 ---
@@ -97,6 +99,30 @@ npx playwright test --ui
 ```
 
 テストは `E2E_TESTING=true` 環境変数が必要。`global-setup.ts` で自動ログイン処理が行われる。
+
+### E2E テストの作成ルール（必須）
+
+**新機能を実装したら必ず E2E テストをセットで作成すること。**
+
+テストファイル名は `e2e/{機能名}-flow.spec.ts` の形式で作成する。
+
+#### 記述の方針
+
+- `beforeEach` でログイン＆テストデータのクリーンアップを行う
+- `afterEach` でもテストデータをクリーンアップする（他テストとの干渉防止）
+- 運用データと衝突しないよう、テスト用タイトル・日付には `【E2Eテスト】` プレフィックスや遠い未来の固定値を使う
+- 独立した前提状態が必要なテストは `page.request` で API を直接叩いて事前データを作成する
+- テスト対象コンポーネントには `data-testid` を付ける（`inputProps` / `slotProps` 経由の場合も含む）
+- MUI `DateField` は `page.keyboard.type(YYYYMMDD)` でセグメント入力する
+- `window.confirm` が出るテストは `page.on('dialog', d => d.accept())` で自動承認する
+
+#### カバーすべき最低限のシナリオ
+
+| 操作       | 確認ポイント                               |
+|------------|------------------------------------------|
+| 登録       | API が 201 を返す・Snackbar 表示・一覧に反映 |
+| 編集       | フォームに既存値が反映される・API が 200・一覧が更新される |
+| 削除       | API が 200 を返す・Snackbar 表示・一覧から消える |
 
 ---
 
