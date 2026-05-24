@@ -157,8 +157,9 @@ function getEntities(tweet: TweetBase): Entity[] {
 function addEntities(
   result: EntityWithType[],
   type: EntityWithType['type'],
-  entities: TweetEntity[]
+  entities: TweetEntity[] | undefined
 ) {
+  if (!entities) return;
   for (const entity of entities) {
     for (const [i, item] of result.entries()) {
       if (
