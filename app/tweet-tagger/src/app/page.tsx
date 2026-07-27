@@ -28,6 +28,9 @@ export default async function Home({
 
   return (
     <>
+      <Link href="/casts">
+        <Typography variant="body2" color="primary">キャスト登録</Typography>
+      </Link>
       <Link href="/posts">
         <Typography variant="body2" color="primary">登録済みポスト一覧</Typography>
       </Link>
