@@ -216,6 +216,8 @@ const ShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
                 variant="contained"
                 onClick={save}
                 disabled={saving || !date?.isValid()}
+                loading={saving}
+                loadingPosition="start"
                 data-testid="shift-save-button"
             >
                 {saving ? "保存中..." : "保存する"}

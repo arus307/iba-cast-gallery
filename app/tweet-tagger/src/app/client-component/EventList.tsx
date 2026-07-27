@@ -28,6 +28,7 @@ const EVENT_TYPE_LABELS: Record<EventType, string> = {
 const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event: EventDto) => void }) => {
     const [events, setEvents] = useState<EventDto[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [deletingEventId, setDeletingEventId] = useState<number | null>(null);
     const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "error" }>({
         open: false, message: "", severity: "success",
     });
@@ -42,7 +43,9 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
     }, [refreshKey]);
 
     const handleDelete = async (id: number, title: string) => {
+        if (deletingEventId !== null) return;
         if (!confirm(`「${title}」を削除しますか？`)) return;
+        setDeletingEventId(id);
         try {
             const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
             if (!res.ok) throw new Error();
@@ -50,6 +53,8 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
             setSnackbar({ open: true, message: "削除しました", severity: "success" });
         } catch {
             setSnackbar({ open: true, message: "削除に失敗しました", severity: "error" });
+        } finally {
+            setDeletingEventId(null);
         }
     };
 
@@ -117,8 +122,24 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
                                 </TableCell>
                                 <TableCell>
                                     <Stack direction="row" spacing={1}>
-                                        <Button size="small" onClick={() => onEdit?.(ev)}>編集</Button>
-                                        <Button size="small" color="error" onClick={() => handleDelete(ev.id, ev.title)}>削除</Button>
+                                        <Button
+                                            size="small"
+                                            onClick={() => onEdit?.(ev)}
+                                            disabled={deletingEventId !== null}
+                                        >
+                                            編集
+                                        </Button>
+                                        <Button
+                                            size="small"
+                                            color="error"
+                                            onClick={() => handleDelete(ev.id, ev.title)}
+                                            disabled={deletingEventId !== null}
+                                            loading={deletingEventId === ev.id}
+                                            loadingPosition="start"
+                                            data-testid={`event-delete-button-${ev.id}`}
+                                        >
+                                            {deletingEventId === ev.id ? "削除中..." : "削除"}
+                                        </Button>
                                     </Stack>
                                 </TableCell>
                             </TableRow>

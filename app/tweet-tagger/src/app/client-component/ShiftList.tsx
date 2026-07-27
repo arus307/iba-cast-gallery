@@ -227,6 +227,8 @@ const ShiftList = ({ refreshKey }: { refreshKey: number }) => {
                             variant="contained"
                             onClick={saveSource}
                             disabled={savingSource || !sourceTweetId}
+                            loading={savingSource}
+                            loadingPosition="start"
                             data-testid="add-source-save-button"
                         >
                             {savingSource ? "保存中..." : "保存する"}
