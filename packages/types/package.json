@@ -9,9 +9,6 @@
     "clean": "rimraf dist tsconfig.tsbuildinfo"
   },
   "keywords": [],
-  "dependencies": {
-    "@iba-cast-gallery/dao": "workspaces:*"
-  },
   "devDependencies": {
     "rimraf": "^5.0.7",
     "typescript": "^5.2.2"

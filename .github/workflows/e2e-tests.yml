@@ -25,18 +25,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-playwright-
 
-      - name: Install Yarn
-        run: npm install -g yarn
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --immutable
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: yarn playwright install --with-deps
 
       - name: Start PostgreSQL database
-        run: sudo docker compose up -d
+        run: sudo docker compose up -d --wait postgres
 
       - name: Run database migrations
         run: yarn migrate
@@ -56,49 +56,22 @@ jobs:
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
 
-      - name: Start production server - gallery
-        run: |
-          # ログ出力のバッファリングを0にしつつ起動
-          stdbuf -oL -eL yarn workspace iba-cast-gallery start > iba-cast-gallery-server.log 2>&1 &
-        env:
-          E2E_TESTING: "true"
-          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USERNAME: postgres
-          DB_PASSWORD: password
-          DB_DATABASE: ibacastgallery
-          AUTH_URL: http://localhost:3000
-      
-      - name: Start production server - admin
-        run: |
-          # ログ出力のバッファリングを0にしつつ起動
-          stdbuf -oL -eL yarn workspace tweet-tagger start > tweet-tagger-server.log 2>&1 &
-        env:
-          E2E_TESTING: "true"
-          ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
-          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
-          DB_HOST: localhost
-          DB_PORT: 5432
-          DB_USERNAME: postgres
-          DB_PASSWORD: password
-          DB_DATABASE: ibacastgallery
-          AUTH_GITHUB_ID: "dummy"
-          AUTH_GITHUB_SECRET: "dummy"
-          AUTH_URL: http://localhost:3001
-          AUTH_TRUST_HOST: true
-
-      - name: Wait for servers to be ready
-        run: |
-          npm install -g wait-on
-          wait-on http://localhost:3000
-
       - name: Run Playwright tests
         run: yarn playwright test
         env:
           E2E_TESTING: "true"
           ADMIN_EMAIL: ${{ secrets.ADMIN_EMAIL }}
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          AUTH_GITHUB_ID: "dummy"
+          AUTH_GITHUB_SECRET: "dummy"
+          AUTH_TRUST_HOST: "true"
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+          DB_DATABASE: ibacastgallery
+          DB_SCHEMA: public
+
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
@@ -107,11 +80,3 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      
-      - name: Display server logs on failure
-        if: failure()
-        run: |
-          echo "Tweet Tagger Server Logs:"
-          cat tweet-tagger-server.log
-          echo "IBA Cast Gallery Server Logs:"
-          cat iba-cast-gallery-server.log

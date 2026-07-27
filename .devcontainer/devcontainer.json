@@ -3,10 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
 
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "enableNonRootDocker": "true",
-      "moby": "true"
-    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
 
@@ -27,8 +24,8 @@
   },
 
   "forwardPorts": [3000, 3001, 5432],
-  "postCreateCommand": "yarn install && npx playwright install --with-deps && docker-compose up -d && yarn run migrate:dev",
-  "postStartCommand": "docker-compose up -d",
+  "postCreateCommand": "yarn install --immutable && npx playwright install --with-deps && yarn db:start",
+  "postStartCommand": "yarn db:start",
 
   "remoteUser": "node"
 }

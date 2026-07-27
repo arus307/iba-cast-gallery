@@ -12,7 +12,11 @@
     "migrate:generate": "dotenv -e .env.development -- turbo run migration:generate --filter=@iba-cast-gallery/dao",
     "migrate": "yarn turbo migrate:run --filter=@iba-cast-gallery/db-migrator",
     "migrate:fresh": "dotenv -e .env.development -- turbo run schema:drop --filter=@iba-cast-gallery/db-migrator && yarn migrate:dev",
+    "db:start": "docker compose up -d --wait postgres && yarn migrate:dev",
     "db:reset": "./dbreset.sh",
+    "test:env:up": "docker compose --profile test up -d --wait --wait-timeout 600 --force-recreate postgres-e2e test-runner",
+    "test:env:down": "docker compose --profile test rm -sf test-runner postgres-e2e",
+    "test:e2e:docker": "docker compose --profile test up -d --wait --wait-timeout 600 --force-recreate postgres-e2e test-runner && docker compose --profile test exec -T test-runner node .yarn/releases/yarn-4.9.0.cjs turbo build && docker compose --profile test exec -T -e PLAYWRIGHT_USE_PRODUCTION_SERVER=true test-runner node .yarn/releases/yarn-4.9.0.cjs playwright test",
     "test:e2e:fresh": "yarn migrate:fresh && npx playwright test",
     "test:e2e": "npx playwright test"
   },
@@ -21,7 +25,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@playwright/test": "^1.54.2",
+    "@playwright/test": "1.57.0",
     "@types/node": "^20",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9",
