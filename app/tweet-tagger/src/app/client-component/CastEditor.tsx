@@ -208,6 +208,8 @@ const CastEditor = () => {
                 type="submit"
                 variant="contained"
                 disabled={!isValid || saving}
+                loading={saving}
+                loadingPosition="start"
                 data-testid="cast-save-button"
             >
                 {saving ? "登録中..." : "登録する"}

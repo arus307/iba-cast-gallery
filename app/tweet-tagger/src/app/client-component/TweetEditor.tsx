@@ -52,9 +52,10 @@ const TweetEditor = ({ initialId }: {
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [castTags, setCastTags] = useState<PostCastTag[]>([]);
   const [showInGallery, setShowInGallery] = useState<boolean | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const registerTweet = async () => {
-    if (tweetDateTime === null) return;
+    if (tweetDateTime === null || saving) return;
 
     const newPost: Post = {
       id: tweetId,
@@ -67,6 +68,7 @@ const TweetEditor = ({ initialId }: {
       favorites: [],
     };
 
+    setSaving(true);
     try {
       const response = await fetch("/api/posts", {
         method: "POST",
@@ -96,6 +98,8 @@ const TweetEditor = ({ initialId }: {
       setTweetDateTime(dayjs());
     } catch (error) {
       console.error("Error registering post:", error);
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -155,8 +159,19 @@ const TweetEditor = ({ initialId }: {
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
       <FormControlLabel control={<Checkbox checked={isDeleted} onChange={(e, checked) => setIsDeleted(checked)} />} label="削除フラグ" />
-      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet} data-testid='tweet-register-button'>
-        {showInGallery === false ? "ギャラリーに公開" : "登録"}
+      <Button
+        sx={{ marginTop: 1 }}
+        variant="contained"
+        color="primary"
+        onClick={registerTweet}
+        disabled={saving || tweetDateTime === null}
+        loading={saving}
+        loadingPosition="start"
+        data-testid='tweet-register-button'
+      >
+        {saving
+          ? showInGallery === false ? "公開中..." : "登録中..."
+          : showInGallery === false ? "ギャラリーに公開" : "登録"}
       </Button>
     </Stack>
   );

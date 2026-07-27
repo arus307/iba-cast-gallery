@@ -287,12 +287,19 @@ const EventEditor = ({ onSaved, editTarget, onCancelEdit }: {
                     variant="contained"
                     onClick={save}
                     disabled={saving || !dateStart?.isValid() || !dateEnd?.isValid() || !title.trim()}
+                    loading={saving}
+                    loadingPosition="start"
                     data-testid="event-save-button"
                 >
-                    {saving ? "保存中..." : isEditing ? "更新する" : "登録する"}
+                    {saving ? (isEditing ? "更新中..." : "登録中...") : isEditing ? "更新する" : "登録する"}
                 </Button>
                 {isEditing && (
-                    <Button variant="outlined" onClick={onCancelEdit} data-testid="event-cancel-button">
+                    <Button
+                        variant="outlined"
+                        onClick={onCancelEdit}
+                        disabled={saving}
+                        data-testid="event-cancel-button"
+                    >
                         キャンセル
                     </Button>
                 )}
