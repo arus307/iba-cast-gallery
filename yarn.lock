@@ -962,7 +962,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@iba-cast-gallery/dao@workspace:*, @iba-cast-gallery/dao@workspace:packages/dao, @iba-cast-gallery/dao@workspaces:*":
+"@iba-cast-gallery/dao@workspace:*, @iba-cast-gallery/dao@workspace:packages/dao":
   version: 0.0.0-use.local
   resolution: "@iba-cast-gallery/dao@workspace:packages/dao"
   dependencies:
@@ -995,7 +995,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@iba-cast-gallery/types@workspace:packages/types"
   dependencies:
-    "@iba-cast-gallery/dao": "workspaces:*"
     rimraf: "npm:^5.0.7"
     typescript: "npm:^5.2.2"
   languageName: unknown
@@ -1791,7 +1790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@playwright/test@npm:^1.54.2":
+"@playwright/test@npm:1.57.0":
   version: 1.57.0
   resolution: "@playwright/test@npm:1.57.0"
   dependencies:
@@ -5128,7 +5127,7 @@ __metadata:
   resolution: "iba-cast-gallery-monorepo@workspace:."
   dependencies:
     "@eslint/eslintrc": "npm:^3"
-    "@playwright/test": "npm:^1.54.2"
+    "@playwright/test": "npm:1.57.0"
     "@types/node": "npm:^20"
     dotenv-cli: "npm:^8.0.0"
     eslint: "npm:^9"
@@ -5170,7 +5169,7 @@ __metadata:
     next-auth: "npm:^5.0.0-beta.27"
     nextjs-toploader: "npm:^3.8.16"
     pino: "npm:^9.7.0"
-    playwright: "npm:^1.57.0"
+    playwright: "npm:1.57.0"
     react: "npm:^19.0.0"
     react-dom: "npm:^19.0.0"
     react-photo-view: "npm:^1.2.7"
@@ -6747,7 +6746,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.57.0, playwright@npm:^1.57.0":
+"playwright@npm:1.57.0":
   version: 1.57.0
   resolution: "playwright@npm:1.57.0"
   dependencies:

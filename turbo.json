@@ -43,10 +43,10 @@
                 "@iba-cast-gallery/dao#build"
             ]
         },
-        "@iba-cast-gallery/db-migaroter#build": {
+        "@iba-cast-gallery/db-migrator#build": {
             "dependsOn": [
                 "clean",
-                "dao#build"
+                "@iba-cast-gallery/dao#build"
             ],
             "outputs": [
                 "dist/**"
