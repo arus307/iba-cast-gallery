@@ -1,6 +1,6 @@
 "use client";
 
-import { TextField, Stack, Button, Checkbox, FormControlLabel, } from "@mui/material";
+import { Alert, TextField, Stack, Button, Checkbox, FormControlLabel, } from "@mui/material";
 import { useEffect, useState } from "react";
 import { DateTimeField } from "@mui/x-date-pickers/DateTimeField";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -8,7 +8,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Tweet } from "../../components/tweet/swr";
 import dayjs, { Dayjs } from "dayjs";
 import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
+import { useRouter } from "next/navigation";
 import TagEditor from "./TagEditor";
+import { extractPostId } from "utils/postId";
 
 
 /**
@@ -22,6 +24,7 @@ const TweetEditor = ({ initialId }: {
 
   // 初期値がある場合は編集不可とする
   const isDisableTweetId = initialId !== undefined && initialId !== "";
+  const router = useRouter();
 
   const [casts, setCasts] = useState<Cast[]>([]);
 
@@ -48,6 +51,7 @@ const TweetEditor = ({ initialId }: {
   const [tweetDateTime, setTweetDateTime] = useState<Dayjs | null>(dayjs());
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const [castTags, setCastTags] = useState<PostCastTag[]>([]);
+  const [showInGallery, setShowInGallery] = useState<boolean | null>(null);
 
   const registerTweet = async () => {
     if (tweetDateTime === null) return;
@@ -78,6 +82,14 @@ const TweetEditor = ({ initialId }: {
         return;
       }
 
+      setShowInGallery(true);
+
+      if (isDisableTweetId) {
+        router.push("/posts");
+        router.refresh();
+        return;
+      }
+
       // 登録完了で諸々リセット
       setTweetId("");
       setCastTags([]);
@@ -92,6 +104,7 @@ const TweetEditor = ({ initialId }: {
       const response = await fetch(`/api/posts/${tweetId}`);
 
       if (response.status === 404) {
+        setShowInGallery(null);
         return;
       }
 
@@ -110,6 +123,7 @@ const TweetEditor = ({ initialId }: {
       if (data.isDeleted !== undefined) {
         setIsDeleted(data.isDeleted);
       }
+      setShowInGallery(data.showInGallery);
     } catch (error) {
       console.error("Error fetch post:", error);
     }
@@ -117,9 +131,9 @@ const TweetEditor = ({ initialId }: {
 
   useEffect(() => {
     // URLからツイートIDを取得
-    const match = tweetId.match(/https:\/\/x\.com\/[^/]+\/status\/(\d+)/);
-    if (match) {
-      setTweetId(match[1]);
+    const postId = extractPostId(tweetId);
+    if (postId !== null && postId !== tweetId) {
+      setTweetId(postId);
       return;
     }
 
@@ -129,6 +143,11 @@ const TweetEditor = ({ initialId }: {
 
   return (
     <Stack className="w-full" direction="column" spacing={2} alignItems="left">
+      {showInGallery === false && (
+        <Alert severity="info" data-testid="draft-status">
+          ドラフト保存済みです。「ギャラリーに公開」を押すまで公開側には表示されません。
+        </Alert>
+      )}
       <TextField  slotProps={{ htmlInput: { 'data-testid': 'tweet-id-input' } }} fullWidth value={tweetId} onChange={(e) => setTweetId(e.target.value)} label="Tweet ID" variant="outlined" size="small" disabled={isDisableTweetId} />
       <Tweet id={tweetId} taggedCasts={[]} />
       <TagEditor casts={casts} castTags={castTags} setCastTags={setCastTags} />
@@ -136,7 +155,9 @@ const TweetEditor = ({ initialId }: {
         <DateTimeField format="YYYY/MM/DD HH:mm" label="ツイートの日時" ampm={false} value={tweetDateTime} onChange={(newValue) => setTweetDateTime(newValue)} />
       </LocalizationProvider>
       <FormControlLabel control={<Checkbox checked={isDeleted} onChange={(e, checked) => setIsDeleted(checked)} />} label="削除フラグ" />
-      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet} data-testid='tweet-register-button'> 登録</Button>
+      <Button sx={{ marginTop: 1 }} variant="contained" color="primary" onClick={registerTweet} data-testid='tweet-register-button'>
+        {showInGallery === false ? "ギャラリーに公開" : "登録"}
+      </Button>
     </Stack>
   );
 };

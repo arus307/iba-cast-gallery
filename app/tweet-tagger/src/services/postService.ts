@@ -69,6 +69,43 @@ export async function registerPost(post: Post): Promise<void> {
 }
 
 /**
+ * 未登録のポストをギャラリー非公開のドラフトとして保存する。
+ *
+ * 既存ポストは公開状態やタグを含めて一切変更しない。
+ * これにより、公開済みポストを再共有してもドラフトへ戻らない。
+ */
+export async function ensureDraftPost(postId: string): Promise<Post> {
+    await initializeDatabase();
+
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+
+    await postRepository
+        .createQueryBuilder()
+        .insert()
+        .into(Post)
+        .values({
+            id: postId,
+            postedAt: new Date().toISOString(),
+            isDeleted: false,
+            showInGallery: false,
+            shiftSource: null,
+        })
+        .orIgnore()
+        .execute();
+
+    const post = await postRepository.findOne({
+        where: { id: postId },
+    });
+
+    if (post === null) {
+        throw new Error(`ドラフトの保存に失敗しました (postId: ${postId})`);
+    }
+
+    logger.info({ postId, showInGallery: post.showInGallery }, `共有ポストのドラフト保存完了`);
+    return post;
+}
+
+/**
  * 指定のポストIDのポストを取得する
  * @param postId ポストID
  */

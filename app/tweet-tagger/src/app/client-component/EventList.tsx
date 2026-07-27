@@ -55,11 +55,26 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
 
     if (isLoading) return <CircularProgress size={24} />;
 
+    const snackbarElement = (
+        <Snackbar
+            open={snackbar.open}
+            autoHideDuration={3000}
+            onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+        >
+            <Alert severity={snackbar.severity} onClose={() => setSnackbar((p) => ({ ...p, open: false }))}>
+                {snackbar.message}
+            </Alert>
+        </Snackbar>
+    );
+
     if (events.length === 0) {
         return (
-            <Typography variant="body2" color="text.secondary">
-                登録済みイベントはありません
-            </Typography>
+            <>
+                <Typography variant="body2" color="text.secondary">
+                    登録済みイベントはありません
+                </Typography>
+                {snackbarElement}
+            </>
         );
     }
 
@@ -112,15 +127,7 @@ const EventList = ({ refreshKey, onEdit }: { refreshKey: number; onEdit?: (event
                 </Table>
             </TableContainer>
 
-            <Snackbar
-                open={snackbar.open}
-                autoHideDuration={3000}
-                onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
-            >
-                <Alert severity={snackbar.severity} onClose={() => setSnackbar((p) => ({ ...p, open: false }))}>
-                    {snackbar.message}
-                </Alert>
-            </Snackbar>
+            {snackbarElement}
         </>
     );
 };

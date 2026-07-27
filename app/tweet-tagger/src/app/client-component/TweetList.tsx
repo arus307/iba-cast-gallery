@@ -2,7 +2,7 @@
 
 import { Post } from "@iba-cast-gallery/dao";
 import { Tweet } from "components/tweet/swr";
-import { Button, CircularProgress, Grid, Typography } from "@mui/material";
+import { Button, Chip, CircularProgress, Grid, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -50,6 +50,15 @@ const TweetList = () => {
             data-testid={`tweet-list-item-${index + 1}`}
           >
             <div className="border p-4 rounded">
+              {!post.showInGallery && (
+                <Chip
+                  label="ドラフト"
+                  color="warning"
+                  size="small"
+                  data-testid="draft-chip"
+                  sx={{ mb: 1 }}
+                />
+              )}
               {post.isDeleted ? (
                 <Typography variant="body2" color="error">
                   削除済み
