@@ -1,0 +1,223 @@
+name: Preview Deployment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+  VERCEL_CLI_VERSION: '56.5.0'
+
+jobs:
+  prepare-preview-schema:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    outputs:
+      schema-name: ${{ steps.schema.outputs.name }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Create preview schema and run migrations
+        id: schema
+        run: node scripts/create-preview-schema.js
+        env:
+          DB_HOST: ${{ secrets.PREVIEW_DB_HOST }}
+          DB_PORT: ${{ secrets.PREVIEW_DB_PORT }}
+          DB_USERNAME: ${{ secrets.PREVIEW_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.PREVIEW_DB_PASSWORD }}
+          DB_DATABASE: ${{ secrets.PREVIEW_DB_DATABASE }}
+          DB_MIGRATION_USER_USERNAME: ${{ secrets.PREVIEW_DB_USERNAME }}
+          DB_MIGRATION_USER_PASSWORD: ${{ secrets.PREVIEW_DB_PASSWORD }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+  deploy-gallery:
+    needs: prepare-preview-schema
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_GALLERY_PROJECT_ID }}
+      DB_SCHEMA: ${{ needs.prepare-preview-schema.outputs.schema-name }}
+      HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Vercel configuration
+        run: |
+          test -n "$VERCEL_TOKEN" || { echo "::error::GitHub Secret VERCEL_TOKEN is not configured."; exit 1; }
+          test -n "$VERCEL_ORG_ID" || { echo "::error::GitHub Variable VERCEL_ORG_ID is not configured."; exit 1; }
+          test -n "$VERCEL_PROJECT_ID" || { echo "::error::GitHub Variable VERCEL_GALLERY_PROJECT_ID is not configured."; exit 1; }
+
+      - name: Install Vercel CLI
+        run: npm install --global "vercel@${VERCEL_CLI_VERSION}"
+
+      - name: Pull Vercel Preview environment
+        run: vercel pull --yes --environment=preview --git-branch="$HEAD_BRANCH" --token="$VERCEL_TOKEN"
+
+      - name: Build Gallery
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy Gallery
+        id: deploy
+        run: |
+          deployment_url="$(
+            vercel deploy \
+              --prebuilt \
+              --archive=tgz \
+              --yes \
+              --token="$VERCEL_TOKEN" \
+              --env "DB_SCHEMA=$DB_SCHEMA" \
+              --meta "githubDeployment=1" \
+              --meta "githubCommitOrg=${GITHUB_REPOSITORY_OWNER}" \
+              --meta "githubCommitRepo=${GITHUB_REPOSITORY#*/}" \
+              --meta "githubCommitRef=$HEAD_BRANCH" \
+              --meta "githubCommitSha=$HEAD_SHA"
+          )"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
+
+  deploy-admin:
+    needs: prepare-preview-schema
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_ADMIN_PROJECT_ID }}
+      DB_SCHEMA: ${{ needs.prepare-preview-schema.outputs.schema-name }}
+      HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate Vercel configuration
+        run: |
+          test -n "$VERCEL_TOKEN" || { echo "::error::GitHub Secret VERCEL_TOKEN is not configured."; exit 1; }
+          test -n "$VERCEL_ORG_ID" || { echo "::error::GitHub Variable VERCEL_ORG_ID is not configured."; exit 1; }
+          test -n "$VERCEL_PROJECT_ID" || { echo "::error::GitHub Variable VERCEL_ADMIN_PROJECT_ID is not configured."; exit 1; }
+
+      - name: Install Vercel CLI
+        run: npm install --global "vercel@${VERCEL_CLI_VERSION}"
+
+      - name: Pull Vercel Preview environment
+        run: vercel pull --yes --environment=preview --git-branch="$HEAD_BRANCH" --token="$VERCEL_TOKEN"
+
+      - name: Build Admin
+        run: vercel build --token="$VERCEL_TOKEN"
+
+      - name: Deploy Admin
+        id: deploy
+        run: |
+          deployment_url="$(
+            vercel deploy \
+              --prebuilt \
+              --archive=tgz \
+              --yes \
+              --token="$VERCEL_TOKEN" \
+              --env "DB_SCHEMA=$DB_SCHEMA" \
+              --meta "githubDeployment=1" \
+              --meta "githubCommitOrg=${GITHUB_REPOSITORY_OWNER}" \
+              --meta "githubCommitRepo=${GITHUB_REPOSITORY#*/}" \
+              --meta "githubCommitRef=$HEAD_BRANCH" \
+              --meta "githubCommitSha=$HEAD_SHA"
+          )"
+          echo "url=$deployment_url" >> "$GITHUB_OUTPUT"
+
+  comment-preview:
+    needs:
+      - prepare-preview-schema
+      - deploy-gallery
+      - deploy-admin
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment on PR with Preview URLs
+        uses: actions/github-script@v7
+        env:
+          SCHEMA_NAME: ${{ needs.prepare-preview-schema.outputs.schema-name }}
+          GALLERY_URL: ${{ needs.deploy-gallery.outputs.url }}
+          ADMIN_URL: ${{ needs.deploy-admin.outputs.url }}
+        with:
+          script: |
+            const prNumber = context.payload.pull_request.number;
+            const marker = '<!-- vercel-preview-deployment -->';
+            const comment = [
+              marker,
+              '## ✅ Preview環境へのデプロイが完了しました',
+              '',
+              '| アプリ | URL |',
+              '| --- | --- |',
+              '| Gallery | ' + process.env.GALLERY_URL + ' |',
+              '| 管理画面 | ' + process.env.ADMIN_URL + ' |',
+              '',
+              '**DBスキーマ:** ' + process.env.SCHEMA_NAME,
+              '',
+              '_最終更新: ' + new Date().toISOString() + '_',
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              per_page: 100,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes(marker)
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: comment,
+              });
+            }
