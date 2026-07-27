@@ -3,14 +3,15 @@
  * PR番号を元にスキーマ名を生成し、各Preview環境が独立したDBスキーマを使用できるようにする
  */
 
+const fs = require('fs');
 const { Client } = require('pg');
 const { execSync } = require('child_process');
 
 async function createPreviewSchema() {
   const prNumber = process.env.PR_NUMBER;
-  
-  if (!prNumber) {
-    console.error('Error: PR_NUMBER environment variable is required');
+
+  if (!prNumber || !/^\d+$/.test(prNumber)) {
+    console.error('Error: PR_NUMBER must be a positive integer');
     process.exit(1);
   }
 
@@ -29,27 +30,21 @@ async function createPreviewSchema() {
     await client.connect();
     console.log('Connected to database');
 
-    // スキーマが既に存在するかチェック
-    const checkQuery = `
-      SELECT schema_name 
-      FROM information_schema.schemata 
-      WHERE schema_name = $1
-    `;
-    const checkResult = await client.query(checkQuery, [schemaName]);
+    const checkResult = await client.query(
+      'SELECT schema_name FROM information_schema.schemata WHERE schema_name = $1',
+      [schemaName],
+    );
 
     if (checkResult.rows.length > 0) {
-      console.log(`Schema ${schemaName} already exists. Dropping and recreating...`);
-      await client.query(`DROP SCHEMA "${schemaName}" CASCADE`);
+      console.log(`Schema ${schemaName} already exists. Reusing it.`);
+    } else {
+      await client.query(`CREATE SCHEMA "${schemaName}"`);
+      console.log(`Schema ${schemaName} created successfully`);
     }
-
-    // スキーマを作成
-    await client.query(`CREATE SCHEMA "${schemaName}"`);
-    console.log(`Schema ${schemaName} created successfully`);
 
     await client.end();
     console.log('Database connection closed');
 
-    // マイグレーションを実行
     console.log('Running migrations...');
     execSync('yarn migrate', {
       stdio: 'inherit',
@@ -60,11 +55,13 @@ async function createPreviewSchema() {
     });
     console.log('Migrations completed successfully');
 
-    console.log(`\n✅ Preview schema setup complete!`);
+    console.log('\n✅ Preview schema setup complete!');
     console.log(`Schema name: ${schemaName}`);
-    console.log(`\nSet the following environment variable in your preview deployment:`);
     console.log(`DB_SCHEMA=${schemaName}`);
 
+    if (process.env.GITHUB_OUTPUT) {
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, `name=${schemaName}\n`);
+    }
   } catch (error) {
     console.error('Error creating preview schema:', error);
     process.exit(1);
