@@ -3,7 +3,19 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Cast, PostCastTag } from "@iba-cast-gallery/dao";
 import { Button, Autocomplete, TextField, Stack } from "@mui/material";
+import { createFilterOptions } from "@mui/material/Autocomplete";
 import TagSorter from "./TagSorter";
+
+const katakanaToHiragana = (value: string) =>
+  value
+    .normalize("NFKC")
+    .replace(/[\u30A1-\u30F6]/g, (character) =>
+      String.fromCharCode(character.charCodeAt(0) - 0x60)
+    );
+
+const filterOptions = createFilterOptions<Cast>({
+  stringify: (cast) => `${cast.name} ${katakanaToHiragana(cast.name)}`,
+});
 
 type TagEditorProps = {
   casts: Cast[];
@@ -50,6 +62,7 @@ const TagEditor = ({ casts, castTags, setCastTags }: TagEditorProps) => {
           multiple
           options={casts.filter(cast => castTags.every(tag => tag.castid !== cast.id))}
           getOptionLabel={(option) => option.name}
+          filterOptions={filterOptions}
           value={selectedCasts}
           onChange={(event, newValue) => setSelectedCasts(newValue)}
           renderInput={(params) => (
