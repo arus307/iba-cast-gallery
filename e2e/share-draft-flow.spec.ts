@@ -41,6 +41,7 @@ test.describe("X共有からのドラフト保存", () => {
       const savedPost = await savedPostResponse.json();
       expect(savedPost.showInGallery).toBe(false);
       expect(savedPost.castTags).toEqual([]);
+      expect(savedPost.postedAt).toBe("2033-07-04T11:51:51.961Z");
 
       await page.goto(`${ADMIN_URL}/posts/${DRAFT_POST_ID}/edit`);
       await expect(page.getByTestId("draft-status")).toContainText(
@@ -70,6 +71,7 @@ test.describe("X共有からのドラフト保存", () => {
 
   test("公開済みポストを再共有してもドラフトへ戻さないこと", async ({ page }) => {
     await deleteTestPost(page, PUBLISHED_POST_ID);
+    const existingPostedAt = "2099-11-01T00:00:00.000Z";
 
     try {
       const registerResponse = await page.request.post(
@@ -78,7 +80,7 @@ test.describe("X共有からのドラフト保存", () => {
           data: {
             post: {
               id: PUBLISHED_POST_ID,
-              postedAt: new Date().toISOString(),
+              postedAt: existingPostedAt,
               isDeleted: false,
               showInGallery: true,
               shiftSource: null,
@@ -105,6 +107,7 @@ test.describe("X共有からのドラフト保存", () => {
       expect(savedPostResponse.ok()).toBeTruthy();
       const savedPost = await savedPostResponse.json();
       expect(savedPost.showInGallery).toBe(true);
+      expect(savedPost.postedAt).toBe(existingPostedAt);
     } finally {
       await deleteTestPost(page, PUBLISHED_POST_ID);
     }
