@@ -3,6 +3,7 @@ import { initializeDatabase, appDataSource } from "../data-source";
 import { PostCastTag, Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
 import logger from "../logger";
+import { getPostCreatedAtFromId } from "utils/postId";
 
 /**
  * ポスト情報を全件取得する
@@ -78,6 +79,8 @@ export async function ensureDraftPost(postId: string): Promise<Post> {
     await initializeDatabase();
 
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const postedAt = getPostCreatedAtFromId(postId)?.toISOString()
+        ?? new Date().toISOString();
 
     await postRepository
         .createQueryBuilder()
@@ -85,7 +88,7 @@ export async function ensureDraftPost(postId: string): Promise<Post> {
         .into(Post)
         .values({
             id: postId,
-            postedAt: new Date().toISOString(),
+            postedAt,
             isDeleted: false,
             showInGallery: false,
             shiftSource: null,

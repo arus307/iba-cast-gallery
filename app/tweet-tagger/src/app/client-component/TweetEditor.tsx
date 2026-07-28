@@ -10,7 +10,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
 import { useRouter } from "next/navigation";
 import TagEditor from "./TagEditor";
-import { extractPostId } from "utils/postId";
+import { extractPostId, getPostCreatedAtFromId } from "utils/postId";
 
 
 /**
@@ -109,6 +109,10 @@ const TweetEditor = ({ initialId }: {
 
       if (response.status === 404) {
         setShowInGallery(null);
+        const createdAt = getPostCreatedAtFromId(tweetId);
+        if (createdAt !== null) {
+          setTweetDateTime(dayjs(createdAt));
+        }
         return;
       }
 
@@ -141,8 +145,13 @@ const TweetEditor = ({ initialId }: {
       return;
     }
 
+    if (postId === null) {
+      setShowInGallery(null);
+      return;
+    }
+
     // ツイートが既存のものか確認して既存ならキャスト情報/投稿日時を更新する
-    checkExistTweet(tweetId);
+    checkExistTweet(postId);
   }, [tweetId]);
 
   return (

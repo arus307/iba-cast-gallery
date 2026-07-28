@@ -11,7 +11,7 @@ async function login(page: any) {
 
 test.describe('Tweet Tagger and Gallery Flow', () => {
     // 登録するツイートID
-    const tweetId = `1954740195934474563`;
+    const tweetId = `1346889436626259968`;
     const tweetUrl = `http://x.com/i/status/${tweetId}`;
 
     test.beforeEach(async ({page})=>{
@@ -19,6 +19,7 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
     })
 
     test('管理画面から登録したポストがギャラリーに表示されること', async ({ page }) => {
+        await page.request.delete(`http://localhost:3001/api/posts/${tweetId}`);
 
         // 管理画面を開く
 
@@ -63,19 +64,17 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         await expect(page.getByTestId('cast-tag-4')).toHaveText('4 シトリン');
 
         // 登録ボタンを押して登録のPOSTリクエストを待機
-        Promise.all([
+        const [, registerRequest] = await Promise.all([
             page.getByTestId('tweet-register-button').click(),
             page.waitForRequest(request => request.url() === 'http://localhost:3001/api/posts' && request.method() === 'POST')
         ]);
+        expect(registerRequest.postDataJSON().post.postedAt).toBe('2021-01-06T18:40:40.344Z');
 
         await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
 
         await page.goto('http://localhost:3001/posts');
 
-        const tweetListItem1 = page.getByTestId('tweet-list-item-1');
-        await expect(tweetListItem1).toBeVisible();
-
-        const tweetContainer= tweetListItem1.getByTestId(`tweet-container-${tweetId}`);
+        const tweetContainer = page.getByTestId(`tweet-container-${tweetId}`);
         await expect(tweetContainer).toBeVisible();
 
         await expect(tweetContainer.getByTestId('cast-tag-1')).toHaveText('メノウ');
