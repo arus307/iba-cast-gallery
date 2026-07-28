@@ -37,8 +37,10 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         // 読み込まれる
         await expect(page.getByTestId(`tweet-container-${tweetId}`)).toBeVisible();
 
-        await page.getByTestId('cast-autocomplete').click();
+        const castAutocomplete = page.getByRole('combobox', { name: '写ってるキャストを選択' });
+        await castAutocomplete.fill('めのう');
         const listbox = page.locator('#cast-autocomplete-listbox');
+        await expect(listbox.getByText('メノウ')).toBeVisible();
         await listbox.getByText('メノウ').click();
 
         await page.getByTestId('cast-autocomplete').click();
