@@ -5,7 +5,7 @@ import { Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";
-import TweetEditor from "app/client-component/TweetEditor";
+import TweetEditor from "app/client-component/UnifiedTweetEditor";
 import TweetDeleter from "app/client-component/TweetDeleter";
 
 export default async function Page(

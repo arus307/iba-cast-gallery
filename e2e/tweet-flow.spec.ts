@@ -53,22 +53,22 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         await page.getByTestId('cast-autocomplete').click();
         await listbox.getByText('シトリン').click();
 
-        await page.getByTestId('add-tag-button').click();
-
-        const tags = await page.locator('[data-testid^="cast-tag-"]');
+        const tags = page.locator(
+            '[data-testid^="cast-autocomplete-selected-"]:not([data-testid="cast-autocomplete-selected-list"])'
+        );
         await expect(tags).toHaveCount(4);
 
-        await expect(page.getByTestId('cast-tag-1')).toHaveText('1 メノウ');
-        await expect(page.getByTestId('cast-tag-2')).toHaveText('2 リシア');
-        await expect(page.getByTestId('cast-tag-3')).toHaveText('3 ベリル');
-        await expect(page.getByTestId('cast-tag-4')).toHaveText('4 シトリン');
+        await expect(page.getByTestId('cast-autocomplete-selected-1')).toHaveText('1 メノウ');
+        await expect(page.getByTestId('cast-autocomplete-selected-2')).toHaveText('2 リシア');
+        await expect(page.getByTestId('cast-autocomplete-selected-3')).toHaveText('3 ベリル');
+        await expect(page.getByTestId('cast-autocomplete-selected-4')).toHaveText('4 シトリン');
 
         // 登録ボタンを押して登録のPOSTリクエストを待機
         const [, registerRequest] = await Promise.all([
             page.getByTestId('tweet-register-button').click(),
-            page.waitForRequest(request => request.url() === 'http://localhost:3001/api/posts' && request.method() === 'POST')
+            page.waitForRequest(request => request.url() === 'http://localhost:3001/api/post-registrations' && request.method() === 'POST')
         ]);
-        expect(registerRequest.postDataJSON().post.postedAt).toBe('2021-01-06T18:40:40.344Z');
+        expect(registerRequest.postDataJSON().postedAt).toBe('2021-01-06T18:40:40.344Z');
 
         await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
 

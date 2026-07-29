@@ -28,6 +28,14 @@ async function setShiftDate(page: any, date: string) {
     await dateLoadedPromise;
 }
 
+async function selectShiftCast(page: any, castName: string) {
+    const autocomplete = page.getByRole('combobox', {
+        name: '出勤中のキャストを選択',
+    });
+    await autocomplete.fill(castName);
+    await page.getByRole('option', { name: castName }).click();
+}
+
 const casts = getTestCasts();
 const testCast = casts[0] ?? null;
 
@@ -56,12 +64,8 @@ if (!testCast) {
             // 固定テスト日付を DateField に入力
             await setShiftDate(page, TEST_DATE);
 
-            // キャストの Chip が表示されていることを確認
-            const castChip = page.getByRole('button', { name: testCast.name }).first();
-            await expect(castChip).toBeVisible();
-
-            // キャストを選択
-            await castChip.click();
+            // 共通のAutocompleteからキャストを選択
+            await selectShiftCast(page, testCast.name);
 
             // 保存ボタンをクリックして POST /api/shifts のレスポンスを待機
             await Promise.all([
@@ -105,8 +109,7 @@ if (!testCast) {
             await expect(page.getByTestId(`tweet-container-${tweetId}`)).toBeVisible({ timeout: 15000 });
 
             // キャストを選択
-            const castChip = page.getByRole('button', { name: testCast.name }).first();
-            await castChip.click();
+            await selectShiftCast(page, testCast.name);
 
             // 保存
             await Promise.all([
@@ -160,9 +163,7 @@ if (!testCast) {
             await setShiftDate(page, TEST_DATE);
 
             // ソースなしでシフトを保存（ツイートURLを入力しない）
-            const castChip = page.getByRole('button', { name: testCast.name }).first();
-            await expect(castChip).toBeVisible();
-            await castChip.click();
+            await selectShiftCast(page, testCast.name);
             await Promise.all([
                 page.getByTestId('shift-save-button').click(),
                 page.waitForResponse((resp: any) =>
