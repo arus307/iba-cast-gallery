@@ -75,7 +75,7 @@ test.describe("管理画面のAPI待機表示", () => {
         await page.route("**/api/casts", async (route) => {
             await route.fulfill({ status: 200, contentType: "application/json", body: "[]" });
         });
-        await page.route("**/api/posts", async (route) => {
+        await page.route("**/api/post-registrations", async (route) => {
             if (route.request().method() !== "POST") {
                 await route.continue();
                 return;
@@ -86,6 +86,7 @@ test.describe("管理画面のAPI待機表示", () => {
         });
 
         await page.goto(ADMIN_URL);
+        await page.getByTestId("tweet-id-input").fill("2999999999999999900");
         const button = page.getByTestId("tweet-register-button");
         const click = button.click();
         await gate.reached;
@@ -93,7 +94,7 @@ test.describe("管理画面のAPI待機表示", () => {
 
         gate.release();
         await click;
-        await expect(button).toBeEnabled();
+        await expect(button).toBeDisabled();
         await expect(button).toContainText("登録");
     });
 

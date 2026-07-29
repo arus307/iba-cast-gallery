@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Divider, Typography } from "@mui/material";
-import ShiftEditor from "app/client-component/ShiftEditor";
+import ShiftEditor from "app/client-component/UnifiedShiftEditor";
 import ShiftList from "app/client-component/ShiftList";
 
 const ShiftPageContent = () => {

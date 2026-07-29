@@ -2,7 +2,7 @@
 
 import { auth } from "auth";
 import { Alert, Typography } from "@mui/material";
-import TweetEditor from "app/client-component/TweetEditor";
+import TweetEditor from "app/client-component/UnifiedTweetEditor";
 import { redirect } from "next/navigation";
 import NotAdmin from "app/client-component/NotAdmin";
 import Link from "next/link";

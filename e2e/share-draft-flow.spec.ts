@@ -50,7 +50,7 @@ test.describe("X共有からのドラフト保存", () => {
 
       const publishResponsePromise = page.waitForResponse(
         (res) =>
-          res.url() === `${ADMIN_URL}/api/posts` &&
+          res.url() === `${ADMIN_URL}/api/post-registrations` &&
           res.request().method() === "POST",
       );
       await page.getByTestId("tweet-register-button").click();
