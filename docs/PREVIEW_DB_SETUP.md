@@ -4,15 +4,15 @@
 
 ## 概要
 
-PRが作成されると、自動的に専用のデータベーススキーマが作成され、Preview環境ではそのスキーマを使用します。PRがクローズされると、スキーマは自動的に削除されます。
+PRが作成されると、自動的に専用のデータベーススキーマが作成され、Preview環境ではそのスキーマを使用します。PRがクローズされると、対応するVercel Previewデプロイを先に削除してから、スキーマを削除します。Vercel APIの削除に失敗した場合はスキーマを残し、削除済みのPreviewが本番スキーマへフォールバックする事態を防ぎます。
 
 ## アーキテクチャ
 
 - **スキーマ命名規則**: `preview_pr_{PR番号}`
   - 例: PR #123 の場合、`preview_pr_123` というスキーマが作成されます
 - **自動化**:
-  - PR作成/更新時: `.github/workflows/preview-db-setup.yml` が実行され、スキーマを作成しマイグレーションを実行
-  - PRクローズ時: `.github/workflows/preview-db-cleanup.yml` が実行され、スキーマを削除
+  - PR作成/更新時: `.github/workflows/preview-deployment.yml` が実行され、スキーマを作成しマイグレーションを実行
+  - PRクローズ時: `.github/workflows/preview-db-cleanup.yml` が実行され、Vercel Previewデプロイを削除してからスキーマを削除
 
 ## GitHub Secretsの設定
 
@@ -139,7 +139,7 @@ DB_SCHEMA=preview_pr_$REVIEW_ID
 3. PRにコメントが追加され、スキーマ名が表示されることを確認します
 4. Vercel Preview Deploymentがデプロイされ、正常に動作することを確認します
 5. PRをクローズします
-6. GitHub Actionsで `Preview DB Cleanup` ワークフローが実行され、スキーマが削除されることを確認します
+6. GitHub Actionsで `Preview DB Cleanup` ワークフローが実行され、Vercel Previewデプロイとスキーマが削除されることを確認します
 
 **デバッグ方法**: Vercel Deployment Logs で以下の環境変数を確認できます:
 ```
@@ -194,6 +194,24 @@ node scripts/delete-preview-schema.js
 ```
 
 ## メンテナンス
+
+### 古いVercel Previewデプロイの整理
+
+`scripts/cleanup-stale-preview-deployments.js` は、過去のPreviewデプロイを安全に整理するための一回限りの運用スクリプトです。Productionおよびカスタム環境のデプロイは対象にせず、最初は必ず削除候補を表示するだけです。
+
+```bash
+export VERCEL_TOKEN=your-vercel-token
+export VERCEL_ORG_ID=your-vercel-team-id
+export VERCEL_PROJECT_IDS=gallery-project-id,admin-project-id
+
+# 削除せず、2026-07-01より前のPreview候補を確認する
+node scripts/cleanup-stale-preview-deployments.js --before 2026-07-01
+
+# 確認した候補を削除する。残したいブランチは --keep-branch で除外する
+node scripts/cleanup-stale-preview-deployments.js --before 2026-07-01 --keep-branch active-pr-branch --execute
+```
+
+`--execute` を使う場合は `--before` が必須です。`--before` はUTCとして扱われます。Dry Runの出力を確認してから同じ条件で実行してください。
 
 定期的に不要なスキーマが残っていないか確認することをお勧めします:
 
