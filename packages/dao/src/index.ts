@@ -1,5 +1,6 @@
 // 1. DataSource オプションをエクスポート
 export { commonDataSourceOptions } from './data-source';
+export { resolveDatabaseSchema } from './database-schema';
 export type { DataSourceOptions } from 'typeorm'; // 必要ならTypeORMの型も再エクスポート
 
 // 2. Entity をエクスポート

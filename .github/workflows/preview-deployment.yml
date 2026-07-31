@@ -101,6 +101,7 @@ jobs:
               --token="$VERCEL_TOKEN" \
               --env "DB_SCHEMA=$DB_SCHEMA" \
               --meta "githubDeployment=1" \
+              --meta "githubPullRequestId=${{ github.event.pull_request.number }}" \
               --meta "githubCommitOrg=${GITHUB_REPOSITORY_OWNER}" \
               --meta "githubCommitRepo=${GITHUB_REPOSITORY#*/}" \
               --meta "githubCommitRef=$HEAD_BRANCH" \
@@ -156,6 +157,7 @@ jobs:
               --token="$VERCEL_TOKEN" \
               --env "DB_SCHEMA=$DB_SCHEMA" \
               --meta "githubDeployment=1" \
+              --meta "githubPullRequestId=${{ github.event.pull_request.number }}" \
               --meta "githubCommitOrg=${GITHUB_REPOSITORY_OWNER}" \
               --meta "githubCommitRepo=${GITHUB_REPOSITORY#*/}" \
               --meta "githubCommitRef=$HEAD_BRANCH" \

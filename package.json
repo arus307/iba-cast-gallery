@@ -18,7 +18,8 @@
     "test:env:down": "docker compose --profile test rm -sf test-runner postgres-e2e",
     "test:e2e:docker": "docker compose --profile test up -d --wait --wait-timeout 600 --force-recreate postgres-e2e test-runner && docker compose --profile test exec -T test-runner node .yarn/releases/yarn-4.9.0.cjs turbo build && docker compose --profile test exec -T -e PLAYWRIGHT_USE_PRODUCTION_SERVER=true test-runner node .yarn/releases/yarn-4.9.0.cjs playwright test",
     "test:e2e:fresh": "yarn migrate:fresh && npx playwright test",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "test:unit": "yarn workspace @iba-cast-gallery/dao build && node --test packages/dao/dist/database-schema.test.js scripts/delete-preview-deployments.test.js scripts/cleanup-stale-preview-deployments.test.js"
   },
   "dependencies": {
     "pg": "^8.14.1"

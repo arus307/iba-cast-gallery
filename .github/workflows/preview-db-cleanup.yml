@@ -9,6 +9,9 @@ permissions:
   contents: read
   pull-requests: write
 
+env:
+  VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+
 jobs:
   cleanup-preview-schema:
     runs-on: ubuntu-latest
@@ -26,6 +29,13 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Delete Vercel Preview deployments
+        run: node scripts/delete-preview-deployments.js
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_PROJECT_IDS: ${{ vars.VERCEL_GALLERY_PROJECT_ID }},${{ vars.VERCEL_ADMIN_PROJECT_ID }}
 
       - name: Delete preview schema
         run: node scripts/delete-preview-schema.js

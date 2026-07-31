@@ -1,8 +1,9 @@
 import { DataSource } from 'typeorm';
-import { commonDataSourceOptions } from '@iba-cast-gallery/dao';
+import { commonDataSourceOptions, resolveDatabaseSchema } from '@iba-cast-gallery/dao';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions.js';
 
 const NODE_ENV = process.env.NODE_ENV as 'development' | 'production' | 'preview' | undefined;
+const databaseSchema = resolveDatabaseSchema(process.env);
 
 export const appDataSource = new DataSource({
   ...commonDataSourceOptions,
@@ -13,10 +14,10 @@ export const appDataSource = new DataSource({
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  schema: process.env.DB_SCHEMA,
+  schema: databaseSchema,
   logging: NODE_ENV === 'development' || NODE_ENV === 'preview' ? ['query', 'error', 'migration'] : false,
   extra: {
-    options: `-c search_path=${process.env.DB_SCHEMA || 'public'},public`
+    options: `-c search_path=${databaseSchema},public`
   },
 } as PostgresConnectionOptions);
 
