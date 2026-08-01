@@ -1,6 +1,4 @@
-import { auth } from "auth";
 import { NextResponse } from "next/server";
-import { ensureDraftPost } from "services/postService";
 import { extractPostId } from "utils/postId";
 
 const SEE_OTHER = 303;
@@ -11,36 +9,10 @@ function redirectToHome(request: Request, error: "invalid" | "failed") {
   return NextResponse.redirect(url, SEE_OTHER);
 }
 
-function redirectToSignIn(request: Request, postId: string) {
-  const callbackUrl = new URL("/share", request.url);
-  callbackUrl.searchParams.set("id", postId);
-
-  const signInUrl = new URL("/api/auth/signin", request.url);
-  signInUrl.searchParams.set("callbackUrl", callbackUrl.toString());
-  return NextResponse.redirect(signInUrl, SEE_OTHER);
-}
-
-async function saveDraftAndRedirect(request: Request, postId: string) {
-  const session = await auth();
-
-  if (!session?.user) {
-    return redirectToSignIn(request, postId);
-  }
-
-  if (session.user.email !== process.env.ADMIN_EMAIL) {
-    return NextResponse.redirect(new URL("/", request.url), SEE_OTHER);
-  }
-
-  try {
-    await ensureDraftPost(postId);
-    return NextResponse.redirect(
-      new URL(`/posts/${postId}/edit?shared=1`, request.url),
-      SEE_OTHER,
-    );
-  } catch (error) {
-    console.error("Error saving shared post as draft:", error);
-    return redirectToHome(request, "failed");
-  }
+function redirectToPreparation(request: Request, postId: string) {
+  const url = new URL("/share/prepare", request.url);
+  url.searchParams.set("id", postId);
+  return NextResponse.redirect(url, SEE_OTHER);
 }
 
 /**
@@ -58,18 +30,6 @@ export async function POST(request: Request) {
     return redirectToHome(request, "invalid");
   }
 
-  return saveDraftAndRedirect(request, postId);
-}
-
-/**
- * 共有時にログインが切れていた場合、ログイン後にドラフト保存を再開する。
- */
-export async function GET(request: Request) {
-  const postId = extractPostId(new URL(request.url).searchParams.get("id"));
-
-  if (postId === null) {
-    return redirectToHome(request, "invalid");
-  }
-
-  return saveDraftAndRedirect(request, postId);
+  // PWAの起動画面を早く閉じるため、認証・DB保存は受付画面を描画した後に行う。
+  return redirectToPreparation(request, postId);
 }
