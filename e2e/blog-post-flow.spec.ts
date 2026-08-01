@@ -4,6 +4,7 @@ import { getTestCasts } from "./lib/test-data";
 const ADMIN_URL = "http://localhost:3001";
 const GALLERY_URL = "http://localhost:3000";
 const BLOG_POST_ID = "11647688710085046272";
+const BLOG_POST_TEXT = "登録前に確認できるBLOGポスト本文";
 
 const casts = getTestCasts();
 const taggedCast = casts[0] ?? null;
@@ -26,6 +27,28 @@ if (!taggedCast) {
         test("BLOGとして登録したポストをギャラリーから分離し、キャスト詳細で表示する", async ({
             page,
         }) => {
+            await page.route(
+                `https://react-tweet.vercel.app/api/tweet/${BLOG_POST_ID}`,
+                (route) =>
+                    route.fulfill({
+                        json: {
+                            data: {
+                                text: BLOG_POST_TEXT,
+                                mediaDetails: [
+                                    {
+                                        type: "photo",
+                                        media_url_https:
+                                            "https://pbs.twimg.com/media/blog-e2e.jpg",
+                                        original_info: {
+                                            height: 900,
+                                            width: 1200,
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    }),
+            );
             await Promise.all([
                 page.goto(ADMIN_URL),
                 page.waitForResponse((response) =>
@@ -36,6 +59,9 @@ if (!taggedCast) {
             await page.getByTestId("gallery-destination-checkbox").uncheck();
             await page.getByTestId("blog-destination-checkbox").check();
             await expect(page.getByTestId("blog-post-preview")).toBeVisible();
+            await expect(page.getByTestId("blog-post-preview-text")).toHaveText(
+                BLOG_POST_TEXT,
+            );
 
             const castPicker = page.getByRole("combobox", {
                 name: "タグ付けするキャストを選択",
@@ -66,6 +92,12 @@ if (!taggedCast) {
             await expect(
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toBeVisible();
+            await expect(
+                page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
+            ).toContainText(BLOG_POST_TEXT);
+            await page.getByTestId(`blog-post-image-${BLOG_POST_ID}-0`).click();
+            await expect(page.locator(".PhotoView-Portal")).toBeVisible();
+            await page.keyboard.press("Escape");
 
             await page.goto(`${GALLERY_URL}/casts/${taggedCast.enName}`);
             await page.getByRole("tab", { name: /BLOG/ }).click();
