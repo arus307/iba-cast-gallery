@@ -17,14 +17,22 @@ import {
 import dayjs from "dayjs";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
-import { useEffect, useRef, useState } from "react";
+import { useTweet } from "react-tweet";
 import type { PostWithCastsDto } from "@iba-cast-gallery/types";
 import CastChip from "components/CastChip";
-import { useTweet } from "components/tweet/hooks";
 import { getMediaUrl } from "components/tweet/utils";
 
 const getPostUrl = (postId: string) =>
   `https://x.com/IBA_diary/status/${postId}`;
+
+type TweetWithNote = {
+  note_tweet?: {
+    id?: string;
+  };
+};
+
+const hasUnfetchedContinuation = (tweet: unknown) =>
+  typeof (tweet as TweetWithNote | undefined)?.note_tweet?.id === "string";
 
 /**
  * IBAだいありぃのBLOGポストを、画像ギャラリーとは別のテキスト中心カードで表示する。
@@ -32,35 +40,9 @@ const getPostUrl = (postId: string) =>
 export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
   const { data: tweet, error, isLoading } = useTweet(post.id);
   const publishedAt = dayjs(post.postedAt).format("YYYY年M月D日");
-  const textRef = useRef<HTMLParagraphElement>(null);
-  const [isTextExpanded, setIsTextExpanded] = useState(false);
-  const [hasHiddenText, setHasHiddenText] = useState(false);
   const photos =
     tweet?.mediaDetails?.filter((media) => media.type === "photo") ?? [];
-
-  useEffect(() => {
-    setIsTextExpanded(false);
-  }, [tweet?.text]);
-
-  useEffect(() => {
-    if (!tweet?.text || isTextExpanded) {
-      return;
-    }
-
-    const textElement = textRef.current;
-    if (!textElement) {
-      return;
-    }
-
-    const updateHasHiddenText = () => {
-      setHasHiddenText(textElement.scrollHeight > textElement.clientHeight);
-    };
-
-    updateHasHiddenText();
-    const resizeObserver = new ResizeObserver(updateHasHiddenText);
-    resizeObserver.observe(textElement);
-    return () => resizeObserver.disconnect();
-  }, [isTextExpanded, tweet?.text]);
+  const hasContinuation = hasUnfetchedContinuation(tweet);
 
   return (
     <Card
@@ -85,15 +67,10 @@ export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
           )}
           {!isLoading && tweet && (
             <Typography
-              ref={textRef}
               variant="body1"
               component="p"
               sx={{
-                display: isTextExpanded ? "block" : "-webkit-box",
                 m: 0,
-                overflow: "hidden",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: isTextExpanded ? "unset" : 6,
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
               }}
@@ -101,14 +78,18 @@ export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
               {tweet.text}
             </Typography>
           )}
-          {!isLoading && tweet && hasHiddenText && (
+          {!isLoading && hasContinuation && (
             <Button
+              component="a"
+              href={getPostUrl(post.id)}
+              target="_blank"
+              rel="noopener noreferrer"
               size="small"
-              onClick={() => setIsTextExpanded((current) => !current)}
-              data-testid={`blog-post-expand-${post.id}`}
+              endIcon={<OpenInNew />}
+              data-testid={`blog-post-continue-${post.id}`}
               sx={{ alignSelf: "flex-start", px: 0 }}
             >
-              {isTextExpanded ? "閉じる" : "続きを見る"}
+              Xで続きを読む
             </Button>
           )}
           {!isLoading && (!tweet || error) && (

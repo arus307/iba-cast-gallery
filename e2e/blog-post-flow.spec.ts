@@ -42,6 +42,9 @@ if (!taggedCast) {
                         json: {
                             data: {
                                 text: BLOG_POST_TEXT,
+                                note_tweet: {
+                                    id: "long-form-blog-post",
+                                },
                                 mediaDetails: [
                                     {
                                         type: "photo",
@@ -103,12 +106,14 @@ if (!taggedCast) {
             await expect(
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toContainText(BLOG_POST_TEXT);
-            const expandButton = page.getByTestId(
-                `blog-post-expand-${BLOG_POST_ID}`,
+            const continueLink = page.getByTestId(
+                `blog-post-continue-${BLOG_POST_ID}`,
             );
-            await expect(expandButton).toHaveText("続きを見る");
-            await expandButton.click();
-            await expect(expandButton).toHaveText("閉じる");
+            await expect(continueLink).toHaveText("Xで続きを読む");
+            await expect(continueLink).toHaveAttribute(
+                "href",
+                `https://x.com/IBA_diary/status/${BLOG_POST_ID}`,
+            );
             await page.getByTestId(`blog-post-image-${BLOG_POST_ID}-0`).click();
             await expect(page.locator(".PhotoView-Portal")).toBeVisible();
             await page.keyboard.press("Escape");

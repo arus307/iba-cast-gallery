@@ -12,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import dayjs from "dayjs";
-import { useTweet } from "./tweet/hooks";
+import { useTweet } from "react-tweet";
 
 export default function BlogPostPreview({
   postId,

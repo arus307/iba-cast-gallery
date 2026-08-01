@@ -8,7 +8,7 @@ import {
   type TwitterComponents,
 } from './twitter-theme/components'
 import { type TweetCoreProps } from './utils'
-import { useTweet } from './hooks'
+import { useTweet } from 'react-tweet'
 import type { CastDto } from '@iba-cast-gallery/types'
 
 export type TweetProps = Omit<TweetCoreProps, 'id'> & {
