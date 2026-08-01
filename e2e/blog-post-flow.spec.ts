@@ -109,6 +109,14 @@ if (!taggedCast) {
             await expect(
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toBeVisible();
+            const blogCastFilter = page.getByRole("combobox", {
+                name: "キャストで絞り込み",
+            });
+            await blogCastFilter.fill(taggedCast.name);
+            await page.getByRole("option", { name: taggedCast.name }).click();
+            await expect(
+                page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
+            ).toBeVisible();
             await expect(
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toContainText(BLOG_POST_TEXT);

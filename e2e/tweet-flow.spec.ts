@@ -82,10 +82,49 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
         await expect(tweetContainer.getByTestId('cast-tag-3')).toHaveText('ベリル');
         await expect(tweetContainer.getByTestId('cast-tag-4')).toHaveText('シトリン');
 
+        // 遅延表示の2バッチ目に対象投稿を置く。登録フローの検証を維持しつつ、
+        // 全件をマウントせず「さらに表示」で到達できることを確認する。
+        const postsResponse = await page.request.get('http://localhost:3001/api/posts');
+        expect(postsResponse.ok()).toBeTruthy();
+        const posts = await postsResponse.json();
+        const currentPost = posts.find((post: { id: string }) => post.id === tweetId);
+        const visibleGalleryPosts = posts
+            .filter((post: {
+                id: string;
+                isDeleted: boolean;
+                showInGallery: boolean;
+                contentType: string;
+            }) =>
+                post.id !== tweetId &&
+                !post.isDeleted &&
+                post.showInGallery &&
+                post.contentType === 'gallery'
+            )
+            .sort((a: { postedAt: string }, b: { postedAt: string }) =>
+                new Date(b.postedAt).getTime() - new Date(a.postedAt).getTime()
+            );
+        const lastInitialPost = visibleGalleryPosts[8];
+        expect(currentPost).toBeDefined();
+        expect(lastInitialPost).toBeDefined();
+
+        const updateResponse = await page.request.post('http://localhost:3001/api/posts', {
+            data: {
+                post: {
+                    ...currentPost,
+                    postedAt: new Date(
+                        new Date(lastInitialPost.postedAt).getTime() - 1
+                    ).toISOString(),
+                },
+            },
+        });
+        expect(updateResponse.status()).toBe(201);
+
 
         // ギャラリー側でも表示されていることを検証する
         await page.goto('http://localhost:3000');
         const tweetContainerInGallery = page.getByTestId(`tweet-container-${tweetId}`);
+        await expect(tweetContainerInGallery).not.toBeAttached();
+        await page.getByTestId('post-load-more').click();
         await expect(tweetContainerInGallery).toBeVisible();
 
         await expect(tweetContainerInGallery.getByTestId('cast-tag-1')).toHaveText('メノウ');
