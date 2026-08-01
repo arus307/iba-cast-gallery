@@ -30,7 +30,42 @@ test.describe("X共有からのドラフト保存", () => {
 
       expect(response.status()).toBe(303);
       expect(response.headers().location).toContain(
-        `/posts/${DRAFT_POST_ID}/edit?shared=1`,
+        `/share/prepare?id=${DRAFT_POST_ID}`,
+      );
+
+      // PWAの起動画面を早く閉じるため、共有POSTではDB保存を待たない。
+      const beforePreparationResponse = await page.request.get(
+        `${ADMIN_URL}/api/posts/${DRAFT_POST_ID}`,
+      );
+      expect(beforePreparationResponse.status()).toBe(404);
+
+      let markSaveRequestStarted!: () => void;
+      let resumeSaveRequest!: () => void;
+      const saveRequestStarted = new Promise<void>((resolve) => {
+        markSaveRequestStarted = resolve;
+      });
+      await page.route(
+        `${ADMIN_URL}/api/share-drafts/${DRAFT_POST_ID}`,
+        async (route) => {
+          markSaveRequestStarted();
+          await new Promise<void>((resolve) => {
+            resumeSaveRequest = resolve;
+          });
+          await route.continue();
+        },
+      );
+      const saveDraftResponse = page.waitForResponse(
+        (res) =>
+          res.url() === `${ADMIN_URL}/api/share-drafts/${DRAFT_POST_ID}` &&
+          res.request().method() === "POST",
+      );
+      await page.goto(`${ADMIN_URL}/share/prepare?id=${DRAFT_POST_ID}`);
+      await saveRequestStarted;
+      await expect(page.getByText("共有ポストを開いています…")).toBeVisible();
+      resumeSaveRequest();
+      expect((await saveDraftResponse).status()).toBe(201);
+      await expect(page).toHaveURL(
+        `${ADMIN_URL}/posts/${DRAFT_POST_ID}/edit?shared=1`,
       );
 
       const savedPostResponse = await page.request.get(
@@ -100,6 +135,14 @@ test.describe("X共有からのドラフト保存", () => {
         maxRedirects: 0,
       });
       expect(shareResponse.status()).toBe(303);
+
+      const saveDraftResponse = page.waitForResponse(
+        (res) =>
+          res.url() === `${ADMIN_URL}/api/share-drafts/${PUBLISHED_POST_ID}` &&
+          res.request().method() === "POST",
+      );
+      await page.goto(`${ADMIN_URL}/share/prepare?id=${PUBLISHED_POST_ID}`);
+      expect((await saveDraftResponse).status()).toBe(201);
 
       const savedPostResponse = await page.request.get(
         `${ADMIN_URL}/api/posts/${PUBLISHED_POST_ID}`,
