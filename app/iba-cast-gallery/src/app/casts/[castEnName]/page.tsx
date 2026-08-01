@@ -8,11 +8,12 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import { getCastDetail } from "services/castService";
-import Tweets from "../../../components/Tweets";
 import { Tweet } from "components/tweet/swr";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FanMark from "../../../components/FanMark";
 import dayjs from "dayjs";
+import { PostContentType, PostWithCastsDto } from "@iba-cast-gallery/types";
+import CastPostTabs from "components/CastPostTabs";
 
 export default async function Page({
   params,
@@ -22,11 +23,12 @@ export default async function Page({
   const castEnName = await params.then((p) => p.castEnName);
   const cast = await getCastDetail(castEnName);
 
-  const joinedPosts: JoinedPost[] = cast.taggedPosts
+  const joinedPosts: PostWithCastsDto[] = cast.taggedPosts
     .map((post) => {
       return {
         id: post.id,
         postedAt: post.postedAt,
+        contentType: post.contentType,
         taggedCasts: post.taggedCasts,
       };
     })
@@ -70,7 +72,14 @@ export default async function Page({
         ポスト一覧
       </Typography>
 
-      <Tweets joinedPosts={joinedPosts} />
+      <CastPostTabs
+        galleryPosts={joinedPosts.filter(
+          (post) => post.contentType === PostContentType.GALLERY,
+        )}
+        blogPosts={joinedPosts.filter(
+          (post) => post.contentType === PostContentType.BLOG,
+        )}
+      />
     </Box>
   );
 }

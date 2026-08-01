@@ -29,6 +29,7 @@ import {
     inferShiftFromPostedAt,
     InferredShift,
 } from "../../utils/shift";
+import BlogPostPreview from "../../components/BlogPostPreview";
 
 const SHIFT_LABELS: Record<ShiftSlot, string> = {
     [ShiftSlot.OPEN]: "オープン",
@@ -41,6 +42,7 @@ type RegistrationDetailResponse = {
         postedAt: string;
         isDeleted: boolean;
         showInGallery: boolean;
+        contentType: "gallery" | "blog";
         shiftSource: string | null;
         castTags: { castid: number; order: number }[];
     };
@@ -70,6 +72,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
     const [taggedCastIds, setTaggedCastIds] = useState<number[]>([]);
     const [shiftCastIds, setShiftCastIds] = useState<number[]>([]);
     const [registerGallery, setRegisterGallery] = useState(true);
+    const [registerBlog, setRegisterBlog] = useState(false);
     const [registerShift, setRegisterShift] = useState(false);
     const [shiftDate, setShiftDate] = useState<Dayjs>(
         dayjs(initialShift.date),
@@ -146,9 +149,12 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                 setIsDeleted(detail.post.isDeleted);
                 setTaggedCastIds(orderedTagIds);
                 setShowInGallery(detail.post.showInGallery);
+                const isBlog = detail.post.contentType === "blog";
+                setRegisterBlog(isBlog);
                 setRegisterGallery(
-                    detail.post.showInGallery ||
-                        detail.post.shiftSource === null,
+                    !isBlog &&
+                        (detail.post.showInGallery ||
+                            detail.post.shiftSource === null),
                 );
                 setRegisterShift(
                     detail.shift !== null ||
@@ -203,7 +209,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
             setErrorMessage("XのポストURLまたはポストIDを入力してください");
             return;
         }
-        if (!registerGallery && !registerShift) {
+        if (!registerGallery && !registerBlog && !registerShift) {
             setErrorMessage("登録先を1つ以上選択してください");
             return;
         }
@@ -226,9 +232,10 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
             isDeleted,
             destinations: {
                 gallery: registerGallery,
+                blog: registerBlog,
                 shift: registerShift,
             },
-            taggedCastIds: registerGallery ? taggedCastIds : [],
+            taggedCastIds: registerGallery || registerBlog ? taggedCastIds : [],
             shiftCastIds: registerShift
                 ? uniqueIds([...taggedCastIds, ...shiftCastIds])
                 : [],
@@ -252,7 +259,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                 const error = await response.json().catch(() => null);
                 throw new Error(error?.error ?? "登録に失敗しました");
             }
-            if (registerGallery) {
+            if (registerGallery || registerBlog) {
                 setShowInGallery(true);
             }
             if (isEditing) {
@@ -267,6 +274,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
             setTaggedCastIds([]);
             setShiftCastIds([]);
             setRegisterGallery(true);
+            setRegisterBlog(false);
             setRegisterShift(false);
             setShiftDate(dayjs(nextShift.date));
             setShiftSlot(nextShift.slot);
@@ -291,10 +299,14 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
         normalizedPostId === null ||
         normalizedPostId !== tweetId ||
         !tweetDateTime?.isValid() ||
-        (!registerGallery && !registerShift) ||
+        (!registerGallery && !registerBlog && !registerShift) ||
         (registerShift && shiftCastIds.length === 0);
     const buttonLabel =
-        registerGallery && registerShift
+        registerBlog && registerShift
+            ? "BLOGとシフトに登録"
+            : registerBlog
+                ? "BLOGに登録"
+                : registerGallery && registerShift
             ? "ギャラリーとシフトに登録"
             : registerShift
                 ? "シフトに登録"
@@ -334,7 +346,14 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                     htmlInput: { "data-testid": "tweet-id-input" },
                 }}
             />
-            <Tweet id={tweetId} taggedCasts={[]} />
+            {registerBlog ? (
+                <BlogPostPreview
+                    postId={normalizedPostId ?? ""}
+                    postedAt={tweetDateTime?.isValid() ? tweetDateTime.toISOString() : null}
+                />
+            ) : (
+                <Tweet id={tweetId} taggedCasts={[]} />
+            )}
 
             <Paper variant="outlined" sx={{ p: 2 }}>
                 <Typography variant="subtitle2">登録先</Typography>
@@ -345,6 +364,9 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                                 checked={registerGallery}
                                 onChange={(_, checked) => {
                                     setRegisterGallery(checked);
+                                    if (checked) {
+                                        setRegisterBlog(false);
+                                    }
                                     if (checked && registerShift) {
                                         setShiftCastIds((current) =>
                                             uniqueIds([
@@ -362,6 +384,21 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                     <FormControlLabel
                         control={
                             <Checkbox
+                                checked={registerBlog}
+                                onChange={(_, checked) => {
+                                    setRegisterBlog(checked);
+                                    if (checked) {
+                                        setRegisterGallery(false);
+                                    }
+                                }}
+                                data-testid="blog-destination-checkbox"
+                            />
+                        }
+                        label="BLOGに登録"
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
                                 checked={registerShift}
                                 onChange={(_, checked) =>
                                     handleShiftDestinationChange(checked)
@@ -374,15 +411,15 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                 </Stack>
             </Paper>
 
-            {registerGallery && (
+            {(registerGallery || registerBlog) && (
                 <Paper variant="outlined" sx={{ p: 2 }}>
                     <CastMultiSelect
                         casts={casts}
                         value={taggedCastIds}
                         onChange={handleTaggedCastsChange}
                         ordered
-                        label="写ってるキャストを選択"
-                        helperText="姿が写っているキャストだけを選びます。並び順はドラッグで変更できます。"
+                        label={registerBlog ? "タグ付けするキャストを選択" : "写ってるキャストを選択"}
+                        helperText={registerBlog ? "BLOGに登場するキャストを選びます。並び順はドラッグで変更できます。" : "姿が写っているキャストだけを選びます。並び順はドラッグで変更できます。"}
                         testId="cast-autocomplete"
                     />
                 </Paper>
@@ -417,7 +454,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                                 )
                             }
                             fixedIds={
-                                registerGallery ? taggedCastIds : []
+                                registerGallery || registerBlog ? taggedCastIds : []
                             }
                             label="出勤中のキャストを選択"
                             helperText="写真タグのキャストは自動で含まれます。キャストボードにだけ載っているキャストを追加してください。"

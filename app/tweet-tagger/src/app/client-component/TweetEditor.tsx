@@ -8,6 +8,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { Tweet } from "../../components/tweet/swr";
 import dayjs, { Dayjs } from "dayjs";
 import { Cast, Post, PostCastTag } from "@iba-cast-gallery/dao";
+import { PostContentType } from "@iba-cast-gallery/types";
 import { useRouter } from "next/navigation";
 import TagEditor from "./TagEditor";
 import { extractPostId, getPostCreatedAtFromId } from "utils/postId";
@@ -62,6 +63,7 @@ const TweetEditor = ({ initialId }: {
       postedAt: tweetDateTime?.toISOString(),
       isDeleted: isDeleted,
       showInGallery: true,
+      contentType: PostContentType.GALLERY,
       shiftSource: null,
       castTags: castTags,
       taggedCasts: [],

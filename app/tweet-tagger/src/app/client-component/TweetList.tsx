@@ -1,11 +1,13 @@
 "use client";
 
 import { Post } from "@iba-cast-gallery/dao";
+import { PostContentType } from "@iba-cast-gallery/types";
 import { Tweet } from "components/tweet/swr";
 import { Button, Chip, CircularProgress, Grid, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import BlogPostPreview from "../../components/BlogPostPreview";
 
 const TweetList = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -63,6 +65,8 @@ const TweetList = () => {
                 <Typography variant="body2" color="error">
                   削除済み
                 </Typography>
+              ) : post.contentType === PostContentType.BLOG ? (
+                <BlogPostPreview postId={post.id} postedAt={post.postedAt} />
               ) : (
                 <Tweet
                   id={post.id}

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "data-source";
 import { Repository } from "@iba-cast-gallery/dao";
 import { Post } from "@iba-cast-gallery/dao";
-import { PostDto } from '@iba-cast-gallery/types';
+import { PostContentType, PostDto } from '@iba-cast-gallery/types';
 
 /**
  * 有効なポスト情報を全件取得する (postedAtの降順で返却)
@@ -15,6 +15,7 @@ export async function getExistsPosts(): Promise<PostDto[]> {
         where: {
             isDeleted: false,
             showInGallery: true,
+            contentType: PostContentType.GALLERY,
         },
         order: {
             postedAt: "DESC",
@@ -24,11 +25,41 @@ export async function getExistsPosts(): Promise<PostDto[]> {
     return posts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,
+        contentType: post.contentType,
         taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => {
             return {
                 order: castTag.order,
                 castId: castTag.castid
             };
         }),
+    }));
+}
+
+/**
+ * 公開中の IBAだいありぃ BLOG ポストを投稿日降順で取得する。
+ */
+export async function getExistsBlogPosts(): Promise<PostDto[]> {
+    await initializeDatabase();
+
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const posts = await postRepository.find({
+        where: {
+            isDeleted: false,
+            showInGallery: true,
+            contentType: PostContentType.BLOG,
+        },
+        order: {
+            postedAt: "DESC",
+        },
+    });
+
+    return posts.map((post) => ({
+        id: post.id,
+        postedAt: post.postedAt,
+        contentType: post.contentType,
+        taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => ({
+            order: castTag.order,
+            castId: castTag.castid,
+        })),
     }));
 }

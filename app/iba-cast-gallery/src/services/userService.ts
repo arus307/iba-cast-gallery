@@ -2,7 +2,7 @@ import "server-only";
 import { initializeDatabase, appDataSource } from "data-source";
 import { Favorite, Repository } from "@iba-cast-gallery/dao";
 import { User, UserAccount } from "@iba-cast-gallery/dao";
-import { PostWithCastsDto } from '@iba-cast-gallery/types';
+import { PostContentType, PostWithCastsDto } from '@iba-cast-gallery/types';
 import { Post } from "@iba-cast-gallery/dao";
 
 /**
@@ -90,6 +90,9 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
         .leftJoinAndSelect("castTag.cast", "cast")
         .where("post.id IN (:...postIds)", { postIds })
         .andWhere("post.show_in_gallery = true")
+        .andWhere("post.content_type = :contentType", {
+            contentType: PostContentType.GALLERY,
+        })
         .getMany();
 
     // お気に入り登録順になるように再マップ
@@ -99,6 +102,7 @@ export async function getFavoritePosts(user:User): Promise<PostWithCastsDto[]> {
     return orderedPosts.map((post) => ({
         id: post.id,
         postedAt: post.postedAt,
+        contentType: post.contentType,
         taggedCasts: post.castTags?.map((castTag) => ({
             order: castTag.order,
             cast: {
