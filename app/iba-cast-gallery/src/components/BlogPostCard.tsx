@@ -17,6 +17,7 @@ import {
 import dayjs from "dayjs";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
+import { useEffect, useRef, useState } from "react";
 import type { PostWithCastsDto } from "@iba-cast-gallery/types";
 import CastChip from "components/CastChip";
 import { useTweet } from "components/tweet/hooks";
@@ -31,8 +32,35 @@ const getPostUrl = (postId: string) =>
 export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
   const { data: tweet, error, isLoading } = useTweet(post.id);
   const publishedAt = dayjs(post.postedAt).format("YYYY年M月D日");
+  const textRef = useRef<HTMLParagraphElement>(null);
+  const [isTextExpanded, setIsTextExpanded] = useState(false);
+  const [hasHiddenText, setHasHiddenText] = useState(false);
   const photos =
     tweet?.mediaDetails?.filter((media) => media.type === "photo") ?? [];
+
+  useEffect(() => {
+    setIsTextExpanded(false);
+  }, [tweet?.text]);
+
+  useEffect(() => {
+    if (!tweet?.text || isTextExpanded) {
+      return;
+    }
+
+    const textElement = textRef.current;
+    if (!textElement) {
+      return;
+    }
+
+    const updateHasHiddenText = () => {
+      setHasHiddenText(textElement.scrollHeight > textElement.clientHeight);
+    };
+
+    updateHasHiddenText();
+    const resizeObserver = new ResizeObserver(updateHasHiddenText);
+    resizeObserver.observe(textElement);
+    return () => resizeObserver.disconnect();
+  }, [isTextExpanded, tweet?.text]);
 
   return (
     <Card
@@ -57,12 +85,31 @@ export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
           )}
           {!isLoading && tweet && (
             <Typography
+              ref={textRef}
               variant="body1"
               component="p"
-              sx={{ whiteSpace: "pre-wrap", wordBreak: "break-word", m: 0 }}
+              sx={{
+                display: isTextExpanded ? "block" : "-webkit-box",
+                m: 0,
+                overflow: "hidden",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: isTextExpanded ? "unset" : 6,
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
             >
               {tweet.text}
             </Typography>
+          )}
+          {!isLoading && tweet && hasHiddenText && (
+            <Button
+              size="small"
+              onClick={() => setIsTextExpanded((current) => !current)}
+              data-testid={`blog-post-expand-${post.id}`}
+              sx={{ alignSelf: "flex-start", px: 0 }}
+            >
+              {isTextExpanded ? "閉じる" : "続きを見る"}
+            </Button>
           )}
           {!isLoading && (!tweet || error) && (
             <Typography variant="body2" color="text.secondary">

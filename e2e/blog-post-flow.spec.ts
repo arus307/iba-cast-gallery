@@ -4,7 +4,15 @@ import { getTestCasts } from "./lib/test-data";
 const ADMIN_URL = "http://localhost:3001";
 const GALLERY_URL = "http://localhost:3000";
 const BLOG_POST_ID = "11647688710085046272";
-const BLOG_POST_TEXT = "登録前に確認できるBLOGポスト本文";
+const BLOG_POST_TEXT = [
+    "登録前に確認できるBLOGポスト本文 1",
+    "登録前に確認できるBLOGポスト本文 2",
+    "登録前に確認できるBLOGポスト本文 3",
+    "登録前に確認できるBLOGポスト本文 4",
+    "登録前に確認できるBLOGポスト本文 5",
+    "登録前に確認できるBLOGポスト本文 6",
+    "登録前に確認できるBLOGポスト本文 7",
+].join("\n");
 
 const casts = getTestCasts();
 const taggedCast = casts[0] ?? null;
@@ -95,6 +103,12 @@ if (!taggedCast) {
             await expect(
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toContainText(BLOG_POST_TEXT);
+            const expandButton = page.getByTestId(
+                `blog-post-expand-${BLOG_POST_ID}`,
+            );
+            await expect(expandButton).toHaveText("続きを見る");
+            await expandButton.click();
+            await expect(expandButton).toHaveText("閉じる");
             await page.getByTestId(`blog-post-image-${BLOG_POST_ID}-0`).click();
             await expect(page.locator(".PhotoView-Portal")).toBeVisible();
             await page.keyboard.press("Escape");
