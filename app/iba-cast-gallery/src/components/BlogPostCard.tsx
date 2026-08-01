@@ -1,7 +1,9 @@
 "use client";
 
 import { ArticleOutlined, OpenInNew } from "@mui/icons-material";
+import Image from "next/image";
 import {
+  Box,
   Button,
   Card,
   CardActions,
@@ -15,6 +17,7 @@ import dayjs from "dayjs";
 import type { PostWithCastsDto } from "@iba-cast-gallery/types";
 import CastChip from "components/CastChip";
 import { useTweet } from "components/tweet/hooks";
+import { getMediaUrl } from "components/tweet/utils";
 
 const getPostUrl = (postId: string) =>
   `https://x.com/IBA_diary/status/${postId}`;
@@ -25,6 +28,8 @@ const getPostUrl = (postId: string) =>
 export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
   const { data: tweet, error, isLoading } = useTweet(post.id);
   const publishedAt = dayjs(post.postedAt).format("YYYY年M月D日");
+  const photos =
+    tweet?.mediaDetails?.filter((media) => media.type === "photo") ?? [];
 
   return (
     <Card
@@ -41,7 +46,52 @@ export default function BlogPostCard({ post }: { post: PostWithCastsDto }) {
           <Typography variant="subtitle2" color="text.secondary">
             {publishedAt}
           </Typography>
-          {isLoading && <Skeleton variant="text" height={84} />}
+          {isLoading && (
+            <>
+              <Skeleton variant="rectangular" height={240} sx={{ borderRadius: 1 }} />
+              <Skeleton variant="text" height={84} />
+            </>
+          )}
+          {!isLoading && photos.length > 0 && (
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns:
+                  photos.length === 1 ? "1fr" : "repeat(2, minmax(0, 1fr))",
+                gap: 0.5,
+              }}
+            >
+              {photos.map((photo, index) => (
+                <Box
+                  key={photo.media_url_https}
+                  component="a"
+                  href={getMediaUrl(photo, "large")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    aspectRatio: `${photo.original_info.width} / ${photo.original_info.height}`,
+                    borderRadius: 1,
+                    display: "block",
+                    overflow: "hidden",
+                    position: "relative",
+                  }}
+                >
+                  <Image
+                    src={getMediaUrl(photo, "medium")}
+                    alt={photo.ext_alt_text || `${publishedAt}のBLOG画像 ${index + 1}`}
+                    data-testid={`blog-post-image-${post.id}-${index}`}
+                    fill
+                    sizes={
+                      photos.length === 1
+                        ? "(max-width: 900px) 100vw, 33vw"
+                        : "(max-width: 900px) 50vw, 17vw"
+                    }
+                    style={{ objectFit: "cover" }}
+                  />
+                </Box>
+              ))}
+            </Box>
+          )}
           {!isLoading && tweet && (
             <Typography
               variant="body1"

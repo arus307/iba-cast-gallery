@@ -73,5 +73,53 @@ if (!taggedCast) {
                 page.getByTestId(`blog-post-card-${BLOG_POST_ID}`),
             ).toBeVisible();
         });
+
+        test("BLOGとシフトは同時に選択できない", async ({ page }) => {
+            await Promise.all([
+                page.goto(ADMIN_URL),
+                page.waitForResponse((response) =>
+                    response.url().includes("/api/casts"),
+                ),
+            ]);
+            const blogDestination = page.getByTestId(
+                "blog-destination-checkbox",
+            );
+            const shiftDestination = page.getByTestId(
+                "shift-destination-checkbox",
+            );
+
+            await blogDestination.check();
+            await expect(blogDestination).toBeChecked();
+            await expect(shiftDestination).not.toBeChecked();
+
+            await shiftDestination.check();
+            await expect(shiftDestination).toBeChecked();
+            await expect(blogDestination).not.toBeChecked();
+
+            await blogDestination.check();
+            await expect(blogDestination).toBeChecked();
+            await expect(shiftDestination).not.toBeChecked();
+        });
+
+        test("BLOGとシフトの同時登録リクエストを拒否する", async ({
+            page,
+        }) => {
+            const response = await page.request.post(
+                `${ADMIN_URL}/api/post-registrations`,
+                {
+                    data: {
+                        postId: BLOG_POST_ID,
+                        destinations: { gallery: false, blog: true, shift: true },
+                        taggedCastIds: [taggedCast.id],
+                        shiftCastIds: [taggedCast.id],
+                    },
+                },
+            );
+
+            expect(response.status()).toBe(400);
+            expect(await response.json()).toEqual({
+                error: "BLOGとシフトを同時には登録できません",
+            });
+        });
     });
 }

@@ -194,6 +194,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
     const handleShiftDestinationChange = (checked: boolean) => {
         setRegisterShift(checked);
         if (checked) {
+            setRegisterBlog(false);
             setShiftCastIds((current) =>
                 uniqueIds([...taggedCastIds, ...current]),
             );
@@ -302,11 +303,9 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
         (!registerGallery && !registerBlog && !registerShift) ||
         (registerShift && shiftCastIds.length === 0);
     const buttonLabel =
-        registerBlog && registerShift
-            ? "BLOGとシフトに登録"
-            : registerBlog
-                ? "BLOGに登録"
-                : registerGallery && registerShift
+        registerBlog
+            ? "BLOGに登録"
+            : registerGallery && registerShift
             ? "ギャラリーとシフトに登録"
             : registerShift
                 ? "シフトに登録"
@@ -389,6 +388,7 @@ const UnifiedTweetEditor = ({ initialId }: { initialId: string }) => {
                                     setRegisterBlog(checked);
                                     if (checked) {
                                         setRegisterGallery(false);
+                                        setRegisterShift(false);
                                     }
                                 }}
                                 data-testid="blog-destination-checkbox"

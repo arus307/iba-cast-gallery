@@ -46,6 +46,11 @@ function validateRequest(request: PostRegistrationRequest) {
             "ギャラリーとBLOGを同時には登録できません",
         );
     }
+    if (isBlog && request.destinations?.shift) {
+        throw new PostRegistrationValidationError(
+            "BLOGとシフトを同時には登録できません",
+        );
+    }
     if (
         !Array.isArray(request.taggedCastIds) ||
         !Array.isArray(request.shiftCastIds)
@@ -75,7 +80,7 @@ function validateRequest(request: PostRegistrationRequest) {
         )
     ) {
         throw new PostRegistrationValidationError(
-            "コンテンツタグのキャストは出勤キャストにも含めてください",
+            "写真タグのキャストは出勤キャストにも含めてください",
         );
     }
     if (request.shift?.date && !isValidDateString(request.shift.date)) {
