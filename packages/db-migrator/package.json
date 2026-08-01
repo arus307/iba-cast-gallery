@@ -20,7 +20,7 @@
     "typeorm": "^0.3.22"
   },
   "devDependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^24",
     "rimraf": "^5.0.7",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"

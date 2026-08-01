@@ -4,6 +4,9 @@
   "main": "index.js",
   "repository": "https://github.com/arus307/iba-cast-gallery",
   "author": "arus <57102101+arus307@users.noreply.github.com>",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "build": "dotenv -e .env.production -- turbo run build",
     "dev": "dotenv -e .env.development -e .env.local -- turbo run dev",
@@ -27,7 +30,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@playwright/test": "1.57.0",
-    "@types/node": "^20",
+    "@types/node": "^24",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9",
     "turbo": "^2.5.2",
