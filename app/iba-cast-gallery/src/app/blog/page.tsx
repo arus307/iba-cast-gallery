@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import { getActiveCasts } from "services/castService";
 import { getExistsBlogPosts } from "services/postService";
 import type { CastDto, PostWithCastsDto } from "@iba-cast-gallery/types";
-import BlogPosts from "components/BlogPosts";
+import BlogPostFilter from "components/BlogPostFilter";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ export default async function BlogPage() {
         IBAだいありぃで紹介されたキャストのBLOGポストです。
       </Typography>
       {joinedPosts.length > 0 ? (
-        <BlogPosts posts={joinedPosts} />
+        <BlogPostFilter casts={casts} posts={joinedPosts} />
       ) : (
         <Typography color="text.secondary">BLOGポストはまだありません。</Typography>
       )}
