@@ -35,10 +35,10 @@ export async function getActiveCasts(): Promise<CastDto[]> {
 
 // TODO ここに書くのが適切か検討したい
 export type CastDetailDto = Pick<CastDto, "id" | "name" | "enName" | "type" | "introduceTweetId" | "fanMark"> & {
-    taggedPosts: Array<Pick<PostDto, "id" | "postedAt"> & {
+    taggedPosts: Array<Pick<PostDto, "id" | "postedAt" | "contentType"> & {
         taggedCasts: {
             order: number;
-            cast: Pick<CastDto, "id" | "name" | "enName">
+            cast: CastDto
          }[];
     }>;
 };
@@ -97,6 +97,7 @@ export async function getCastDetail(castEnName: string): Promise<CastDetailDto> 
             return {
                 id: post.id,
                 postedAt: post.postedAt,
+                contentType: post.contentType,
                 taggedCasts: post.castTags.sort((a, b) => a.order - b.order).map((castTag) => (
                     {
                         order: castTag.order,
@@ -104,6 +105,10 @@ export async function getCastDetail(castEnName: string): Promise<CastDetailDto> 
                             id: castTag.cast.id,
                             name: castTag.cast.name,
                             enName: castTag.cast.enName,
+                            introduceTweetId: castTag.cast.introduceTweetId,
+                            type: castTag.cast.type,
+                            fanMark: castTag.cast.fanMark,
+                            taggedPosts: [],
                         }
                     }
                 )),

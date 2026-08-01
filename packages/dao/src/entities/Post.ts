@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, JoinTable, PrimaryColumn, ManyToMany } from "typeorm";
-import { ShiftSourceStatus } from "@iba-cast-gallery/types";
+import { PostContentType, ShiftSourceStatus } from "@iba-cast-gallery/types";
 import { Cast } from "./Cast";
 import { PostCastTag } from "./PostCastTag";
 import { Favorite } from "./Favorite";
@@ -28,6 +28,15 @@ export class Post {
     default: true,
   })
   showInGallery: boolean;
+
+  @Column({
+    name: "content_type",
+    type: "enum",
+    enum: PostContentType,
+    enumName: "posts_content_type_enum",
+    default: PostContentType.GALLERY,
+  })
+  contentType: PostContentType;
 
   @Column({
     name: "shift_source",

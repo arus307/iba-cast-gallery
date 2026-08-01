@@ -66,6 +66,11 @@ const MenuDrawer = ({ open, setOpen }: MenuDrawerProps) => {
                                 <ListItemText primary="このサイトについて" />
                             </ListItemButton>
                         </ListItem>
+                        <ListItem>
+                            <ListItemButton href="/blog" onClick={() => setOpen(false)}>
+                                <ListItemText primary="IBAだいありぃ BLOG" />
+                            </ListItemButton>
+                        </ListItem>
 
                         <ListItem>
                             <ListItemButton onClick={toggleCastList}>

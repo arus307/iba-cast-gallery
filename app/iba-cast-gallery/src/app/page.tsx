@@ -19,6 +19,7 @@ export default async function Home () {
     return {
       id: post.id,
       postedAt: post.postedAt,
+      contentType: post.contentType,
       taggedCasts: taggedCasts,
     };
   });

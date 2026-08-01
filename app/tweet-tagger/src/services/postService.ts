@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
 import { PostCastTag, Repository } from "@iba-cast-gallery/dao";
+import { PostContentType } from "@iba-cast-gallery/types";
 import { Post } from "@iba-cast-gallery/dao";
 import logger from "../logger";
 import { getPostCreatedAtFromId } from "utils/postId";
@@ -43,6 +44,7 @@ export async function registerPost(post: Post): Promise<void> {
                 postedAt: post.postedAt,
                 isDeleted: post.isDeleted,
                 showInGallery: post.showInGallery,
+                contentType: post.contentType,
                 shiftSource: post.shiftSource,
             });
             logger.info({post},`ポスト更新完了`);
@@ -91,6 +93,7 @@ export async function ensureDraftPost(postId: string): Promise<Post> {
             postedAt,
             isDeleted: false,
             showInGallery: false,
+            contentType: PostContentType.GALLERY,
             shiftSource: null,
         })
         .orIgnore()

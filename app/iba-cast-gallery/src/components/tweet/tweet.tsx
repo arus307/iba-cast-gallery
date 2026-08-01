@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { getTweet } from './api/index'
+import { getTweet } from 'react-tweet/api'
 import {
   EmbeddedTweet,
   TweetNotFound,

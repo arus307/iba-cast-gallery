@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
     "@iba-cast-gallery/dao",
     "@iba-cast-gallery/types"
   ],
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "pbs.twimg.com",
+        pathname: "/**",
+      },
+    ],
+  },
   experimental: {
     serverActions:{
       allowedOrigins: allowedOrigins

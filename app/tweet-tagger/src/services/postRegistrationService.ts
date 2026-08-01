@@ -2,6 +2,7 @@ import "server-only";
 import "reflect-metadata";
 import { Cast, Post, PostCastTag, Repository, Shift } from "@iba-cast-gallery/dao";
 import {
+    PostContentType,
     PostRegistrationRequest,
     PostRegistrationResult,
     ShiftSlot,
@@ -34,8 +35,21 @@ function validateRequest(request: PostRegistrationRequest) {
     if (extractPostId(request.postId) !== request.postId) {
         throw new PostRegistrationValidationError("ポストIDが不正です");
     }
-    if (!request.destinations?.gallery && !request.destinations?.shift) {
+    const isBlog = request.destinations?.blog === true;
+    const hasContentDestination = request.destinations?.gallery || isBlog;
+
+    if (!hasContentDestination && !request.destinations?.shift) {
         throw new PostRegistrationValidationError("登録先を1つ以上選択してください");
+    }
+    if (request.destinations?.gallery && isBlog) {
+        throw new PostRegistrationValidationError(
+            "ギャラリーとBLOGを同時には登録できません",
+        );
+    }
+    if (isBlog && request.destinations?.shift) {
+        throw new PostRegistrationValidationError(
+            "BLOGとシフトを同時には登録できません",
+        );
     }
     if (
         !Array.isArray(request.taggedCastIds) ||
@@ -59,7 +73,7 @@ function validateRequest(request: PostRegistrationRequest) {
         );
     }
     if (
-        request.destinations.gallery &&
+        hasContentDestination &&
         request.destinations.shift &&
         request.taggedCastIds.some(
             (castId) => !request.shiftCastIds.includes(castId),
@@ -81,7 +95,7 @@ function validateRequest(request: PostRegistrationRequest) {
 }
 
 /**
- * ギャラリーのタグ付けとシフト登録を、選択された登録先だけまとめて保存する。
+ * ギャラリーまたはBLOGのタグ付けとシフト登録を、選択された登録先だけまとめて保存する。
  */
 export async function registerPostWithDestinations(
     request: PostRegistrationRequest,
@@ -89,7 +103,9 @@ export async function registerPostWithDestinations(
     validateRequest(request);
     await initializeDatabase();
 
-    const taggedCastIds = request.destinations.gallery
+    const isBlog = request.destinations.blog === true;
+    const hasContentDestination = request.destinations.gallery || isBlog;
+    const taggedCastIds = hasContentDestination
         ? uniqueIds(request.taggedCastIds)
         : [];
     const shiftCastIds = request.destinations.shift
@@ -139,9 +155,14 @@ export async function registerPostWithDestinations(
         const postValues = {
             postedAt,
             isDeleted: request.isDeleted ?? existing?.isDeleted ?? false,
-            showInGallery: request.destinations.gallery
+            showInGallery: hasContentDestination
                 ? true
                 : existing?.showInGallery ?? false,
+            contentType: hasContentDestination
+                ? isBlog
+                    ? PostContentType.BLOG
+                    : PostContentType.GALLERY
+                : existing?.contentType ?? PostContentType.GALLERY,
             shiftSource: request.destinations.shift
                 ? existing?.shiftSource === ShiftSourceStatus.DONE
                     ? ShiftSourceStatus.DONE
@@ -158,7 +179,7 @@ export async function registerPostWithDestinations(
             });
         }
 
-        if (request.destinations.gallery) {
+        if (hasContentDestination) {
             const postCastTagRepository: Repository<PostCastTag> =
                 em.getRepository(PostCastTag);
             await postCastTagRepository.delete({ postId: request.postId });
@@ -199,7 +220,7 @@ export async function registerPostWithDestinations(
                 shiftCastIds,
                 shift,
             },
-            "ポストのギャラリー・シフト登録完了",
+            "ポストのコンテンツ・シフト登録完了",
         );
 
         return {

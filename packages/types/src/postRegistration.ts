@@ -11,6 +11,7 @@ export interface PostRegistrationRequest {
     isDeleted?: boolean;
     destinations: {
         gallery: boolean;
+        blog?: boolean;
         shift: boolean;
     };
     taggedCastIds: number[];
