@@ -66,9 +66,15 @@ if (!taggedCast) {
                     response.url().includes("/api/casts"),
                 ),
             ]);
+            await page
+                .getByTestId("gallery-destination-checkbox")
+                .locator("input")
+                .uncheck();
+            await page
+                .getByTestId("blog-destination-checkbox")
+                .locator("input")
+                .check();
             await page.getByTestId("tweet-id-input").fill(BLOG_POST_ID);
-            await page.getByTestId("gallery-destination-checkbox").uncheck();
-            await page.getByTestId("blog-destination-checkbox").check();
             await expect(page.getByTestId("blog-post-preview")).toBeVisible();
             await expect(page.getByTestId("blog-post-preview-text")).toHaveText(
                 BLOG_POST_TEXT,
@@ -132,12 +138,12 @@ if (!taggedCast) {
                     response.url().includes("/api/casts"),
                 ),
             ]);
-            const blogDestination = page.getByTestId(
-                "blog-destination-checkbox",
-            );
-            const shiftDestination = page.getByTestId(
-                "shift-destination-checkbox",
-            );
+            const blogDestination = page
+                .getByTestId("blog-destination-checkbox")
+                .locator("input");
+            const shiftDestination = page
+                .getByTestId("shift-destination-checkbox")
+                .locator("input");
 
             await blogDestination.check();
             await expect(blogDestination).toBeChecked();
