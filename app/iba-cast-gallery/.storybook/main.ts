@@ -24,6 +24,16 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-onboarding')
   ],
   "framework": getAbsolutePath('@storybook/nextjs-vite'),
+  "viteFinal": async (viteConfig) => ({
+    ...viteConfig,
+    build: {
+      ...viteConfig.build,
+      commonjsOptions: {
+        ...viteConfig.build?.commonjsOptions,
+        include: [/node_modules/, /packages\/(?:dao|types)\/dist/],
+      },
+    },
+  }),
   "staticDirs": [
     "../public"
   ]

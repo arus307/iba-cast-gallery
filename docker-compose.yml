@@ -33,7 +33,7 @@ services:
 
   test-runner:
     profiles: ["test"]
-    image: mcr.microsoft.com/playwright:v1.57.0-noble
+    image: mcr.microsoft.com/playwright:v1.62.1-noble
     init: true
     user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
     working_dir: /workspace
