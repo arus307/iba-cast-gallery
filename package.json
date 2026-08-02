@@ -29,12 +29,16 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@playwright/test": "1.57.0",
+    "@playwright/test": "1.62.1",
     "@types/node": "^24",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9",
-    "turbo": "^2.5.2",
+    "turbo": "^2.10.8",
     "typescript": "^5"
+  },
+  "resolutions": {
+    "postcss": "8.5.25",
+    "sharp": "0.35.3"
   },
   "packageManager": "yarn@4.9.0",
   "workspaces": [
