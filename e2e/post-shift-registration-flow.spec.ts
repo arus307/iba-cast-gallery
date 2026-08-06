@@ -166,6 +166,30 @@ if (!taggedCast || !boardOnlyCast) {
             expect(shift.castIds.sort()).toEqual(
                 [taggedCast.id, boardOnlyCast.id].sort(),
             );
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/posts`),
+                page.waitForResponse((response: any) =>
+                    response.url().includes("/api/post-summaries"),
+                ),
+            ]);
+            await page.getByTestId("post-search-input").fill(COMBINED_POST_ID);
+
+            const summary = page.getByTestId(`post-summary-${COMBINED_POST_ID}`);
+            await expect(summary).toBeVisible();
+            await expect(summary.getByText("ギャラリー", { exact: true })).toBeVisible();
+            await expect(summary.getByText("シフト", { exact: true })).toBeVisible();
+            const shiftSummary = summary.getByTestId(
+                `post-shift-${COMBINED_POST_ID}-${COMBINED_DATE}-evening`,
+            );
+            await expect(shiftSummary).toContainText(COMBINED_DATE);
+            await expect(shiftSummary).toContainText("夕方");
+            await expect(shiftSummary).toContainText(taggedCast.name);
+            await expect(shiftSummary).toContainText(boardOnlyCast.name);
+
+            await page.getByRole("combobox", { name: "登録用途" }).click();
+            await page.getByRole("option", { name: "シフト" }).click();
+            await expect(summary).toBeVisible();
         });
 
         test("シフトだけ登録したポストはギャラリータグを持たず非公開になる", async ({

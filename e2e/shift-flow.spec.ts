@@ -89,6 +89,44 @@ if (!testCast) {
             await expect(matchingRow).toBeVisible();
         });
 
+        test('未登録枠を検出し、対象日時を登録フォームへ引き継げること', async ({ page }) => {
+            for (const shift of ['open', 'evening', 'night']) {
+                await page.request.post(`${ADMIN_URL}/api/shifts`, {
+                    data: { date: TEST_DATE, shift, castIds: [] },
+                });
+            }
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/shifts`),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts/list')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
+            ]);
+
+            await page.getByTestId('shift-coverage-from').fill(TEST_DATE);
+            await page.getByTestId('shift-coverage-to').fill(TEST_DATE);
+
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-open`)).toBeVisible();
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-evening`)).toBeVisible();
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-night`)).toBeVisible();
+
+            const selectedShiftResponse = page.waitForResponse((res: any) =>
+                res.url().includes(`/api/shifts?date=${TEST_DATE}&shift=evening`),
+            );
+            await page.getByTestId(`shift-missing-${TEST_DATE}-evening`).click();
+            await selectedShiftResponse;
+
+            await expect(page.getByTestId('shift-date-input')).toHaveValue('2099/11/01');
+            await expect(page.getByRole('button', { name: '夕方', exact: true })).toHaveAttribute(
+                'aria-pressed',
+                'true',
+            );
+
+            // 水曜は定休日として欠損扱いにしない
+            await page.getByTestId('shift-coverage-from').fill('2099-11-04');
+            await page.getByTestId('shift-coverage-to').fill('2099-11-04');
+            await expect(page.getByText('この期間は3枠すべて登録済みです')).toBeVisible();
+        });
+
         test('ソースツイートを登録するとリンクが表示され、クリックでダイアログにツイートが表示されること', async ({ page }) => {
             const tweetId = '1954740195934474563';
 

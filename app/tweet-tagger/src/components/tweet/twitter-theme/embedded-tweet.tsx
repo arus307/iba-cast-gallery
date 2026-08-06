@@ -12,13 +12,12 @@ import { QuotedTweet } from "./quoted-tweet/index";
 import { enrichTweet } from "../utils";
 import { useMemo, useState } from "react";
 import { Button, Stack, Grid } from "@mui/material";
-import CastChip from "components/CastChip";
-import { Cast } from "@iba-cast-gallery/dao";
+import CastChip, { type CastChipCast } from "components/CastChip";
 
 type Props = {
   tweet: Tweet;
   components?: Omit<TwitterComponents, "TweetNotFound">;
-  taggedCasts: Cast[];
+  taggedCasts: CastChipCast[];
 };
 
 export const EmbeddedTweet = ({ tweet: t, components, taggedCasts }: Props) => {

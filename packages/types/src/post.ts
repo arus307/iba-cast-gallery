@@ -1,4 +1,5 @@
-import {CastDto} from "./cast";
+import { CastDto, CastType } from "./cast";
+import { ShiftSlot, ShiftSourceStatus } from "./shift";
 
 export enum PostContentType {
     GALLERY = "gallery",
@@ -22,5 +23,26 @@ export interface PostWithCastsDto {
     taggedCasts: {
         order: number;
         cast: CastDto;
+    }[];
+}
+
+export interface PostManagementSummary {
+    id: string;
+    postedAt: string;
+    isDeleted: boolean;
+    showInGallery: boolean;
+    contentType: PostContentType;
+    shiftSource: ShiftSourceStatus | null;
+    taggedCasts: {
+        id: number;
+        name: string;
+        type: CastType;
+        order: number;
+    }[];
+    shifts: {
+        date: string;
+        dayOfWeek: string;
+        shift: ShiftSlot;
+        casts: { id: number; name: string }[];
     }[];
 }

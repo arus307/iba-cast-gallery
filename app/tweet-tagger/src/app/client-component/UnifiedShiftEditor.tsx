@@ -27,7 +27,19 @@ const SHIFT_LABELS: Record<ShiftSlot, string> = {
     [ShiftSlot.NIGHT]: "夜",
 };
 
-const UnifiedShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
+type ShiftSelectionRequest = {
+    date: string;
+    slot: ShiftSlot;
+    requestId: number;
+};
+
+const UnifiedShiftEditor = ({
+    onSaved,
+    selectionRequest,
+}: {
+    onSaved?: () => void;
+    selectionRequest?: ShiftSelectionRequest | null;
+}) => {
     const [casts, setCasts] = useState<CastOption[]>([]);
     const [tweetInput, setTweetInput] = useState("");
     const [tweetId, setTweetId] = useState("");
@@ -51,6 +63,15 @@ const UnifiedShiftEditor = ({ onSaved }: { onSaved?: () => void }) => {
     useEffect(() => {
         setTweetId(extractPostId(tweetInput) ?? "");
     }, [tweetInput]);
+
+    useEffect(() => {
+        if (!selectionRequest) {
+            return;
+        }
+
+        setDate(dayjs(selectionRequest.date));
+        setSlot(selectionRequest.slot);
+    }, [selectionRequest]);
 
     const fetchExisting = useCallback(async () => {
         if (!date?.isValid()) {

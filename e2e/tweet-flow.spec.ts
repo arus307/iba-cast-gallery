@@ -72,9 +72,22 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
 
         await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
 
-        await page.goto('http://localhost:3001/posts');
+        await Promise.all([
+            page.goto('http://localhost:3001/posts'),
+            page.waitForResponse((response) =>
+                response.url().includes('/api/post-summaries')
+            ),
+        ]);
+
+        // 一覧は軽量なサマリーのみを表示し、検索後に必要なポストだけ確認できること
+        await page.getByTestId('post-search-input').fill(tweetId);
+        const postSummary = page.getByTestId(`post-summary-${tweetId}`);
+        await expect(postSummary).toBeVisible();
+        await expect(postSummary.getByText('ギャラリー', { exact: true })).toBeVisible();
 
         const tweetContainer = page.getByTestId(`tweet-container-${tweetId}`);
+        await expect(tweetContainer).not.toBeAttached();
+        await page.getByTestId(`post-preview-toggle-${tweetId}`).click();
         await expect(tweetContainer).toBeVisible();
 
         await expect(tweetContainer.getByTestId('cast-tag-1')).toHaveText('メノウ');

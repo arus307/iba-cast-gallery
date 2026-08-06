@@ -6,7 +6,7 @@ import {
   TweetSkeleton,
 } from './twitter-theme/components'
 import type { TweetProps } from './swr'
-import { Cast } from '@iba-cast-gallery/dao'
+import type { CastChipCast } from 'components/CastChip'
 
 // This is not ideal because we don't use the `apiUrl` prop here and `id` is required. But as the
 // type is shared with the SWR version when the Tweet component is imported, we need to have a type
@@ -14,7 +14,7 @@ import { Cast } from '@iba-cast-gallery/dao'
 export type { TweetProps }
 
 type TweetContentProps = Omit<TweetProps, 'fallback'> &{
-  taggedCasts: Cast[];
+  taggedCasts: CastChipCast[];
 }
 
 const TweetContent = async ({
