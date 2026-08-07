@@ -195,7 +195,9 @@ if (!taggedCast || !boardOnlyCast) {
             await expect(shiftSummary).toContainText(boardOnlyCast.name);
 
             await page.getByRole("combobox", { name: "登録用途" }).click();
-            await page.getByRole("option", { name: "シフト" }).click();
+            await page
+                .getByRole("option", { name: "シフト", exact: true })
+                .click();
             await expect(summary).toBeVisible();
         });
 
