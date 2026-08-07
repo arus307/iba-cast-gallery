@@ -105,6 +105,7 @@ export async function getPostManagementSummaries(): Promise<PostManagementSummar
         showInGallery: post.showInGallery,
         contentType: post.contentType,
         shiftSource: post.shiftSource,
+        excludeFromShiftRegistration: post.excludeFromShiftRegistration,
         taggedCasts: [...(post.castTags ?? [])]
             .sort((a, b) => a.order - b.order)
             .map((tag) => ({
@@ -229,5 +230,25 @@ export async function deletePostById(postId: string): Promise<boolean> {
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const result = await postRepository.delete(postId);
 
+    return result.affected !== 0;
+}
+
+/**
+ * ギャラリーポストをシフト登録候補へ表示するかどうかを更新する。
+ */
+export async function updatePostShiftRegistrationExclusion(
+    postId: string,
+    excludeFromShiftRegistration: boolean,
+): Promise<boolean> {
+    await initializeDatabase();
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const result = await postRepository.update(postId, {
+        excludeFromShiftRegistration,
+    });
+
+    logger.info(
+        { postId, excludeFromShiftRegistration },
+        "ポストのシフト登録候補除外状態を更新",
+    );
     return result.affected !== 0;
 }

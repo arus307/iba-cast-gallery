@@ -6,6 +6,7 @@ const ADMIN_URL = "http://localhost:3001";
 const GALLERY_URL = "http://localhost:3000";
 const COMBINED_POST_ID = "11646878510085046272";
 const SHIFT_ONLY_POST_ID = "11647271096939446272";
+const GALLERY_ONLY_POST_ID = "11647610138419446272";
 const COMBINED_DATE = "2098-11-01";
 const SHIFT_ONLY_DATE = "2098-11-02";
 
@@ -72,6 +73,9 @@ if (!taggedCast || !boardOnlyCast) {
                 SHIFT_ONLY_DATE,
                 "night",
             );
+            await page.request.delete(
+                `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}`,
+            );
         });
 
         test.afterEach(async ({ page }) => {
@@ -86,6 +90,9 @@ if (!taggedCast || !boardOnlyCast) {
                 SHIFT_ONLY_POST_ID,
                 SHIFT_ONLY_DATE,
                 "night",
+            );
+            await page.request.delete(
+                `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}`,
             );
         });
 
@@ -232,6 +239,108 @@ if (!taggedCast || !boardOnlyCast) {
             await expect(
                 page.getByTestId(`tweet-container-${SHIFT_ONLY_POST_ID}`),
             ).not.toBeVisible();
+        });
+
+        test("ギャラリーのシフト未登録を絞り込み、対象外へ切り替えられる", async ({
+            page,
+        }) => {
+            const registerResponse = await page.request.post(
+                `${ADMIN_URL}/api/posts`,
+                {
+                    data: {
+                        post: {
+                            id: GALLERY_ONLY_POST_ID,
+                            postedAt: "2098-11-03T10:00:00.000Z",
+                            isDeleted: false,
+                            showInGallery: true,
+                            contentType: "gallery",
+                            shiftSource: null,
+                            excludeFromShiftRegistration: false,
+                            castTags: [
+                                {
+                                    castid: taggedCast.id,
+                                    order: 1,
+                                },
+                            ],
+                        },
+                    },
+                },
+            );
+            expect(registerResponse.status()).toBe(201);
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/posts`),
+                page.waitForResponse((response: any) =>
+                    response.url().includes("/api/post-summaries"),
+                ),
+            ]);
+            await page
+                .getByTestId("post-search-input")
+                .fill(GALLERY_ONLY_POST_ID);
+            await page.getByRole("combobox", { name: "登録用途" }).click();
+            await page
+                .getByRole("option", {
+                    name: "ギャラリー（シフト未登録）",
+                })
+                .click();
+
+            const summary = page.getByTestId(
+                `post-summary-${GALLERY_ONLY_POST_ID}`,
+            );
+            await expect(summary).toBeVisible();
+            await expect(
+                summary.getByText("シフト未登録", { exact: true }),
+            ).toBeVisible();
+
+            const excludeResponsePromise = page.waitForResponse(
+                (response) =>
+                    response.url() ===
+                        `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}` &&
+                    response.request().method() === "PATCH",
+            );
+            await page
+                .getByTestId(
+                    `post-shift-exclusion-toggle-${GALLERY_ONLY_POST_ID}`,
+                )
+                .click();
+            expect((await excludeResponsePromise).status()).toBe(200);
+            await expect(summary).not.toBeAttached();
+
+            await page.getByRole("combobox", { name: "登録用途" }).click();
+            await page.getByRole("option", { name: "すべて" }).click();
+            await expect(summary).toBeVisible();
+            await expect(
+                summary.getByText("シフト登録対象外", { exact: true }),
+            ).toBeVisible();
+
+            const postResponse = await page.request.get(
+                `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}`,
+            );
+            expect(postResponse.ok()).toBeTruthy();
+            expect(
+                (await postResponse.json()).excludeFromShiftRegistration,
+            ).toBe(true);
+
+            const restoreResponsePromise = page.waitForResponse(
+                (response) =>
+                    response.url() ===
+                        `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}` &&
+                    response.request().method() === "PATCH",
+            );
+            await page
+                .getByTestId(
+                    `post-shift-exclusion-toggle-${GALLERY_ONLY_POST_ID}`,
+                )
+                .click();
+            expect((await restoreResponsePromise).status()).toBe(200);
+
+            await page.getByRole("combobox", { name: "登録用途" }).click();
+            await page
+                .getByRole("option", {
+                    name: "ギャラリー（シフト未登録）",
+                })
+                .click();
+            await expect(summary).toBeVisible();
         });
 
         test("写真タグが出勤キャストに含まれない不整合なリクエストを拒否する", async ({

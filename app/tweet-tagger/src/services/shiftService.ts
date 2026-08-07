@@ -66,11 +66,18 @@ export async function saveShifts(
                     shiftSource: ShiftSourceStatus.PENDING,
                 });
                 logger.info({ sourcePostId }, "シフト元ポスト新規登録");
-            } else if (existing.shiftSource !== ShiftSourceStatus.DONE) {
+            } else {
                 await postRepository.update(sourcePostId, {
-                    shiftSource: ShiftSourceStatus.PENDING,
+                    shiftSource:
+                        existing.shiftSource === ShiftSourceStatus.DONE
+                            ? ShiftSourceStatus.DONE
+                            : ShiftSourceStatus.PENDING,
+                    excludeFromShiftRegistration: false,
                 });
-                logger.info({ sourcePostId }, "シフト元ポスト shift_source=pending に更新");
+                logger.info(
+                    { sourcePostId },
+                    "シフト元ポストの登録状態を更新",
+                );
             }
         }
 
@@ -119,11 +126,18 @@ export async function updateShiftSource(
                 shiftSource: ShiftSourceStatus.PENDING,
             });
             logger.info({ sourcePostId }, "シフト元ポスト新規登録（ソース後付け）");
-        } else if (existing.shiftSource !== ShiftSourceStatus.DONE) {
+        } else {
             await postRepository.update(sourcePostId, {
-                shiftSource: ShiftSourceStatus.PENDING,
+                shiftSource:
+                    existing.shiftSource === ShiftSourceStatus.DONE
+                        ? ShiftSourceStatus.DONE
+                        : ShiftSourceStatus.PENDING,
+                excludeFromShiftRegistration: false,
             });
-            logger.info({ sourcePostId }, "シフト元ポスト shift_source=pending に更新（ソース後付け）");
+            logger.info(
+                { sourcePostId },
+                "シフト元ポストの登録状態を更新（ソース後付け）",
+            );
         }
 
         // ② shifts の source_post_id を更新

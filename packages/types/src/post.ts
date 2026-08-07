@@ -33,6 +33,7 @@ export interface PostManagementSummary {
     showInGallery: boolean;
     contentType: PostContentType;
     shiftSource: ShiftSourceStatus | null;
+    excludeFromShiftRegistration: boolean;
     taggedCasts: {
         id: number;
         name: string;

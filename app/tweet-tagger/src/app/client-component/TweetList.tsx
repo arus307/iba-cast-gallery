@@ -19,13 +19,20 @@ import { PostContentType } from "@iba-cast-gallery/types";
 import type { PostManagementSummary } from "@iba-cast-gallery/types";
 import PostManagementCard from "components/PostManagementCard";
 import {
+    useCallback,
     useDeferredValue,
     useEffect,
     useMemo,
     useState,
 } from "react";
 
-type UsageFilter = "all" | "gallery" | "blog" | "shift" | "unassigned";
+type UsageFilter =
+    | "all"
+    | "gallery"
+    | "gallery-without-shift"
+    | "blog"
+    | "shift"
+    | "unassigned";
 type VisibilityFilter = "all" | "visible" | "hidden" | "deleted";
 
 const INITIAL_ROWS_PER_PAGE = 12;
@@ -41,6 +48,19 @@ const TweetList = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(INITIAL_ROWS_PER_PAGE);
     const deferredQuery = useDeferredValue(query.trim().toLocaleLowerCase("ja"));
+
+    const handleShiftRegistrationExclusionChange = useCallback(
+        (postId: string, excludeFromShiftRegistration: boolean) => {
+            setPosts((current) =>
+                current.map((item) =>
+                    item.id === postId
+                        ? { ...item, excludeFromShiftRegistration }
+                        : item,
+                ),
+            );
+        },
+        [],
+    );
 
     useEffect(() => {
         const controller = new AbortController();
@@ -97,10 +117,16 @@ const TweetList = () => {
                 (post.showInGallery || post.taggedCasts.length > 0);
             const isBlog = post.contentType === PostContentType.BLOG;
             const isShift = post.shiftSource !== null || post.shifts.length > 0;
+            const needsShiftRegistration =
+                isGallery &&
+                !isShift &&
+                !post.isDeleted &&
+                !post.excludeFromShiftRegistration;
 
             const matchesUsage =
                 usage === "all" ||
                 (usage === "gallery" && isGallery) ||
+                (usage === "gallery-without-shift" && needsShiftRegistration) ||
                 (usage === "blog" && isBlog) ||
                 (usage === "shift" && isShift) ||
                 (usage === "unassigned" && !isGallery && !isBlog && !isShift);
@@ -185,6 +211,9 @@ const TweetList = () => {
                             >
                                 <MenuItem value="all">すべて</MenuItem>
                                 <MenuItem value="gallery">ギャラリー</MenuItem>
+                                <MenuItem value="gallery-without-shift">
+                                    ギャラリー（シフト未登録）
+                                </MenuItem>
                                 <MenuItem value="blog">BLOG</MenuItem>
                                 <MenuItem value="shift">シフト</MenuItem>
                                 <MenuItem value="unassigned">用途未設定</MenuItem>
@@ -244,7 +273,12 @@ const TweetList = () => {
                             size={{ xs: 12, lg: 6 }}
                             data-testid={`tweet-list-item-${index + 1}`}
                         >
-                            <PostManagementCard post={post} />
+                            <PostManagementCard
+                                post={post}
+                                onShiftRegistrationExclusionChange={
+                                    handleShiftRegistrationExclusionChange
+                                }
+                            />
                         </Grid>
                     ))}
                 </Grid>

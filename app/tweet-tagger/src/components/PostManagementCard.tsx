@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    Alert,
     Box,
     Button,
     Card,
@@ -36,13 +37,55 @@ const SHIFT_LABELS: Record<ShiftSlot, string> = {
     [ShiftSlot.NIGHT]: "夜",
 };
 
-const PostManagementCard = ({ post }: { post: PostManagementSummary }) => {
+type PostManagementCardProps = {
+    post: PostManagementSummary;
+    onShiftRegistrationExclusionChange: (
+        postId: string,
+        excludeFromShiftRegistration: boolean,
+    ) => void;
+};
+
+const PostManagementCard = ({
+    post,
+    onShiftRegistrationExclusionChange,
+}: PostManagementCardProps) => {
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [isUpdatingShiftExclusion, setIsUpdatingShiftExclusion] = useState(false);
+    const [shiftExclusionError, setShiftExclusionError] = useState("");
     const isGallery =
         post.contentType === PostContentType.GALLERY &&
         (post.showInGallery || post.taggedCasts.length > 0);
     const isBlog = post.contentType === PostContentType.BLOG;
     const isShift = post.shiftSource !== null || post.shifts.length > 0;
+    const canChangeShiftExclusion = isGallery && !isShift && !post.isDeleted;
+
+    const updateShiftRegistrationExclusion = async () => {
+        if (isUpdatingShiftExclusion) {
+            return;
+        }
+
+        const nextValue = !post.excludeFromShiftRegistration;
+        setIsUpdatingShiftExclusion(true);
+        setShiftExclusionError("");
+        try {
+            const response = await fetch(`/api/posts/${post.id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    excludeFromShiftRegistration: nextValue,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            onShiftRegistrationExclusionChange(post.id, nextValue);
+        } catch (error) {
+            console.error("Error updating shift registration exclusion:", error);
+            setShiftExclusionError("シフト登録対象の更新に失敗しました");
+        } finally {
+            setIsUpdatingShiftExclusion(false);
+        }
+    };
 
     const visibilityLabel = post.isDeleted
         ? "削除済み"
@@ -104,6 +147,26 @@ const PostManagementCard = ({ post }: { post: PostManagementSummary }) => {
                             {isGallery ? <Chip label="ギャラリー" color="primary" size="small" /> : null}
                             {isBlog ? <Chip label="BLOG" color="secondary" size="small" /> : null}
                             {isShift ? <Chip label="シフト" color="info" size="small" /> : null}
+                            {canChangeShiftExclusion ? (
+                                <Chip
+                                    label={
+                                        post.excludeFromShiftRegistration
+                                            ? "シフト登録対象外"
+                                            : "シフト未登録"
+                                    }
+                                    color={
+                                        post.excludeFromShiftRegistration
+                                            ? "default"
+                                            : "warning"
+                                    }
+                                    variant={
+                                        post.excludeFromShiftRegistration
+                                            ? "outlined"
+                                            : "filled"
+                                    }
+                                    size="small"
+                                />
+                            ) : null}
                             {!isGallery && !isBlog && !isShift ? (
                                 <Chip label="用途未設定" variant="outlined" size="small" />
                             ) : null}
@@ -160,7 +223,12 @@ const PostManagementCard = ({ post }: { post: PostManagementSummary }) => {
             </CardContent>
 
             <Divider />
-            <CardActions sx={{ px: 2, py: 1.5 }}>
+            {shiftExclusionError ? (
+                <Alert severity="error" sx={{ mx: 2, mt: 1.5 }}>
+                    {shiftExclusionError}
+                </Alert>
+            ) : null}
+            <CardActions sx={{ px: 2, py: 1.5, flexWrap: "wrap", gap: 0.5 }}>
                 <Button
                     size="small"
                     onClick={() => setIsPreviewOpen((current) => !current)}
@@ -177,6 +245,25 @@ const PostManagementCard = ({ post }: { post: PostManagementSummary }) => {
                 >
                     編集
                 </Button>
+                {canChangeShiftExclusion ? (
+                    <Button
+                        size="small"
+                        color={
+                            post.excludeFromShiftRegistration
+                                ? "primary"
+                                : "inherit"
+                        }
+                        onClick={() => void updateShiftRegistrationExclusion()}
+                        disabled={isUpdatingShiftExclusion}
+                        data-testid={`post-shift-exclusion-toggle-${post.id}`}
+                    >
+                        {isUpdatingShiftExclusion
+                            ? "更新中..."
+                            : post.excludeFromShiftRegistration
+                                ? "シフト登録候補に戻す"
+                                : "シフト登録対象外にする"}
+                    </Button>
+                ) : null}
             </CardActions>
 
             <Collapse in={isPreviewOpen} unmountOnExit>

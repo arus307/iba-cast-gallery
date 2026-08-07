@@ -168,6 +168,9 @@ export async function registerPostWithDestinations(
                     ? ShiftSourceStatus.DONE
                     : ShiftSourceStatus.PENDING
                 : existing?.shiftSource ?? null,
+            excludeFromShiftRegistration: request.destinations.shift
+                ? false
+                : existing?.excludeFromShiftRegistration ?? false,
         };
 
         if (existing) {
