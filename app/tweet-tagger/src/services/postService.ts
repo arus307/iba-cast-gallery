@@ -1,7 +1,12 @@
+import "server-only";
 import 'reflect-metadata';
 import { initializeDatabase, appDataSource } from "../data-source";
-import { PostCastTag, Repository } from "@iba-cast-gallery/dao";
-import { PostContentType } from "@iba-cast-gallery/types";
+import { PostCastTag, Repository, Shift } from "@iba-cast-gallery/dao";
+import {
+    PostContentType,
+    ShiftSlot,
+} from "@iba-cast-gallery/types";
+import type { PostManagementSummary } from "@iba-cast-gallery/types";
 import { Post } from "@iba-cast-gallery/dao";
 import logger from "../logger";
 import { getPostCreatedAtFromId } from "utils/postId";
@@ -20,6 +25,97 @@ export async function getAllPosts(): Promise<Post[]> {
     });
 
     return posts;
+}
+
+/**
+ * 管理画面向けに、ポストへ登録されている用途・タグ・シフトをまとめて取得する。
+ */
+export async function getPostManagementSummaries(): Promise<PostManagementSummary[]> {
+    await initializeDatabase();
+
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const shiftRepository: Repository<Shift> = appDataSource.getRepository(Shift);
+    const [posts, shifts] = await Promise.all([
+        postRepository.find({ order: { postedAt: "DESC" } }),
+        shiftRepository
+            .createQueryBuilder("shift")
+            .leftJoinAndSelect("shift.cast", "cast")
+            .where("shift.sourcePostId IS NOT NULL")
+            .orderBy("shift.date", "DESC")
+            .addOrderBy("shift.castId", "ASC")
+            .getMany(),
+    ]);
+
+    const shiftOrder: Record<ShiftSlot, number> = {
+        [ShiftSlot.NIGHT]: 1,
+        [ShiftSlot.EVENING]: 2,
+        [ShiftSlot.OPEN]: 3,
+    };
+    const dayLabels: Record<string, string> = {
+        Sun: "日",
+        Mon: "月",
+        Tue: "火",
+        Wed: "水",
+        Thu: "木",
+        Fri: "金",
+        Sat: "土",
+    };
+    const shiftsByPost = new Map<string, PostManagementSummary["shifts"]>();
+
+    for (const shift of shifts) {
+        if (!shift.sourcePostId) {
+            continue;
+        }
+
+        const postShifts = shiftsByPost.get(shift.sourcePostId) ?? [];
+        let usage = postShifts.find(
+            (item) => item.date === shift.date && item.shift === shift.shift,
+        );
+        if (!usage) {
+            const date = new Date(`${shift.date}T00:00:00+09:00`);
+            const dayOfWeek = date.toLocaleDateString("en-US", {
+                weekday: "short",
+                timeZone: "Asia/Tokyo",
+            });
+            usage = {
+                date: shift.date,
+                dayOfWeek: dayLabels[dayOfWeek] ?? dayOfWeek,
+                shift: shift.shift,
+                casts: [],
+            };
+            postShifts.push(usage);
+            shiftsByPost.set(shift.sourcePostId, postShifts);
+        }
+        usage.casts.push({ id: shift.castId, name: shift.cast.name });
+    }
+
+    for (const postShifts of shiftsByPost.values()) {
+        postShifts.sort((a, b) => {
+            const dateComparison = b.date.localeCompare(a.date);
+            return dateComparison !== 0
+                ? dateComparison
+                : shiftOrder[a.shift] - shiftOrder[b.shift];
+        });
+    }
+
+    return posts.map((post) => ({
+        id: post.id,
+        postedAt: post.postedAt,
+        isDeleted: post.isDeleted,
+        showInGallery: post.showInGallery,
+        contentType: post.contentType,
+        shiftSource: post.shiftSource,
+        excludeFromShiftRegistration: post.excludeFromShiftRegistration,
+        taggedCasts: [...(post.castTags ?? [])]
+            .sort((a, b) => a.order - b.order)
+            .map((tag) => ({
+                id: tag.cast.id,
+                name: tag.cast.name,
+                type: tag.cast.type,
+                order: tag.order,
+            })),
+        shifts: shiftsByPost.get(post.id) ?? [],
+    }));
 }
 
 /**
@@ -134,5 +230,25 @@ export async function deletePostById(postId: string): Promise<boolean> {
     const postRepository: Repository<Post> = appDataSource.getRepository(Post);
     const result = await postRepository.delete(postId);
 
+    return result.affected !== 0;
+}
+
+/**
+ * ギャラリーポストをシフト登録候補へ表示するかどうかを更新する。
+ */
+export async function updatePostShiftRegistrationExclusion(
+    postId: string,
+    excludeFromShiftRegistration: boolean,
+): Promise<boolean> {
+    await initializeDatabase();
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+    const result = await postRepository.update(postId, {
+        excludeFromShiftRegistration,
+    });
+
+    logger.info(
+        { postId, excludeFromShiftRegistration },
+        "ポストのシフト登録候補除外状態を更新",
+    );
     return result.affected !== 0;
 }

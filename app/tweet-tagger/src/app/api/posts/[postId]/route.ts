@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { getPostById, deletePostById } from "services/postService";
+import {
+    deletePostById,
+    getPostById,
+    updatePostShiftRegistrationExclusion,
+} from "services/postService";
 import { auth } from "auth";
 
 /**
@@ -58,5 +62,56 @@ export async function DELETE(
     } catch (error) {
         console.error("Error deleting post:", error);
         return NextResponse.json({ error: "Failed to delete post" }, { status: 500 });
+    }
+}
+
+/**
+ * シフト登録候補からの除外状態を更新する。
+ */
+export async function PATCH(
+    request: Request,
+    { params }: { params: Promise<{ postId: string }> },
+) {
+    const session = await auth();
+    if (session?.user?.email !== process.env.ADMIN_EMAIL) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const body: unknown = await request.json();
+        if (
+            typeof body !== "object" ||
+            body === null ||
+            !("excludeFromShiftRegistration" in body) ||
+            typeof body.excludeFromShiftRegistration !== "boolean"
+        ) {
+            return NextResponse.json(
+                { error: "excludeFromShiftRegistration must be a boolean" },
+                { status: 400 },
+            );
+        }
+
+        const postId = (await params).postId;
+        const updated = await updatePostShiftRegistrationExclusion(
+            postId,
+            body.excludeFromShiftRegistration,
+        );
+        if (!updated) {
+            return NextResponse.json(
+                { error: "ポストが存在しません" },
+                { status: 404 },
+            );
+        }
+
+        return NextResponse.json(
+            { postId, excludeFromShiftRegistration: body.excludeFromShiftRegistration },
+            { status: 200 },
+        );
+    } catch (error) {
+        console.error("Error updating post shift registration exclusion:", error);
+        return NextResponse.json(
+            { error: "Failed to update post shift registration exclusion" },
+            { status: 500 },
+        );
     }
 }

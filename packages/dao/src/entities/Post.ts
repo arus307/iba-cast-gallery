@@ -47,6 +47,13 @@ export class Post {
   })
   shiftSource: ShiftSourceStatus | null;
 
+  @Column({
+    name: "exclude_from_shift_registration",
+    type: "boolean",
+    default: false,
+  })
+  excludeFromShiftRegistration: boolean;
+
   /**
    * キャストのタグ付情報
    */

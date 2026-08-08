@@ -72,10 +72,24 @@ test.describe('Tweet Tagger and Gallery Flow', () => {
 
         await expect(page.getByTestId('tweet-id-input')).toBeEmpty();
 
-        await page.goto('http://localhost:3001/posts');
+        await Promise.all([
+            page.goto('http://localhost:3001/posts'),
+            page.waitForResponse((response) =>
+                response.url().includes('/api/post-summaries')
+            ),
+        ]);
+
+        // 一覧は画面に入ったポストを自動で遅延表示すること
+        await page.getByTestId('post-search-input').fill(tweetId);
+        const postSummary = page.getByTestId(`post-summary-${tweetId}`);
+        await expect(postSummary).toBeVisible();
+        await expect(postSummary.getByText('ギャラリー', { exact: true })).toBeVisible();
 
         const tweetContainer = page.getByTestId(`tweet-container-${tweetId}`);
-        await expect(tweetContainer).toBeVisible();
+        await expect(tweetContainer).toBeVisible({ timeout: 15000 });
+        await expect(
+            page.getByTestId(`post-preview-toggle-${tweetId}`),
+        ).toHaveText('ポストを閉じる');
 
         await expect(tweetContainer.getByTestId('cast-tag-1')).toHaveText('メノウ');
         await expect(tweetContainer.getByTestId('cast-tag-2')).toHaveText('リシア');

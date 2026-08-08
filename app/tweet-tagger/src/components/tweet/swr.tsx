@@ -9,13 +9,13 @@ import {
 } from './twitter-theme/components'
 import { type TweetCoreProps } from './utils'
 import { useTweet } from 'react-tweet'
-import { Cast } from "@iba-cast-gallery/dao";
+import type { CastChipCast } from "components/CastChip";
 
 export type TweetProps = Omit<TweetCoreProps, 'id'> & {
   fallback?: ReactNode
   components?: TwitterComponents
   fetchOptions?: RequestInit
-  taggedCasts: Cast[];
+  taggedCasts: CastChipCast[];
 } & (
     | {
         id: string

@@ -5,6 +5,7 @@ const ADMIN_URL = 'http://localhost:3001';
 
 // 運用データや他テストと衝突しない遠い未来の固定日付
 const TEST_DATE = '2099-11-01';
+const SHIFT_CANDIDATE_POST_ID = '11701463500000000001';
 
 async function login(page: any) {
     await page.request.post(`${ADMIN_URL}/api/auth/e2e-login`);
@@ -87,6 +88,131 @@ if (!testCast) {
             // 固定テスト日付の夜シフト・選択したキャストの行が存在すること
             const matchingRow = page.getByTestId(`shift-list-row-${TEST_DATE}-night-${testCast.id}`);
             await expect(matchingRow).toBeVisible();
+        });
+
+        test('未登録枠を検出し、対象日時を登録フォームへ引き継げること', async ({ page }) => {
+            for (const shift of ['open', 'evening', 'night']) {
+                await page.request.post(`${ADMIN_URL}/api/shifts`, {
+                    data: { date: TEST_DATE, shift, castIds: [] },
+                });
+            }
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/shifts`),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts/list')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
+            ]);
+
+            await page.getByTestId('shift-coverage-from').fill(TEST_DATE);
+            await page.getByTestId('shift-coverage-to').fill(TEST_DATE);
+
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-open`)).toBeVisible();
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-evening`)).toBeVisible();
+            await expect(page.getByTestId(`shift-missing-${TEST_DATE}-night`)).toBeVisible();
+
+            const candidateResponse = page.waitForResponse((res: any) =>
+                res.url().includes(
+                    `/api/posts/shift-candidates?date=${TEST_DATE}&shift=evening`,
+                ),
+            );
+            await page.getByTestId(`shift-missing-${TEST_DATE}-evening`).click();
+            expect((await candidateResponse).status()).toBe(200);
+
+            await expect(page.getByTestId('shift-candidate-dialog')).toBeVisible();
+            await expect(
+                page.getByText('この日に利用できる既存ポストは見つかりませんでした。'),
+            ).toBeVisible();
+
+            const selectedShiftResponse = page.waitForResponse((res: any) =>
+                res.url().includes(`/api/shifts?date=${TEST_DATE}&shift=evening`),
+            );
+            await page.getByTestId('shift-candidate-create-new').click();
+            await selectedShiftResponse;
+
+            await expect(page.getByTestId('shift-date-input')).toHaveValue('2099/11/01');
+            await expect(page.getByRole('button', { name: '夕方', exact: true })).toHaveAttribute(
+                'aria-pressed',
+                'true',
+            );
+
+            // 水曜は定休日として欠損扱いにしない
+            await page.getByTestId('shift-coverage-from').fill('2099-11-04');
+            await page.getByTestId('shift-coverage-to').fill('2099-11-04');
+            await expect(page.getByText('この期間は3枠すべて登録済みです')).toBeVisible();
+        });
+
+        test('未登録枠へ近い時間帯の既存ポストを選べること', async ({ page }) => {
+            for (const shift of ['open', 'evening', 'night']) {
+                await page.request.post(`${ADMIN_URL}/api/shifts`, {
+                    data: { date: TEST_DATE, shift, castIds: [] },
+                });
+            }
+            await page.request.delete(
+                `${ADMIN_URL}/api/posts/${SHIFT_CANDIDATE_POST_ID}`,
+            );
+
+            const registerResponse = await page.request.post(`${ADMIN_URL}/api/posts`, {
+                data: {
+                    post: {
+                        id: SHIFT_CANDIDATE_POST_ID,
+                        postedAt: '2099-11-01T08:35:00.000Z',
+                        isDeleted: false,
+                        showInGallery: true,
+                        contentType: 'gallery',
+                        shiftSource: null,
+                        excludeFromShiftRegistration: false,
+                        castTags: [{ castid: testCast.id, order: 1 }],
+                    },
+                },
+            });
+            expect(registerResponse.status()).toBe(201);
+
+            try {
+                await Promise.all([
+                    page.goto(`${ADMIN_URL}/shifts`),
+                    page.waitForResponse((res: any) => res.url().includes('/api/shifts/list')),
+                    page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
+                ]);
+
+                await page.getByTestId('shift-coverage-from').fill(TEST_DATE);
+                await page.getByTestId('shift-coverage-to').fill(TEST_DATE);
+
+                const candidateResponse = page.waitForResponse((res: any) =>
+                    res.url().includes(
+                        `/api/posts/shift-candidates?date=${TEST_DATE}&shift=evening`,
+                    ),
+                );
+                await page.getByTestId(`shift-missing-${TEST_DATE}-evening`).click();
+                expect((await candidateResponse).status()).toBe(200);
+
+                const candidate = page.getByTestId(
+                    `shift-candidate-${SHIFT_CANDIDATE_POST_ID}`,
+                );
+                await expect(candidate).toBeVisible();
+                await expect(candidate).toContainText('17:35投稿');
+                await expect(candidate).toContainText('夕方');
+                await expect(candidate).toContainText(testCast.name);
+
+                const selectedShiftResponse = page.waitForResponse((res: any) =>
+                    res.url().includes(`/api/shifts?date=${TEST_DATE}&shift=evening`),
+                );
+                await page
+                    .getByTestId(`shift-candidate-select-${SHIFT_CANDIDATE_POST_ID}`)
+                    .click();
+                await selectedShiftResponse;
+
+                await expect(page.getByTestId('shift-date-input')).toHaveValue('2099/11/01');
+                await expect(page.getByTestId('shift-tweet-url-input')).toHaveValue(
+                    SHIFT_CANDIDATE_POST_ID,
+                );
+                await expect(
+                    page.getByRole('button', { name: '夕方', exact: true }),
+                ).toHaveAttribute('aria-pressed', 'true');
+            } finally {
+                await page.request.delete(
+                    `${ADMIN_URL}/api/posts/${SHIFT_CANDIDATE_POST_ID}`,
+                );
+            }
         });
 
         test('ソースツイートを登録するとリンクが表示され、クリックでダイアログにツイートが表示されること', async ({ page }) => {

@@ -65,6 +65,7 @@ const TweetEditor = ({ initialId }: {
       showInGallery: true,
       contentType: PostContentType.GALLERY,
       shiftSource: null,
+      excludeFromShiftRegistration: false,
       castTags: castTags,
       taggedCasts: [],
       favorites: [],
