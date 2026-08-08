@@ -21,7 +21,7 @@ import type { PostManagementSummary } from "@iba-cast-gallery/types";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
 import NextLink from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const BlogPostPreview = dynamic(() => import("components/BlogPostPreview"), {
     loading: () => <CircularProgress size={24} />,
@@ -49,7 +49,9 @@ const PostManagementCard = ({
     post,
     onShiftRegistrationExclusionChange,
 }: PostManagementCardProps) => {
-    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const cardRef = useRef<HTMLDivElement | null>(null);
+    const [hasEnteredViewport, setHasEnteredViewport] = useState(false);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(true);
     const [isUpdatingShiftExclusion, setIsUpdatingShiftExclusion] = useState(false);
     const [shiftExclusionError, setShiftExclusionError] = useState("");
     const isGallery =
@@ -58,6 +60,41 @@ const PostManagementCard = ({
     const isBlog = post.contentType === PostContentType.BLOG;
     const isShift = post.shiftSource !== null || post.shifts.length > 0;
     const canChangeShiftExclusion = isGallery && !isShift && !post.isDeleted;
+
+    useEffect(() => {
+        const card = cardRef.current;
+        if (!card || hasEnteredViewport) {
+            return;
+        }
+
+        if (!("IntersectionObserver" in window)) {
+            setHasEnteredViewport(true);
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry?.isIntersecting) {
+                    return;
+                }
+                setHasEnteredViewport(true);
+                observer.disconnect();
+            },
+            { rootMargin: "400px 0px" },
+        );
+        observer.observe(card);
+        return () => observer.disconnect();
+    }, [hasEnteredViewport]);
+
+    const togglePreview = () => {
+        if (!hasEnteredViewport) {
+            setHasEnteredViewport(true);
+            setIsPreviewOpen(true);
+            return;
+        }
+        setHasEnteredViewport(true);
+        setIsPreviewOpen((current) => !current);
+    };
 
     const updateShiftRegistrationExclusion = async () => {
         if (isUpdatingShiftExclusion) {
@@ -102,6 +139,7 @@ const PostManagementCard = ({
 
     return (
         <Card
+            ref={cardRef}
             variant="outlined"
             data-testid={`post-summary-${post.id}`}
             sx={{ height: "100%", display: "flex", flexDirection: "column" }}
@@ -231,11 +269,13 @@ const PostManagementCard = ({
             <CardActions sx={{ px: 2, py: 1.5, flexWrap: "wrap", gap: 0.5 }}>
                 <Button
                     size="small"
-                    onClick={() => setIsPreviewOpen((current) => !current)}
-                    aria-expanded={isPreviewOpen}
+                    onClick={togglePreview}
+                    aria-expanded={hasEnteredViewport && isPreviewOpen}
                     data-testid={`post-preview-toggle-${post.id}`}
                 >
-                    {isPreviewOpen ? "プレビューを閉じる" : "Xプレビュー"}
+                    {hasEnteredViewport && isPreviewOpen
+                        ? "ポストを閉じる"
+                        : "ポストを表示"}
                 </Button>
                 <Button
                     component={NextLink}
@@ -266,7 +306,7 @@ const PostManagementCard = ({
                 ) : null}
             </CardActions>
 
-            <Collapse in={isPreviewOpen} unmountOnExit>
+            <Collapse in={hasEnteredViewport && isPreviewOpen} unmountOnExit>
                 <Divider />
                 <Box sx={{ p: 2 }}>
                     {post.contentType === PostContentType.BLOG ? (

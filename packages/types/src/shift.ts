@@ -24,3 +24,11 @@ export interface ShiftGroup {
     casts: { id: number; name: string; type: string }[];
     sourcePostId: string | null;
 }
+
+export interface ShiftPostCandidate {
+    id: string;
+    postedAt: string;
+    inferredShift: ShiftSlot;
+    differenceMinutes: number;
+    taggedCasts: { id: number; name: string; order: number }[];
+}

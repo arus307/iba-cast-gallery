@@ -27,6 +27,9 @@ import {
 import { ShiftSlot, ShiftGroup } from "@iba-cast-gallery/types";
 import { Tweet } from "../../components/tweet/swr";
 import dayjs from "dayjs";
+import ShiftPostCandidateDialog, {
+    type MissingShiftTarget,
+} from "app/client-component/ShiftPostCandidateDialog";
 
 const SHIFT_LABELS: Record<ShiftSlot, string> = {
     [ShiftSlot.OPEN]: "オープン",
@@ -47,11 +50,17 @@ const ShiftList = ({
     onFillMissing,
 }: {
     refreshKey: number;
-    onFillMissing: (date: string, slot: ShiftSlot) => void;
+    onFillMissing: (
+        date: string,
+        slot: ShiftSlot,
+        sourcePostId: string | null,
+    ) => void;
 }) => {
     const [groups, setGroups] = useState<ShiftGroup[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [previewGroup, setPreviewGroup] = useState<ShiftGroup | null>(null);
+    const [missingShiftTarget, setMissingShiftTarget] =
+        useState<MissingShiftTarget | null>(null);
     const [coverageFrom, setCoverageFrom] = useState(
         dayjs().subtract(13, "day").format("YYYY-MM-DD"),
     );
@@ -129,6 +138,18 @@ const ShiftList = ({
         (count, day) => count + day.slots.length,
         0,
     );
+
+    const selectMissingShiftSource = (sourcePostId: string | null) => {
+        if (!missingShiftTarget) {
+            return;
+        }
+        onFillMissing(
+            missingShiftTarget.date,
+            missingShiftTarget.slot,
+            sourcePostId,
+        );
+        setMissingShiftTarget(null);
+    };
 
     // ツイートURL → ID 変換
     useEffect(() => {
@@ -258,7 +279,13 @@ const ShiftList = ({
                                                 size="small"
                                                 variant="outlined"
                                                 color="warning"
-                                                onClick={() => onFillMissing(day.date, slot)}
+                                                onClick={() =>
+                                                    setMissingShiftTarget({
+                                                        date: day.date,
+                                                        dayOfWeek: day.dayOfWeek,
+                                                        slot,
+                                                    })
+                                                }
                                                 data-testid={`shift-missing-${day.date}-${slot}`}
                                             >
                                                 {`${SHIFT_LABELS[slot]}を入力`}
@@ -322,6 +349,12 @@ const ShiftList = ({
                     </Table>
                 </TableContainer>
             )}
+
+            <ShiftPostCandidateDialog
+                target={missingShiftTarget}
+                onClose={() => setMissingShiftTarget(null)}
+                onSelect={selectMissingShiftSource}
+            />
 
             {/* ソースプレビューダイアログ */}
             <Dialog

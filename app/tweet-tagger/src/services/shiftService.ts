@@ -2,7 +2,14 @@ import "server-only";
 import "reflect-metadata";
 import { initializeDatabase, appDataSource } from "../data-source";
 import { Post, Repository, Shift } from "@iba-cast-gallery/dao";
-import { ShiftSlot, ShiftSourceStatus, CastType, ShiftGroup } from "@iba-cast-gallery/types";
+import {
+    ShiftSlot,
+    ShiftSourceStatus,
+    CastType,
+    PostContentType,
+} from "@iba-cast-gallery/types";
+import type { ShiftGroup, ShiftPostCandidate } from "@iba-cast-gallery/types";
+import { inferShiftFromPostedAt } from "utils/shift";
 import logger from "../logger";
 
 const SHIFT_LABEL: Record<ShiftSlot, string> = {
@@ -15,6 +22,88 @@ const DAY_LABEL: Record<string, string> = {
     Mon: "月", Tue: "火", Wed: "水", Thu: "木",
     Fri: "金", Sat: "土", Sun: "日",
 };
+
+const SHIFT_TARGET_TIME: Record<ShiftSlot, string> = {
+    [ShiftSlot.OPEN]: "12:00:00",
+    [ShiftSlot.EVENING]: "17:30:00",
+    [ShiftSlot.NIGHT]: "19:00:00",
+};
+
+const SHIFT_CANDIDATE_LIMIT = 8;
+const SHIFT_CANDIDATE_QUERY_LIMIT = 40;
+
+/**
+ * 未登録シフトの情報源候補を、同じ日本時間の日付に投稿された
+ * 未使用のギャラリーポストから近い順で取得する。
+ */
+export async function getShiftPostCandidates(
+    date: string,
+    slot: ShiftSlot,
+): Promise<ShiftPostCandidate[]> {
+    await initializeDatabase();
+
+    const target = new Date(`${date}T${SHIFT_TARGET_TIME[slot]}+09:00`);
+    const dayStart = new Date(`${date}T00:00:00+09:00`);
+    const nextDayStart = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+    const postRepository: Repository<Post> = appDataSource.getRepository(Post);
+
+    // content_type + posted_at の既存複合インデックスを使えるよう、
+    // 日付範囲で先に候補を限定してからアプリ側で距離順に並べる。
+    const posts = await postRepository
+        .createQueryBuilder("post")
+        .leftJoinAndSelect("post.castTags", "castTag")
+        .leftJoinAndSelect("castTag.cast", "cast")
+        .where("post.contentType = :contentType", {
+            contentType: PostContentType.GALLERY,
+        })
+        .andWhere("post.postedAt >= :dayStart", {
+            dayStart: dayStart.toISOString(),
+        })
+        .andWhere("post.postedAt < :nextDayStart", {
+            nextDayStart: nextDayStart.toISOString(),
+        })
+        .andWhere("post.isDeleted = false")
+        .andWhere("(post.showInGallery = true OR castTag.postId IS NOT NULL)")
+        .andWhere("post.shiftSource IS NULL")
+        .andWhere("post.excludeFromShiftRegistration = false")
+        .orderBy("post.postedAt", "DESC")
+        .take(SHIFT_CANDIDATE_QUERY_LIMIT)
+        .getMany();
+
+    return posts
+        .map((post): ShiftPostCandidate | null => {
+            const inferredShift = inferShiftFromPostedAt(post.postedAt);
+            const postedAt = new Date(post.postedAt);
+            if (!inferredShift || Number.isNaN(postedAt.getTime())) {
+                return null;
+            }
+
+            return {
+                id: post.id,
+                postedAt: post.postedAt,
+                inferredShift: inferredShift.slot,
+                differenceMinutes: Math.round(
+                    Math.abs(postedAt.getTime() - target.getTime()) / 60000,
+                ),
+                taggedCasts: [...(post.castTags ?? [])]
+                    .sort((a, b) => a.order - b.order)
+                    .map((tag) => ({
+                        id: tag.cast.id,
+                        name: tag.cast.name,
+                        order: tag.order,
+                    })),
+            };
+        })
+        .filter((candidate): candidate is ShiftPostCandidate => candidate !== null)
+        .sort((a, b) => {
+            const slotComparison =
+                Number(b.inferredShift === slot) - Number(a.inferredShift === slot);
+            return slotComparison !== 0
+                ? slotComparison
+                : a.differenceMinutes - b.differenceMinutes;
+        })
+        .slice(0, SHIFT_CANDIDATE_LIMIT);
+}
 
 /**
  * 指定日・シフトの記録を取得する

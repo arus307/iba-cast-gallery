@@ -11,11 +11,21 @@ const ShiftPageContent = () => {
     const [selectionRequest, setSelectionRequest] = useState<{
         date: string;
         slot: ShiftSlot;
+        sourcePostId: string | null;
         requestId: number;
     } | null>(null);
 
-    const fillMissingShift = (date: string, slot: ShiftSlot) => {
-        setSelectionRequest({ date, slot, requestId: Date.now() });
+    const fillMissingShift = (
+        date: string,
+        slot: ShiftSlot,
+        sourcePostId: string | null,
+    ) => {
+        setSelectionRequest({
+            date,
+            slot,
+            sourcePostId,
+            requestId: Date.now(),
+        });
         window.requestAnimationFrame(() => {
             document.getElementById("shift-editor")?.scrollIntoView({
                 behavior: "smooth",

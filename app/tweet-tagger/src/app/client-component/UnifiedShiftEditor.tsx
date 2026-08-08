@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Alert,
     Button,
@@ -30,6 +30,7 @@ const SHIFT_LABELS: Record<ShiftSlot, string> = {
 type ShiftSelectionRequest = {
     date: string;
     slot: ShiftSlot;
+    sourcePostId?: string | null;
     requestId: number;
 };
 
@@ -73,33 +74,47 @@ const UnifiedShiftEditor = ({
         setSlot(selectionRequest.slot);
     }, [selectionRequest]);
 
-    const fetchExisting = useCallback(async () => {
+    useEffect(() => {
         if (!date?.isValid()) {
             return;
         }
 
         const dateString = date.format("YYYY-MM-DD");
-        try {
-            const response = await fetch(
-                `/api/shifts?date=${dateString}&shift=${slot}`,
-            );
-            if (!response.ok) {
-                return;
-            }
-            const data: {
-                castIds: number[];
-                sourcePostId: string | null;
-            } = await response.json();
-            setSelectedCastIds(data.castIds);
-            setTweetInput(data.sourcePostId ?? "");
-        } catch (error) {
-            console.error(error);
-        }
-    }, [date, slot]);
+        const controller = new AbortController();
+        const fetchExisting = async () => {
+            try {
+                const response = await fetch(
+                    `/api/shifts?date=${dateString}&shift=${slot}`,
+                    { signal: controller.signal },
+                );
+                if (!response.ok) {
+                    return;
+                }
+                const data: {
+                    castIds: number[];
+                    sourcePostId: string | null;
+                } = await response.json();
+                setSelectedCastIds(data.castIds);
 
-    useEffect(() => {
+                const isRequestedShift =
+                    selectionRequest?.date === dateString &&
+                    selectionRequest.slot === slot;
+                setTweetInput(
+                    isRequestedShift && selectionRequest.sourcePostId !== undefined
+                        ? selectionRequest.sourcePostId ?? ""
+                        : data.sourcePostId ?? "",
+                );
+            } catch (error) {
+                if (error instanceof DOMException && error.name === "AbortError") {
+                    return;
+                }
+                console.error(error);
+            }
+        };
+
         void fetchExisting();
-    }, [fetchExisting]);
+        return () => controller.abort();
+    }, [date, selectionRequest, slot]);
 
     const save = async () => {
         if (!date?.isValid() || saving) {
