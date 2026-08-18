@@ -4,6 +4,11 @@ export { PostContentType } from "./post";
 export type { PostDto, PostManagementSummary, PostWithCastsDto } from "./post";
 export type { PostRegistrationRequest, PostRegistrationResult, ShiftRegistrationInput } from "./postRegistration";
 export { ShiftSlot, ShiftSourceStatus } from "./shift";
-export type { ShiftDto, ShiftGroup, ShiftPostCandidate } from "./shift";
+export type {
+    ShiftDto,
+    ShiftGroup,
+    ShiftPostCandidate,
+    ShiftNoPostConfirmationDto,
+} from "./shift";
 export { EventType } from "./event";
 export type { EventDto } from "./event";

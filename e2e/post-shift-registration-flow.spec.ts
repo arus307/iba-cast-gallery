@@ -7,8 +7,10 @@ const GALLERY_URL = "http://localhost:3000";
 const COMBINED_POST_ID = "11646878510085046272";
 const SHIFT_ONLY_POST_ID = "11647271096939446272";
 const GALLERY_ONLY_POST_ID = "11647610138419446272";
+const DESTINATION_SWITCH_POST_ID = "11647924610085046272";
 const COMBINED_DATE = "2098-11-01";
 const SHIFT_ONLY_DATE = "2098-11-02";
+const DESTINATION_SWITCH_DATE = "2098-11-04";
 
 async function login(page: any) {
     await page.request.post(`${ADMIN_URL}/api/auth/e2e-login`);
@@ -35,10 +37,13 @@ async function selectCast(page: any, label: string, castName: string) {
 test.describe("投稿時刻からのシフト自動判定", () => {
     test("日本時間の境界でシフト枠を切り替える", () => {
         expect(
-            inferShiftFromPostedAt("2026-07-01T16:29:59+09:00"),
+            inferShiftFromPostedAt("2026-07-01T15:59:59+09:00"),
         ).toEqual({ date: "2026-07-01", slot: "open" });
         expect(
-            inferShiftFromPostedAt("2026-07-01T16:30:00+09:00"),
+            inferShiftFromPostedAt("2026-07-01T16:00:00+09:00"),
+        ).toEqual({ date: "2026-07-01", slot: "evening" });
+        expect(
+            inferShiftFromPostedAt("2026-07-01T16:28:00+09:00"),
         ).toEqual({ date: "2026-07-01", slot: "evening" });
         expect(
             inferShiftFromPostedAt("2026-07-01T18:29:59+09:00"),
@@ -76,6 +81,12 @@ if (!taggedCast || !boardOnlyCast) {
             await page.request.delete(
                 `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}`,
             );
+            await clearRegistration(
+                page,
+                DESTINATION_SWITCH_POST_ID,
+                DESTINATION_SWITCH_DATE,
+                "evening",
+            );
         });
 
         test.afterEach(async ({ page }) => {
@@ -93,6 +104,12 @@ if (!taggedCast || !boardOnlyCast) {
             );
             await page.request.delete(
                 `${ADMIN_URL}/api/posts/${GALLERY_ONLY_POST_ID}`,
+            );
+            await clearRegistration(
+                page,
+                DESTINATION_SWITCH_POST_ID,
+                DESTINATION_SWITCH_DATE,
+                "evening",
             );
         });
 
@@ -241,6 +258,171 @@ if (!taggedCast || !boardOnlyCast) {
             await expect(
                 page.getByTestId(`tweet-container-${SHIFT_ONLY_POST_ID}`),
             ).not.toBeVisible();
+        });
+
+        test("編集画面でギャラリー・シフト・BLOGを切り替えると登録状態が洗い替わる", async ({
+            page,
+        }) => {
+            const initialResponse = await page.request.post(
+                `${ADMIN_URL}/api/post-registrations`,
+                {
+                    data: {
+                        postId: DESTINATION_SWITCH_POST_ID,
+                        postedAt: "2098-11-04T07:28:00.000Z",
+                        destinations: {
+                            gallery: true,
+                            blog: false,
+                            shift: false,
+                        },
+                        taggedCastIds: [taggedCast.id],
+                        shiftCastIds: [],
+                    },
+                },
+            );
+            expect(initialResponse.status()).toBe(201);
+
+            await Promise.all([
+                page.goto(
+                    `${ADMIN_URL}/posts/${DESTINATION_SWITCH_POST_ID}/edit`,
+                ),
+                page.waitForResponse((response: any) =>
+                    response.url().includes("/api/casts"),
+                ),
+                page.waitForResponse((response: any) =>
+                    response.url().includes(
+                        `/api/post-registrations/${DESTINATION_SWITCH_POST_ID}`,
+                    ),
+                ),
+            ]);
+
+            const galleryDestination = page
+                .getByTestId("gallery-destination-checkbox")
+                .locator("input");
+            const blogDestination = page
+                .getByTestId("blog-destination-checkbox")
+                .locator("input");
+            const shiftDestination = page
+                .getByTestId("shift-destination-checkbox")
+                .locator("input");
+
+            await expect(galleryDestination).toBeChecked();
+            await expect(shiftDestination).not.toBeChecked();
+            await galleryDestination.uncheck();
+            await shiftDestination.check();
+
+            const shiftSaveResponse = page.waitForResponse(
+                (response) =>
+                    response.url() === `${ADMIN_URL}/api/post-registrations` &&
+                    response.request().method() === "POST",
+            );
+            await page.getByTestId("tweet-register-button").click();
+            expect((await shiftSaveResponse).status()).toBe(201);
+
+            const shiftOnlyPost = await (
+                await page.request.get(
+                    `${ADMIN_URL}/api/posts/${DESTINATION_SWITCH_POST_ID}`,
+                )
+            ).json();
+            expect(shiftOnlyPost.showInGallery).toBe(false);
+            expect(shiftOnlyPost.contentType).toBe("gallery");
+            expect(shiftOnlyPost.shiftSource).toBe("pending");
+            expect(shiftOnlyPost.castTags).toEqual([]);
+
+            const registeredShift = await (
+                await page.request.get(
+                    `${ADMIN_URL}/api/shifts?date=${DESTINATION_SWITCH_DATE}&shift=evening`,
+                )
+            ).json();
+            expect(registeredShift.sourcePostId).toBe(
+                DESTINATION_SWITCH_POST_ID,
+            );
+            expect(registeredShift.castIds).toEqual([taggedCast.id]);
+
+            await Promise.all([
+                page.goto(
+                    `${ADMIN_URL}/posts/${DESTINATION_SWITCH_POST_ID}/edit`,
+                ),
+                page.waitForResponse((response: any) =>
+                    response.url().includes(
+                        `/api/post-registrations/${DESTINATION_SWITCH_POST_ID}`,
+                    ),
+                ),
+            ]);
+            await expect(shiftDestination).toBeChecked();
+            await expect(galleryDestination).not.toBeChecked();
+            await blogDestination.check();
+            await expect(shiftDestination).not.toBeChecked();
+            await selectCast(
+                page,
+                "タグ付けするキャストを選択",
+                taggedCast.name,
+            );
+
+            const blogSaveResponse = page.waitForResponse(
+                (response) =>
+                    response.url() === `${ADMIN_URL}/api/post-registrations` &&
+                    response.request().method() === "POST",
+            );
+            await page.getByTestId("tweet-register-button").click();
+            expect((await blogSaveResponse).status()).toBe(201);
+
+            const blogPost = await (
+                await page.request.get(
+                    `${ADMIN_URL}/api/posts/${DESTINATION_SWITCH_POST_ID}`,
+                )
+            ).json();
+            expect(blogPost.showInGallery).toBe(true);
+            expect(blogPost.contentType).toBe("blog");
+            expect(blogPost.shiftSource).toBeNull();
+            expect(
+                blogPost.castTags.map((tag: { castid: number }) => tag.castid),
+            ).toEqual([taggedCast.id]);
+
+            const removedShift = await (
+                await page.request.get(
+                    `${ADMIN_URL}/api/shifts?date=${DESTINATION_SWITCH_DATE}&shift=evening`,
+                )
+            ).json();
+            expect(removedShift).toEqual({
+                castIds: [],
+                sourcePostId: null,
+            });
+
+            await Promise.all([
+                page.goto(
+                    `${ADMIN_URL}/posts/${DESTINATION_SWITCH_POST_ID}/edit`,
+                ),
+                page.waitForResponse((response: any) =>
+                    response.url().includes(
+                        `/api/post-registrations/${DESTINATION_SWITCH_POST_ID}`,
+                    ),
+                ),
+            ]);
+            await expect(blogDestination).toBeChecked();
+            await galleryDestination.check();
+            await expect(blogDestination).not.toBeChecked();
+
+            const gallerySaveResponse = page.waitForResponse(
+                (response) =>
+                    response.url() === `${ADMIN_URL}/api/post-registrations` &&
+                    response.request().method() === "POST",
+            );
+            await page.getByTestId("tweet-register-button").click();
+            expect((await gallerySaveResponse).status()).toBe(201);
+
+            const galleryPost = await (
+                await page.request.get(
+                    `${ADMIN_URL}/api/posts/${DESTINATION_SWITCH_POST_ID}`,
+                )
+            ).json();
+            expect(galleryPost.showInGallery).toBe(true);
+            expect(galleryPost.contentType).toBe("gallery");
+            expect(galleryPost.shiftSource).toBeNull();
+            expect(
+                galleryPost.castTags.map(
+                    (tag: { castid: number }) => tag.castid,
+                ),
+            ).toEqual([taggedCast.id]);
         });
 
         test("ギャラリーのシフト未登録を絞り込み、対象外へ切り替えられる", async ({

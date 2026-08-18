@@ -1,6 +1,6 @@
 import { ShiftSlot } from "@iba-cast-gallery/types";
 
-const OPEN_END_MINUTES = 16 * 60 + 30;
+const OPEN_END_MINUTES = 16 * 60;
 const EVENING_END_MINUTES = 18 * 60 + 30;
 
 export type InferredShift = {

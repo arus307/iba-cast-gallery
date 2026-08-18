@@ -1,6 +1,13 @@
 import "server-only";
 import "reflect-metadata";
-import { Cast, Post, PostCastTag, Repository, Shift } from "@iba-cast-gallery/dao";
+import {
+    Cast,
+    Post,
+    PostCastTag,
+    Repository,
+    Shift,
+    ShiftNoPostConfirmation,
+} from "@iba-cast-gallery/dao";
 import {
     PostContentType,
     PostRegistrationRequest,
@@ -95,7 +102,7 @@ function validateRequest(request: PostRegistrationRequest) {
 }
 
 /**
- * ギャラリーまたはBLOGのタグ付けとシフト登録を、選択された登録先だけまとめて保存する。
+ * ギャラリー・BLOG・シフトの登録状態を、リクエストの選択内容で洗い替える。
  */
 export async function registerPostWithDestinations(
     request: PostRegistrationRequest,
@@ -155,22 +162,20 @@ export async function registerPostWithDestinations(
         const postValues = {
             postedAt,
             isDeleted: request.isDeleted ?? existing?.isDeleted ?? false,
-            showInGallery: hasContentDestination
-                ? true
-                : existing?.showInGallery ?? false,
-            contentType: hasContentDestination
-                ? isBlog
-                    ? PostContentType.BLOG
-                    : PostContentType.GALLERY
-                : existing?.contentType ?? PostContentType.GALLERY,
+            showInGallery: hasContentDestination,
+            contentType: isBlog
+                ? PostContentType.BLOG
+                : PostContentType.GALLERY,
             shiftSource: request.destinations.shift
                 ? existing?.shiftSource === ShiftSourceStatus.DONE
                     ? ShiftSourceStatus.DONE
                     : ShiftSourceStatus.PENDING
-                : existing?.shiftSource ?? null,
+                : null,
             excludeFromShiftRegistration: request.destinations.shift
                 ? false
-                : existing?.excludeFromShiftRegistration ?? false,
+                : request.destinations.gallery
+                    ? existing?.excludeFromShiftRegistration ?? false
+                    : false,
         };
 
         if (existing) {
@@ -182,25 +187,27 @@ export async function registerPostWithDestinations(
             });
         }
 
-        if (hasContentDestination) {
-            const postCastTagRepository: Repository<PostCastTag> =
-                em.getRepository(PostCastTag);
-            await postCastTagRepository.delete({ postId: request.postId });
+        const postCastTagRepository: Repository<PostCastTag> =
+            em.getRepository(PostCastTag);
+        await postCastTagRepository.delete({ postId: request.postId });
 
-            if (taggedCastIds.length > 0) {
-                await postCastTagRepository.insert(
-                    taggedCastIds.map((castId, index) => ({
-                        postId: request.postId,
-                        castid: castId,
-                        order: index + 1,
-                    })),
-                );
-            }
+        if (taggedCastIds.length > 0) {
+            await postCastTagRepository.insert(
+                taggedCastIds.map((castId, index) => ({
+                    postId: request.postId,
+                    castid: castId,
+                    order: index + 1,
+                })),
+            );
         }
 
+        const shiftRepository: Repository<Shift> = em.getRepository(Shift);
+        await shiftRepository.delete({ sourcePostId: request.postId });
+
         if (shift) {
-            const shiftRepository: Repository<Shift> = em.getRepository(Shift);
-            await shiftRepository.delete({ sourcePostId: request.postId });
+            await em
+                .getRepository(ShiftNoPostConfirmation)
+                .delete({ date: shift.date, shift: shift.slot });
             await shiftRepository.delete({
                 date: shift.date,
                 shift: shift.slot,
