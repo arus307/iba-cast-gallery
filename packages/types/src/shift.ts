@@ -32,3 +32,9 @@ export interface ShiftPostCandidate {
     differenceMinutes: number;
     taggedCasts: { id: number; name: string; order: number }[];
 }
+
+export interface ShiftNoPostConfirmationDto {
+    date: string;
+    shift: ShiftSlot;
+    confirmedAt: string;
+}

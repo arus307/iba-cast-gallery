@@ -1,14 +1,23 @@
 import "server-only";
 import "reflect-metadata";
 import { initializeDatabase, appDataSource } from "../data-source";
-import { Post, Repository, Shift } from "@iba-cast-gallery/dao";
+import {
+    Post,
+    Repository,
+    Shift,
+    ShiftNoPostConfirmation,
+} from "@iba-cast-gallery/dao";
 import {
     ShiftSlot,
     ShiftSourceStatus,
     CastType,
     PostContentType,
 } from "@iba-cast-gallery/types";
-import type { ShiftGroup, ShiftPostCandidate } from "@iba-cast-gallery/types";
+import type {
+    ShiftGroup,
+    ShiftNoPostConfirmationDto,
+    ShiftPostCandidate,
+} from "@iba-cast-gallery/types";
 import { inferShiftFromPostedAt } from "utils/shift";
 import logger from "../logger";
 
@@ -106,6 +115,77 @@ export async function getShiftPostCandidates(
 }
 
 /**
+ * 情報ポストが存在しないことを確認済みとした枠を取得する。
+ */
+export async function getShiftNoPostConfirmations(): Promise<
+    ShiftNoPostConfirmationDto[]
+> {
+    await initializeDatabase();
+
+    const repository: Repository<ShiftNoPostConfirmation> =
+        appDataSource.getRepository(ShiftNoPostConfirmation);
+    const confirmations = await repository.find({
+        order: { date: "DESC", shift: "ASC" },
+    });
+
+    return confirmations.map((confirmation) => ({
+        date: confirmation.date,
+        shift: confirmation.shift,
+        confirmedAt: confirmation.confirmedAt.toISOString(),
+    }));
+}
+
+/**
+ * 指定枠に情報ポストが存在しないことを、重複しない形で記録する。
+ */
+export async function confirmShiftHasNoPost(
+    date: string,
+    slot: ShiftSlot,
+): Promise<ShiftNoPostConfirmationDto> {
+    await initializeDatabase();
+
+    const repository: Repository<ShiftNoPostConfirmation> =
+        appDataSource.getRepository(ShiftNoPostConfirmation);
+    await repository
+        .createQueryBuilder()
+        .insert()
+        .into(ShiftNoPostConfirmation)
+        .values({ date, shift: slot })
+        .orIgnore()
+        .execute();
+
+    const confirmation = await repository.findOne({
+        where: { date, shift: slot },
+    });
+    if (!confirmation) {
+        throw new Error(`情報ポストなし確認の保存に失敗しました (${date} ${slot})`);
+    }
+
+    logger.info({ date, slot }, "シフト情報ポストなしを確認済みに更新");
+    return {
+        date: confirmation.date,
+        shift: confirmation.shift,
+        confirmedAt: confirmation.confirmedAt.toISOString(),
+    };
+}
+
+/**
+ * 情報ポストなしの確認を取り消し、入力漏れチェックへ戻す。
+ */
+export async function removeShiftNoPostConfirmation(
+    date: string,
+    slot: ShiftSlot,
+): Promise<boolean> {
+    await initializeDatabase();
+
+    const repository: Repository<ShiftNoPostConfirmation> =
+        appDataSource.getRepository(ShiftNoPostConfirmation);
+    const result = await repository.delete({ date, shift: slot });
+    logger.info({ date, slot }, "シフト情報ポストなし確認を取り消し");
+    return result.affected !== 0;
+}
+
+/**
  * 指定日・シフトの記録を取得する
  */
 export async function getShiftRecord(
@@ -176,6 +256,9 @@ export async function saveShifts(
 
         // ③ 新しいシフトレコードを挿入
         if (castIds.length > 0) {
+            await em
+                .getRepository(ShiftNoPostConfirmation)
+                .delete({ date, shift: slot });
             const records = castIds.map((castId) => ({
                 date,
                 shift: slot,

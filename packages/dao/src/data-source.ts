@@ -9,6 +9,7 @@ import { Favorite } from './entities/Favorite';
 import { Shift } from './entities/Shift';
 import { Event } from './entities/Event';
 import { EventCastTag } from './entities/EventCastTag';
+import { ShiftNoPostConfirmation } from './entities/ShiftNoPostConfirmation';
 import path from 'path';
 
 /**
@@ -30,6 +31,7 @@ export const commonDataSourceOptions: Partial<DataSourceOptions> = {
     Shift,
     Event,
     EventCastTag,
+    ShiftNoPostConfirmation,
   ],
   migrations: [
     path.join(__dirname, 'migrations/**/*.js'),

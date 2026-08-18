@@ -11,6 +11,16 @@ async function login(page: any) {
     await page.request.post(`${ADMIN_URL}/api/auth/e2e-login`);
 }
 
+async function clearNoPostConfirmation(
+    page: any,
+    date: string,
+    shift: string,
+) {
+    await page.request.delete(
+        `${ADMIN_URL}/api/shifts/no-post?date=${date}&shift=${shift}`,
+    );
+}
+
 /**
  * ShiftEditor の DateField に固定日付を入力し、fetchExisting の完了を待つ。
  * MUI DateField はセグメント単位のキーボード入力で日付を受け付けるため、
@@ -48,6 +58,9 @@ if (!testCast) {
     test.describe('シフト登録と一覧表示フロー', () => {
         test.beforeEach(async ({ page }) => {
             await login(page);
+            for (const shift of ['open', 'evening', 'night']) {
+                await clearNoPostConfirmation(page, TEST_DATE, shift);
+            }
             // テスト間の状態干渉を防ぐため、テスト固定日付の夜シフトを事前にクリア
             await page.request.post(`${ADMIN_URL}/api/shifts`, {
                 data: { date: TEST_DATE, shift: 'night', castIds: [] },
@@ -138,7 +151,71 @@ if (!testCast) {
             // 水曜は定休日として欠損扱いにしない
             await page.getByTestId('shift-coverage-from').fill('2099-11-04');
             await page.getByTestId('shift-coverage-to').fill('2099-11-04');
-            await expect(page.getByText('この期間は3枠すべて登録済みです')).toBeVisible();
+            await expect(
+                page.getByText(
+                    'この期間はすべて登録済み、または情報ポストなしとして確認済みです',
+                ),
+            ).toBeVisible();
+        });
+
+        test('情報ポストがない枠を消し込み、未確認へ戻せること', async ({ page }) => {
+            for (const shift of ['open', 'evening', 'night']) {
+                await page.request.post(`${ADMIN_URL}/api/shifts`, {
+                    data: { date: TEST_DATE, shift, castIds: [] },
+                });
+            }
+
+            await Promise.all([
+                page.goto(`${ADMIN_URL}/shifts`),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts/list')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts/no-post')),
+                page.waitForResponse((res: any) => res.url().includes('/api/shifts?date=')),
+            ]);
+
+            await page.getByTestId('shift-coverage-from').fill(TEST_DATE);
+            await page.getByTestId('shift-coverage-to').fill(TEST_DATE);
+
+            const candidateResponse = page.waitForResponse((res: any) =>
+                res.url().includes(
+                    `/api/posts/shift-candidates?date=${TEST_DATE}&shift=evening`,
+                ),
+            );
+            await page.getByTestId(`shift-missing-${TEST_DATE}-evening`).click();
+            expect((await candidateResponse).status()).toBe(200);
+
+            const confirmResponse = page.waitForResponse(
+                (res: any) =>
+                    res.url() === `${ADMIN_URL}/api/shifts/no-post` &&
+                    res.request().method() === 'POST',
+            );
+            await page.getByTestId('shift-candidate-confirm-no-post').click();
+            expect((await confirmResponse).status()).toBe(201);
+
+            await expect(page.getByTestId('shift-candidate-dialog')).not.toBeVisible();
+            await expect(
+                page.getByTestId(`shift-missing-${TEST_DATE}-evening`),
+            ).not.toBeAttached();
+            const confirmedRow = page.getByTestId(
+                `shift-no-post-confirmed-${TEST_DATE}-evening`,
+            );
+            await expect(confirmedRow).toBeVisible();
+            await expect(confirmedRow).toContainText('夕方');
+
+            const restoreResponse = page.waitForResponse(
+                (res: any) =>
+                    res.url().includes(
+                        `/api/shifts/no-post?date=${TEST_DATE}&shift=evening`,
+                    ) && res.request().method() === 'DELETE',
+            );
+            await page
+                .getByTestId(`shift-no-post-restore-${TEST_DATE}-evening`)
+                .click();
+            expect((await restoreResponse).status()).toBe(200);
+
+            await expect(confirmedRow).not.toBeAttached();
+            await expect(
+                page.getByTestId(`shift-missing-${TEST_DATE}-evening`),
+            ).toBeVisible();
         });
 
         test('未登録枠へ近い時間帯の既存ポストを選べること', async ({ page }) => {

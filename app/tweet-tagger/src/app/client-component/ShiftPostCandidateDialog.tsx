@@ -44,6 +44,8 @@ type ShiftPostCandidateDialogProps = {
     target: MissingShiftTarget | null;
     onClose: () => void;
     onSelect: (sourcePostId: string | null) => void;
+    onConfirmNoPost: () => void;
+    isConfirmingNoPost: boolean;
 };
 
 const POST_TIME_FORMATTER = new Intl.DateTimeFormat("ja-JP", {
@@ -72,6 +74,8 @@ const ShiftPostCandidateDialog = ({
     target,
     onClose,
     onSelect,
+    onConfirmNoPost,
+    isConfirmingNoPost,
 }: ShiftPostCandidateDialogProps) => {
     const [candidates, setCandidates] = useState<ShiftPostCandidate[]>([]);
     const [previewPostId, setPreviewPostId] = useState<string | null>(null);
@@ -264,12 +268,30 @@ const ShiftPostCandidateDialog = ({
                 </Stack>
             </DialogContent>
             <DialogActions sx={{ px: 3, py: 2, flexWrap: "wrap" }}>
-                <Button onClick={onClose} color="inherit">
+                <Button
+                    onClick={onClose}
+                    color="inherit"
+                    disabled={isConfirmingNoPost}
+                >
                     キャンセル
+                </Button>
+                <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={onConfirmNoPost}
+                    disabled={isLoading || Boolean(error) || isConfirmingNoPost}
+                    loading={isConfirmingNoPost}
+                    loadingPosition="start"
+                    data-testid="shift-candidate-confirm-no-post"
+                >
+                    {isConfirmingNoPost
+                        ? "確認中..."
+                        : "情報ポストなしとして消し込む"}
                 </Button>
                 <Button
                     variant="contained"
                     onClick={() => onSelect(null)}
+                    disabled={isConfirmingNoPost}
                     data-testid="shift-candidate-create-new"
                 >
                     新しいポストを登録
